@@ -256,13 +256,18 @@
     }
 
     // ==========================================
-    // CHUNKED FILE RECEIVING (Updated)
+    // CHUNKED FILE RECEIVING (Updated for Mobile Support)
     // ==========================================
     function handleIncomingData() {
         let fileHandle;
         let writableStream;
         let receivedSize = 0;
         let totalSize = 0;
+        
+        // Variables for Mobile Fallback
+        let receiveBuffer = []; 
+        let isMobileFallback = false;
+        let fileName = "downloaded_file";
 
         peer.on('data', async data => {
             // Handle JSON Messages (Meta or Done)
@@ -271,31 +276,34 @@
                 
                 if (msg.type === 'meta') {
                     totalSize = msg.size;
+                    fileName = msg.name;
                     
-                    // Show Accept Button (Crucial for Browser Security)
                     receiverStatus.innerHTML = `
                         Receiving: <b>${msg.name}</b><br>
                         <button id="btnAccept" class="btn" style="margin-top:10px; background:var(--accent); color:var(--bg);">
-                           📥 ACCEPT & CHOOSE SAVE LOCATION
+                           📥 ACCEPT FILE
                         </button>
                     `;
                     
                     document.getElementById('btnAccept').onclick = async () => {
                         try {
-                            if (!window.showSaveFilePicker) {
-                                alert("Your browser doesn't support direct disk saving. Please use Chrome/Edge on Desktop.");
-                                return;
+                            document.getElementById('btnAccept').style.display = 'none';
+                            receiverStatus.innerText = "Preparing storage...";
+
+                            // 1. Check if it's a PC (Supports Direct Disk Writing)
+                            if (window.showSaveFilePicker) {
+                                fileHandle = await window.showSaveFilePicker({ suggestedName: msg.name });
+                                writableStream = await fileHandle.createWritable();
+                            } 
+                            // 2. Mobile Fallback (RAM buffering)
+                            else {
+                                isMobileFallback = true;
+                                // Warning for user
+                                console.warn("Mobile device detected. Using RAM buffer.");
                             }
                             
-                            // User Click opens the Native Save Dialog
-                            fileHandle = await window.showSaveFilePicker({ suggestedName: msg.name });
-                            writableStream = await fileHandle.createWritable();
-                            
-                            document.getElementById('btnAccept').style.display = 'none';
                             receiverStatus.innerText = "Downloading in progress...";
-                            
-                            // Tell Sender to start pumping data
-                            peer.send('ready');
+                            peer.send('ready'); // Tell sender to start sending
                         } catch (e) {
                             console.error(e);
                             receiverStatus.innerText = "❌ Save cancelled by user.";
@@ -303,17 +311,45 @@
                     };
                 } 
                 else if (msg.type === 'done') {
-                    if (writableStream) await writableStream.close();
+                    // Download Complete Logic
+                    if (!isMobileFallback && writableStream) {
+                        // PC: Close the stream, file is already on disk
+                        await writableStream.close();
+                    } else if (isMobileFallback) {
+                        // Mobile: Combine chunks from RAM and trigger download
+                        receiverStatus.innerText = "Processing file for mobile download... Please wait.";
+                        const blob = new Blob(receiveBuffer);
+                        const url = URL.createObjectURL(blob);
+                        
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        
+                        setTimeout(() => {
+                            document.body.removeChild(a);
+                            window.URL.revokeObjectURL(url);
+                            receiveBuffer = []; // Free up RAM!
+                        }, 100);
+                    }
+
                     receiverStatus.innerText = "✅ File Downloaded & Saved Successfully!";
                     progressFill.style.width = '100%';
                     progressText.innerText = "100%";
                 }
             } 
-            // Handle binary ArrayBuffer
-            else if (writableStream) {
-                await writableStream.write(data);
+            // Handle binary ArrayBuffer (The actual file chunks)
+            else {
+                if (!isMobileFallback && writableStream) {
+                    // PC: Write direct to disk
+                    await writableStream.write(data);
+                } else if (isMobileFallback) {
+                    // Mobile: Push to RAM array
+                    receiveBuffer.push(data); 
+                }
+
                 receivedSize += data.byteLength;
-                
                 const percent = Math.min(100, Math.round((receivedSize / totalSize) * 100));
                 progressFill.style.width = percent + '%';
                 progressText.innerText = `Received: ${percent}%`;
