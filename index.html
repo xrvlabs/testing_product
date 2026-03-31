@@ -1,276 +1,621 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LiteSpeed - XRV LABS</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LiteSpeed - XRV Elite v10</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-  :root {
-    --bg-dark: #0a0a0f;
-    --bg-card: #12131a;
-    --accent-cyan: #00d4ff;
-    --accent-purple: #8b5cf6;
-    --text-primary: #ffffff;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --border-color: rgba(255,255,255,0.06);
-    --glow-cyan: rgba(0,212,255,0.4);
-    --radius: 8px; /* Set to 8dp/px */
-  }
+        :root {
+            --bg: #050508;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.15);
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --accent-subtle: rgba(99, 102, 241, 0.08);
+            --text: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.4);
+            --cursor-dot: #ffffff;
+            --radius: 8px;
+            --btn-text: #ffffff;
+            --font: 'Quantico', sans-serif;
+        }
 
-  [data-theme="light"] {
-    --bg-dark: #f0f2f5;
-    --bg-card: #ffffff;
-    --text-primary: #1a1b24;
-    --text-secondary: #475569;
-    --border-color: rgba(0,0,0,0.08);
-  }
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --card-bg: rgba(0, 0, 0, 0.03);
+            --border: rgba(0, 0, 0, 0.12);
+            --accent: #4f46e5;
+            --accent-hover: #6366f1;
+            --accent-glow: rgba(79, 70, 229, 0.25);
+            --accent-subtle: rgba(79, 70, 229, 0.06);
+            --text: #0f172a;
+            --text-dim: rgba(15, 23, 42, 0.5);
+            --cursor-dot: #000000;
+            --btn-text: #ffffff;
+        }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            text-transform: uppercase;
+        }
 
-  body {
-    background: var(--bg-dark);
-    font-family: 'Inter', sans-serif;
-    color: var(--text-primary);
-    min-height: 100vh;
-    overflow-x: hidden;
-    transition: background 0.4s ease;
-  }
+        *::-webkit-scrollbar { display: none; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
 
-  /* Futuristic BG Elements */
-  .bg-elements { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-  .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.15; animation: float 20s infinite ease-in-out; }
-  .orb-1 { width: 400px; height: 400px; background: var(--accent-purple); top: -100px; left: -100px; }
-  .grid-bg { position: fixed; inset: 0; background-image: linear-gradient(var(--border-color) 1px, transparent 1px), linear-gradient(90deg, var(--border-color) 1px, transparent 1px); background-size: 40px 40px; }
-  @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(20px, 30px); } }
+        html, body { height: 100%; width: 100%; overflow: hidden; }
 
-  .container { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 20px; }
+        body {
+            background: var(--bg);
+            display: flex;
+            font-family: var(--font);
+            cursor: none;
+            color: var(--text);
+            transition: background 0.4s ease, color 0.4s ease;
+        }
 
-  /* Header */
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-  .brand h1 { font-size: 1.4rem; font-weight: 800; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .theme-toggle { background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px; border-radius: var(--radius); cursor: pointer; color: var(--text-primary); }
+        .cursor-element {
+            position: fixed; top: 0; left: 0;
+            pointer-events: none; will-change: transform;
+            z-index: 9999; transition: none !important;
+        }
+        .cursor-glow {
+            width: 600px; height: 600px;
+            margin-left: -300px; margin-top: -300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent) 5%, transparent 60%);
+            opacity: 0.12;
+        }
+        .cursor-dot {
+            width: 6px; height: 6px;
+            margin-left: -3px; margin-top: -3px;
+            border-radius: 50%;
+            background: var(--cursor-dot);
+            mix-blend-mode: difference;
+        }
+        .cursor-ring {
+            width: 30px; height: 30px;
+            margin-left: -15px; margin-top: -15px;
+            border-radius: 50%;
+            border: 1px solid var(--text-dim);
+        }
 
-  /* Network Bar */
-  .network-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-  .net-item { background: var(--bg-card); border: 1px solid var(--border-color); padding: 15px; border-radius: var(--radius); display: flex; align-items: center; gap: 10px; }
-  .net-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-  .net-value { font-size: 0.8rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+        #techCanvas { position: fixed; inset: 0; pointer-events: none; opacity: 0.1; filter: blur(2px); z-index: 0; }
+        .grid-overlay {
+            position: fixed; inset: 0;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 50px 50px; opacity: 0.15; z-index: 0;
+        }
 
-  /* Speed Card with Lightning Border */
-  .speed-card { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border-color); 
-    border-radius: var(--radius); 
-    padding: 40px 20px; 
-    margin-bottom: 20px; 
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
+        .wrap {
+            position: relative; z-index: 10;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            padding: clamp(12px, 3vw, 60px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
 
-  /* Rotating Border Effect */
-  .speed-card::before {
-    content: "";
-    position: absolute;
-    inset: -150%;
-    background: conic-gradient(from 0deg, transparent 0%, transparent 40%, var(--accent-cyan) 50%, var(--accent-purple) 60%, transparent 70%, transparent 100%);
-    animation: rotate 2s linear infinite;
-    display: none;
-  }
-  .speed-card::after {
-    content: "";
-    position: absolute;
-    inset: 2px;
-    background: var(--bg-card);
-    border-radius: calc(var(--radius) - 2px);
-    z-index: 1;
-  }
-  .speed-card.is-testing::before { display: block; }
-  .speed-content { position: relative; z-index: 2; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: clamp(10px, 2vh, 30px);
+            margin-bottom: clamp(10px, 2vh, 30px);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .brand h1 {
+            font-family: var(--font);
+            font-size: clamp(1rem, 3.5vw, 1.8rem);
+            font-weight: 700;
+            letter-spacing: 0.4em;
+        }
 
-  @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .theme-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            color: var(--text);
+            cursor: none;
+            display: flex; align-items: center; justify-content: center;
+            transition: border-color 0.3s, background 0.3s;
+            position: relative; overflow: hidden; flex-shrink: 0;
+        }
+        .theme-btn:hover {
+            border-color: var(--accent);
+            background: var(--accent-subtle);
+        }
+        .theme-icon-sun, .theme-icon-moon {
+            position: absolute; width: 18px; height: 18px;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+        [data-theme="dark"] .theme-icon-sun { opacity: 1; transform: rotate(0deg) scale(1); }
+        [data-theme="dark"] .theme-icon-moon { opacity: 0; transform: rotate(90deg) scale(0.5); }
+        [data-theme="light"] .theme-icon-sun { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+        [data-theme="light"] .theme-icon-moon { opacity: 1; transform: rotate(0deg) scale(1); }
 
-  .speed-value { font-family: 'JetBrains Mono', monospace; font-size: 4.5rem; font-weight: 800; line-height: 1; color: var(--text-primary); }
-  .speed-unit { color: var(--text-muted); font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 5px; }
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 0;
+        }
 
-  /* Metrics Grid - Forced 1 Row */
-  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
-  .metric-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 12px 5px; text-align: center; }
-  .m-title { font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; font-weight: 700; }
-  .m-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--text-primary); }
-  .m-unit { font-size: 0.6rem; color: var(--text-muted); margin-left: 2px; }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 1.5vh, 18px);
+        }
 
-  /* Smart Button */
-  .start-btn { 
-    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-    color: #000; border: none; padding: 18px; border-radius: var(--radius); font-weight: 800;
-    font-size: 0.9rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
-    transition: 0.3s; width: 100%; margin-top: 20px;
-    box-shadow: 0 8px 20px var(--glow-cyan);
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .start-btn:active { transform: scale(0.98); }
-  .start-btn:disabled { color: #fff; background: #222; box-shadow: none; cursor: default; }
+        .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(8px, 1.5vh, 15px); }
+        .meta-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: clamp(10px, 2vh, 18px);
+            border-radius: var(--radius);
+            backdrop-filter: blur(15px);
+            transition: border-color 0.4s, background 0.4s;
+        }
+        .meta-label {
+            font-family: var(--font);
+            font-size: clamp(0.5rem, 1.5vw, 0.65rem);
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+        .meta-value {
+            font-family: var(--font);
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            font-weight: 700;
+        }
 
-  .ftr { padding: 30px; text-align: center; font-size: 10px; font-weight: 700; color: var(--text-secondary); opacity: 0.5; letter-spacing: 1px; }
+        .speed-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: clamp(30px, 6vh, 100px) 20px;
+            position: relative; overflow: hidden;
+            text-align: center;
+            transition: border-color 0.4s, background 0.4s;
+        }
+        .speed-card::before {
+            content: ""; position: absolute; inset: -150%;
+            background: conic-gradient(from 0deg, transparent 40%, var(--accent) 50%, transparent 60%);
+            animation: rotate 2s linear infinite; display: none;
+        }
+        .speed-card::after {
+            content: ""; position: absolute; inset: 2px;
+            background: var(--bg); border-radius: 6px; z-index: 1;
+            transition: background 0.4s;
+        }
+        .speed-card.is-testing::before { display: block; }
+        .speed-content { position: relative; z-index: 2; }
 
-  @media (max-width: 400px) {
-    .speed-value { font-size: 3.5rem; }
-    .m-value { font-size: 0.9rem; }
-  }
-</style>
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .speed-val {
+            font-family: var(--font);
+            font-size: clamp(3.5rem, 12vw, 9rem);
+            font-weight: 700;
+            line-height: 0.9;
+        }
+        .speed-unit {
+            font-family: var(--font);
+            font-size: clamp(0.7rem, 2vw, 1rem);
+            letter-spacing: 0.5em;
+            color: var(--text-dim);
+            margin-top: clamp(8px, 2vh, 20px);
+        }
+
+        .metrics-row { display: flex; gap: clamp(6px, 1.2vw, 12px); width: 100%; }
+        .m-card {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: clamp(12px, 2vh, 20px) 5px;
+            text-align: center;
+            min-width: 0;
+            backdrop-filter: blur(10px);
+            transition: border-color 0.4s, background 0.4s;
+        }
+        .m-label {
+            font-family: var(--font);
+            font-size: clamp(0.5rem, 1.3vw, 0.6rem);
+            color: var(--text-dim);
+            margin-bottom: clamp(4px, 1vh, 8px);
+            letter-spacing: 2px;
+        }
+        .m-value {
+            font-family: var(--font);
+            font-size: clamp(0.9rem, 2.5vw, 1.5rem);
+            font-weight: 700;
+            display: inline-block;
+            transition: transform 0.1s ease, opacity 0.1s ease;
+        }
+
+        /* JITTER shake animation */
+        .m-value.jitter-active {
+            animation: jitterShake 0.12s infinite alternate;
+        }
+        @keyframes jitterShake {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            20% { transform: translate(-1.5px, 0.8px) rotate(-0.5deg); }
+            40% { transform: translate(1.2px, -0.6px) rotate(0.4deg); }
+            60% { transform: translate(-0.8px, 1.2px) rotate(-0.3deg); }
+            80% { transform: translate(1px, -1px) rotate(0.5deg); }
+            100% { transform: translate(-0.5px, 0.5px) rotate(-0.2deg); }
+        }
+
+        /* LATENCY pulse/breathe animation - door paas effect */
+        .m-value.latency-active {
+            animation: latencyPulse 1.2s ease-in-out infinite;
+        }
+        @keyframes latencyPulse {
+            0% { transform: scale(1) translateZ(0); opacity: 1; filter: blur(0px); }
+            25% { transform: scale(0.82) translateZ(0); opacity: 0.5; filter: blur(1.5px); }
+            50% { transform: scale(1.12) translateZ(0); opacity: 1; filter: blur(0px); }
+            75% { transform: scale(0.88) translateZ(0); opacity: 0.55; filter: blur(1px); }
+            100% { transform: scale(1) translateZ(0); opacity: 1; filter: blur(0px); }
+        }
+
+        /* Settle animation when scan completes */
+        .m-value.settle {
+            animation: settleDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes settleDown {
+            0% { transform: scale(1.1); opacity: 0.7; }
+            50% { transform: scale(0.95); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 1; filter: blur(0); }
+        }
+
+        .btn {
+            width: 100%;
+            padding: clamp(14px, 2.5vh, 22px) 30px;
+            background: var(--accent);
+            border: 1px solid var(--accent);
+            color: var(--btn-text);
+            font-family: var(--font);
+            font-size: clamp(0.7rem, 2vw, 0.85rem);
+            font-weight: 700;
+            letter-spacing: 0.4em;
+            border-radius: var(--radius);
+            cursor: none;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 25px var(--accent-glow), 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
+            pointer-events: none;
+        }
+        .btn:hover:not(:disabled) {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            box-shadow: 0 0 40px var(--accent-glow), 0 6px 25px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+        }
+        .btn:active:not(:disabled) {
+            transform: translateY(0px) scale(0.985);
+            box-shadow: 0 0 15px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .btn:disabled { opacity: 0.5; box-shadow: none; }
+
+        .btn.scanning { animation: btnPulse 1.5s ease-in-out infinite; }
+        @keyframes btnPulse {
+            0%, 100% { box-shadow: 0 0 25px var(--accent-glow), 0 4px 15px rgba(0,0,0,0.2); }
+            50% { box-shadow: 0 0 45px var(--accent-glow), 0 4px 20px rgba(0,0,0,0.3); }
+        }
+
+        .btn-content {
+            position: relative; z-index: 2;
+            display: flex; align-items: center;
+            justify-content: center; gap: 12px;
+        }
+
+        .spinner {
+            display: none;
+            width: 18px; height: 18px;
+            border: 2.5px solid rgba(255,255,255,0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        .btn.scanning .spinner { display: block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .footer {
+            padding-top: clamp(8px, 2vh, 30px);
+            font-family: var(--font);
+            font-size: clamp(7px, 1.2vw, 10px);
+            letter-spacing: 0.3em;
+            color: var(--text-dim);
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        @media (max-height: 500px) {
+            .speed-card { padding: 20px 15px; }
+            .speed-val { font-size: clamp(2.5rem, 10vw, 4rem); }
+            .header { padding-bottom: 8px; margin-bottom: 8px; }
+            .container { gap: 6px; }
+            .meta-item { padding: 8px 10px; }
+            .m-card { padding: 8px 4px; }
+            .btn { padding: 10px 20px; }
+            .footer { padding-top: 6px; }
+        }
+
+        @media (max-height: 650px) and (min-height: 501px) {
+            .speed-card { padding: 25px 15px; }
+            .speed-val { font-size: clamp(3rem, 10vw, 5rem); }
+            .container { gap: 8px; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="bg-elements">
-  <div class="orb orb-1"></div>
-  <div class="grid-bg"></div>
-</div>
+    <div class="cursor-element cursor-glow" id="glow"></div>
+    <div class="cursor-element cursor-ring" id="ring"></div>
+    <div class="cursor-element cursor-dot" id="dot"></div>
 
-<div class="container">
-  <header class="header">
-    <div class="brand"><h1>LiteSpeed</h1></div>
-    <button class="theme-toggle" id="themeBtn">
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"></path></svg>
-    </button>
-  </header>
+    <div class="grid-overlay"></div>
+    <canvas id="techCanvas"></canvas>
 
-  <div class="network-bar">
-    <div class="net-item">
-      <div>
-        <div class="net-label">Provider</div>
-        <div class="net-value" id="vIsp">Scanning...</div>
-      </div>
+    <div class="wrap">
+        <header class="header">
+            <div class="brand"><h1>LiteSpeed</h1></div>
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle theme">
+                <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <div class="meta-label">ISP Network</div>
+                        <div class="meta-value" id="vIsp">Fetching...</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Node Access</div>
+                        <div class="meta-value" id="vIp">0.0.0.0</div>
+                    </div>
+                </div>
+
+                <div class="speed-card" id="speedCard">
+                    <div class="speed-content">
+                        <div class="speed-val" id="vDown">0.0</div>
+                        <div class="speed-unit">Mbps</div>
+                    </div>
+                </div>
+
+                <div class="metrics-row">
+                    <div class="m-card">
+                        <div class="m-label">Latency</div>
+                        <div class="m-value" id="vPing">0MS</div>
+                    </div>
+                    <div class="m-card">
+                        <div class="m-label">Jitter</div>
+                        <div class="m-value" id="vJitter">0MS</div>
+                    </div>
+                    <div class="m-card">
+                        <div class="m-label">Load</div>
+                        <div class="m-value" id="vData">0MB</div>
+                    </div>
+                </div>
+
+                <button class="btn" id="startBtn" onclick="runTest()">
+                    <span class="btn-content">
+                        <span class="spinner" id="btnSpinner"></span>
+                        <span id="btnText">Initiate Scan</span>
+                    </span>
+                </button>
+            </div>
+        </main>
+
+        <footer class="footer">XRV Labs // Diagnostic Terminal 10.0 // © 2026</footer>
     </div>
-    <div class="net-item">
-      <div>
-        <div class="net-label">IP Address</div>
-        <div class="net-value" id="vIp">--</div>
-      </div>
-    </div>
-  </div>
 
-  <div class="speed-card" id="speedCard">
-    <div class="speed-content">
-        <div class="speed-value" id="vDown">0.0</div>
-        <div class="speed-unit">Mbps</div>
-    </div>
-  </div>
-
-  <div class="metrics-grid">
-    <div class="metric-card">
-      <div class="m-title">Latency</div>
-      <div class="m-value" id="vPing">--<span class="m-unit">ms</span></div>
-    </div>
-    <div class="metric-card">
-      <div class="m-title">Jitter</div>
-      <div class="m-value" id="vJitter">--<span class="m-unit">ms</span></div>
-    </div>
-    <div class="metric-card">
-      <div class="m-title">Data</div>
-      <div class="m-value" id="vData">--<span class="m-unit">MB</span></div>
-    </div>
-  </div>
-
-  <button class="start-btn" id="startBtn" onclick="runTest()">Start Analysis</button>
-
-  <div class="ftr">© 2026 XRV LABS • AKSHAR CHAUDHARY</div>
-</div>
-
-<script>
-const CFG = { endpoint: 'https://speed.cloudflare.com/__down', duration: 10000 };
-let S = { running: false, totalData: 0, smoothed: 0 };
-let abortCtrl = null;
-
-// Theme Logic
-const themeBtn = document.getElementById('themeBtn');
-themeBtn.onclick = () => {
-  const mode = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', mode);
-  localStorage.setItem('ls-theme', mode);
-};
-if(localStorage.getItem('ls-theme')) document.documentElement.setAttribute('data-theme', localStorage.getItem('ls-theme'));
-
-async function fetchMeta() {
-  try {
-    const res = await fetch('https://speed.cloudflare.com/meta', { cache: 'no-store' });
-    const data = await res.json();
-    document.getElementById('vIsp').textContent = (data.asOrganization || 'Unknown').split(' ')[0];
-    document.getElementById('vIp').textContent = data.clientIp;
-  } catch (e) { document.getElementById('vIsp').textContent = 'Offline'; }
-}
-fetchMeta();
-
-async function runTest() {
-  if (S.running) return;
-  S.running = true;
-  
-  if (abortCtrl) abortCtrl.abort();
-  abortCtrl = new AbortController();
-  
-  const btn = document.getElementById('startBtn');
-  const card = document.getElementById('speedCard');
-  
-  btn.disabled = true; 
-  card.classList.add('is-testing');
-  
-  S.totalData = 0; S.smoothed = 0;
-
-  try {
-    btn.textContent = 'MEASURING PING...';
-    let pings = [];
-    for(let i=0; i<10; i++) {
-      const t = performance.now();
-      await fetch('https://speed.cloudflare.com/cdn-cgi/trace', {mode:'no-cors', cache:'no-store', signal: abortCtrl.signal});
-      if(i > 0) pings.push(performance.now() - t);
-      await new Promise(r => setTimeout(r, 40));
-    }
-    const minPing = Math.min(...pings);
-    let jSum = 0; for(let i=1; i<pings.length; i++) jSum += Math.abs(pings[i] - pings[i-1]);
-    
-    document.getElementById('vPing').innerHTML = Math.round(minPing) + '<span class="m-unit">ms</span>';
-    document.getElementById('vJitter').innerHTML = (jSum/(pings.length-1)).toFixed(1) + '<span class="m-unit">ms</span>';
-
-    btn.textContent = 'TESTING BANDWIDTH...';
-    await startDownload(abortCtrl.signal);
-    
-    btn.textContent = 'ANALYSIS COMPLETE';
-
-  } catch(e) {}
-  finally {
-    btn.disabled = false;
-    setTimeout(() => { if(!S.running) btn.textContent = 'RESTART SCAN'; }, 1500);
-    card.classList.remove('is-testing');
-    S.running = false;
-  }
-}
-
-async function startDownload(signal) {
-  const start = performance.now();
-  const download = async () => {
-    try {
-      const resp = await fetch(CFG.endpoint + '?bytes=50000000', { cache: 'no-store', signal });
-      const reader = resp.body.getReader();
-      while(true) {
-        const {done, value} = await reader.read();
-        const elapsed = (performance.now() - start) / 1000;
-        if(done || elapsed > (CFG.duration/1000)) { reader.cancel(); break; }
-        S.totalData += value.length;
-        const mbps = (S.totalData * 8 / (1024*1024)) / elapsed;
-        if(elapsed > 0.2) {
-          S.smoothed = S.smoothed === 0 ? mbps : (mbps * 0.8) + (S.smoothed * 0.2);
-          document.getElementById('vDown').textContent = S.smoothed.toFixed(1);
-          document.getElementById('vData').innerHTML = (S.totalData/1048576).toFixed(1) + '<span class="m-unit">MB</span>';
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
         }
-      }
-    } catch(e) {}
-  };
-  for(let i=0; i<3; i++) download();
-  await new Promise(r => setTimeout(r, CFG.duration));
-}
-</script>
+
+        let mX = window.innerWidth / 2, mY = window.innerHeight / 2;
+        const dotEl = document.getElementById('dot');
+        const ringEl = document.getElementById('ring');
+        const glowEl = document.getElementById('glow');
+
+        document.addEventListener('mousemove', (e) => { mX = e.clientX; mY = e.clientY; });
+
+        function animateCursor() {
+            const t = `translate3d(${mX}px,${mY}px,0)`;
+            dotEl.style.transform = t;
+            ringEl.style.transform = t;
+            glowEl.style.transform = t;
+            requestAnimationFrame(animateCursor);
+        }
+        requestAnimationFrame(animateCursor);
+
+        const tCanvas = document.getElementById('techCanvas');
+        const tCtx = tCanvas.getContext('2d');
+        let cols = [];
+        function initTech() {
+            tCanvas.width = window.innerWidth; tCanvas.height = window.innerHeight;
+            cols = Array(Math.floor(tCanvas.width / 20)).fill(0);
+        }
+        function drawTech() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            tCtx.fillStyle = isDark ? "rgba(5,5,8,0.15)" : "rgba(248,250,252,0.15)";
+            tCtx.fillRect(0, 0, tCanvas.width, tCanvas.height);
+            tCtx.fillStyle = isDark ? "#6366f1" : "#4f46e5";
+            tCtx.font = "11px 'Quantico',monospace";
+            cols.forEach((y, i) => {
+                tCtx.fillText(Math.random() > 0.5 ? "0" : "1", i * 20, y);
+                if (y > 100 + Math.random() * 8000) cols[i] = 0; else cols[i] = y + 20;
+            });
+        }
+        window.addEventListener('resize', initTech);
+        initTech(); setInterval(drawTech, 70);
+
+        const CFG = { endpoint: 'https://speed.cloudflare.com/__down', duration: 8000 };
+        let S = { running: false, totalData: 0, smoothed: 0 };
+        let abortCtrl = null;
+        let jitterAnimFrame = null;
+
+        async function fetchMeta() {
+            try {
+                const res = await fetch('https://speed.cloudflare.com/meta', { cache: 'no-store' });
+                const data = await res.json();
+                document.getElementById('vIsp').textContent = (data.asOrganization || 'UNKNOWN').split(' ')[0].toUpperCase();
+                document.getElementById('vIp').textContent = data.clientIp;
+            } catch (e) {}
+        }
+        fetchMeta();
+
+        // Jitter random value flicker during scan
+        function startJitterFlicker() {
+            const el = document.getElementById('vJitter');
+            el.classList.add('jitter-active');
+            
+            function flicker() {
+                if (!S.running) return;
+                // Random micro-offset to text for extra glitchy feel
+                const rx = (Math.random() - 0.5) * 2;
+                const ry = (Math.random() - 0.5) * 2;
+                el.style.textShadow = `${rx}px ${ry}px 2px var(--accent-glow)`;
+                jitterAnimFrame = requestAnimationFrame(flicker);
+            }
+            flicker();
+        }
+
+        function stopJitterFlicker() {
+            const el = document.getElementById('vJitter');
+            el.classList.remove('jitter-active');
+            el.classList.add('settle');
+            el.style.textShadow = 'none';
+            if (jitterAnimFrame) cancelAnimationFrame(jitterAnimFrame);
+            setTimeout(() => el.classList.remove('settle'), 600);
+        }
+
+        // Latency depth animation
+        function startLatencyPulse() {
+            const el = document.getElementById('vPing');
+            el.classList.add('latency-active');
+        }
+
+        function stopLatencyPulse() {
+            const el = document.getElementById('vPing');
+            el.classList.remove('latency-active');
+            el.classList.add('settle');
+            setTimeout(() => el.classList.remove('settle'), 600);
+        }
+
+        async function runTest() {
+            if (S.running) return;
+            S.running = true;
+            if (abortCtrl) abortCtrl.abort();
+            abortCtrl = new AbortController();
+            const btn = document.getElementById('startBtn');
+            const btnText = document.getElementById('btnText');
+            const card = document.getElementById('speedCard');
+
+            btn.disabled = true;
+            btnText.textContent = 'Scanning';
+            btn.classList.add('scanning');
+            card.classList.add('is-testing');
+            S.totalData = 0; S.smoothed = 0;
+
+            // Start metric animations
+            startJitterFlicker();
+            startLatencyPulse();
+
+            try {
+                let pings = [];
+                for (let i = 0; i < 8; i++) {
+                    const t = performance.now();
+                    await fetch('https://speed.cloudflare.com/cdn-cgi/trace', { mode: 'no-cors', cache: 'no-store', signal: abortCtrl.signal });
+                    if (i > 0) pings.push(performance.now() - t);
+                    await new Promise(r => setTimeout(r, 40));
+                }
+                document.getElementById('vPing').textContent = Math.round(Math.min(...pings)) + 'MS';
+                let jSum = 0; for (let i = 1; i < pings.length; i++) jSum += Math.abs(pings[i] - pings[i - 1]);
+                document.getElementById('vJitter').textContent = (jSum / (pings.length - 1)).toFixed(1) + 'MS';
+
+                await startDownload(abortCtrl.signal);
+
+                // Stop metric animations with settle
+                stopJitterFlicker();
+                stopLatencyPulse();
+
+                btnText.textContent = 'Scan Complete';
+                btn.classList.remove('scanning');
+
+                setTimeout(() => {
+                    if (!S.running) {
+                        btnText.textContent = 'Restart Scan';
+                    }
+                }, 2000);
+            } catch (e) {
+                btnText.textContent = 'Error';
+                btn.classList.remove('scanning');
+                stopJitterFlicker();
+                stopLatencyPulse();
+            }
+            finally { btn.disabled = false; card.classList.remove('is-testing'); S.running = false; }
+        }
+
+        async function startDownload(signal) {
+            const start = performance.now();
+            const download = async () => {
+                try {
+                    const resp = await fetch(CFG.endpoint + '?bytes=50000000', { cache: 'no-store', signal });
+                    const reader = resp.body.getReader();
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        const elapsed = (performance.now() - start) / 1000;
+                        if (done || elapsed > (CFG.duration / 1000)) { reader.cancel(); break; }
+                        S.totalData += value.length;
+                        const mbps = (S.totalData * 8 / 1048576) / elapsed;
+                        if (elapsed > 0.2) {
+                            S.smoothed = S.smoothed === 0 ? mbps : (mbps * 0.8) + (S.smoothed * 0.2);
+                            document.getElementById('vDown').textContent = S.smoothed.toFixed(1);
+                            document.getElementById('vData').textContent = (S.totalData / 1048576).toFixed(1) + 'MB';
+                        }
+                    }
+                } catch (e) {}
+            };
+            for (let i = 0; i < 3; i++) download();
+            await new Promise(r => setTimeout(r, CFG.duration));
+        }
+    </script>
 </body>
 </html>
