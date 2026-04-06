@@ -221,8 +221,8 @@
         if (!localStorage.getItem('inv_seeded')) {
             localStorage.setItem('inv_profile', JSON.stringify({ name: 'Gaurav D.K.', phone: '+91-9537755955', company: 'SMS GROUP' }));
             db.set('invoices', [
-                { id: 'INV-001', date: '2026-03-01', client: 'SMS GROUP', shift: 'PACKAGE 45000 (B SHIFT)', vehName: 'TOYOTA RUMION', vehType: 'SUV', vehNum: 'GJ-01-LT-5558', km: 1280, days: 16, sundays: 2, rate: 24740, sunTotal: 3460, subTotal: 28200 },
-                { id: 'INV-002', date: '2026-03-15', client: 'SMS GROUP', shift: 'PACKAGE 55000 (C SHIFT)', vehName: 'INNOVA CRYSTA', vehType: 'SUV', vehNum: 'GJ-01-MB-1234', km: 2240, days: 15, sundays: 1, rate: 27500, sunTotal: 2115, subTotal: 29615 }
+                { id: 'INV-001', startDate: '2026-03-01', endDate: '2026-03-16', client: 'SMS GROUP', shift: 'PACKAGE 45000 (B SHIFT)', vehName: 'TOYOTA RUMION', vehNum: 'GJ-01-LT-5558', km: 1280, days: 16, sundays: 2, rate: 24740, sunTotal: 3460, subTotal: 28200 },
+                { id: 'INV-002', startDate: '2026-03-15', endDate: '2026-03-30', client: 'SMS GROUP', shift: 'PACKAGE 55000 (C SHIFT)', vehName: 'INNOVA CRYSTA', vehNum: 'GJ-01-MB-1234', km: 2240, days: 15, sundays: 1, rate: 27500, sunTotal: 2115, subTotal: 29615 }
             ]);
             localStorage.setItem('inv_seeded', '1');
         }
@@ -337,7 +337,7 @@
                     <div class="glass-card p-4 rounded-[5px] flex justify-between items-center gap-2">
                         <div class="min-w-0 flex-1">
                             <h4 class="font-black text-base truncate">${inv.client}</h4>
-                            <p class="font-bold text-sm text-purple-600 mt-1 truncate">${inv.id} • ${inv.date}</p>
+                            <p class="font-bold text-sm text-purple-600 mt-1 truncate">${inv.id} • ${inv.startDate}</p>
                         </div>
                         <div class="text-right flex-shrink-0">
                             <h3 class="font-black text-base text-emerald-600">${fmt(inv.subTotal)}</h3>
@@ -373,7 +373,7 @@
                         </div>
                         <div class="flex justify-between items-center mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
                             <span class="font-bold text-[11px] text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded search-target">${inv.id}</span>
-                            <span class="font-bold text-[11px] text-slate-500">${inv.date}</span>
+                            <span class="font-bold text-[11px] text-slate-500">${inv.startDate}</span>
                         </div>
                     </div>`;
                 });
@@ -441,28 +441,32 @@
                             <option value="PACKAGE 55000 (C SHIFT)">C SHIFT</option>
                         </select>
                     </div>
-                    <div class="flex flex-col col-span-2 md:col-span-1">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Date</label>
-                        <input type="date" id="iDate" value="${today()}" oninput="runInvoiceCalculation()" class="field-input text-xs">
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Invoice No.</label>
+                        <input type="text" id="iInvNum" value="${nextId}" oninput="runInvoiceCalculation()" class="field-input text-xs">
                     </div>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                    <div class="flex flex-col col-span-2 md:col-span-1">
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Start Date</label>
+                        <input type="date" id="iStartDate" value="${today()}" oninput="runInvoiceCalculation()" class="field-input text-xs">
+                    </div>
+                    
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">End Date</label>
+                        <input type="date" id="iEndDate" value="${today()}" oninput="runInvoiceCalculation()" class="field-input text-xs">
+                    </div>
+                    <div class="flex flex-col">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Veh. Name</label>
                         <input type="text" id="iVehName" value="TOYOTA RUMION" oninput="runInvoiceCalculation()" class="field-input text-xs">
                     </div>
-                    <div class="flex flex-col col-span-2 md:col-span-1">
+                    <div class="flex flex-col">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Veh. Number</label>
                         <input type="text" id="iVehNum" value="GJ-01-LT-5558" oninput="runInvoiceCalculation()" class="field-input text-xs">
                     </div>
-                    <div class="flex flex-col col-span-2 md:col-span-1">
+                    <div class="flex flex-col">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">KM Limit</label>
                         <input type="number" id="iKm" value="1280" oninput="runInvoiceCalculation()" class="field-input text-xs">
                     </div>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                    
                     <div class="flex flex-col">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Days worked</label>
                         <input type="number" id="iDays" value="16" oninput="runInvoiceCalculation()" class="field-input text-xs">
@@ -476,13 +480,13 @@
                         <input type="number" id="iRate" value="24740" oninput="runInvoiceCalculation()" class="field-input text-xs">
                     </div>
                     <div class="flex flex-col">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Signature Name</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Signature</label>
                         <input type="text" id="iSignName" value="${profile.name}" oninput="runInvoiceCalculation()" class="field-input text-xs">
                     </div>
                 </div>
 
                 <div class="flex gap-3 mt-5 border-t border-slate-100 dark:border-slate-700 pt-4">
-                    <button onclick="saveAndPrintInvoice('${nextId}')" class="flex-1 btn-primary bg-purple-600 text-white flex items-center justify-center gap-2">
+                    <button onclick="saveAndPrintInvoice()" class="flex-1 btn-primary bg-purple-600 text-white flex items-center justify-center gap-2">
                         <i data-lucide="printer" class="w-4 h-4"></i> Save & Print A4
                     </button>
                 </div>
@@ -499,7 +503,7 @@
                         <div style="text-align: right;">
                             <h1 class="owner-text" id="vOwnerName">${profile.name}</h1>
                             <p style="margin: 5px 0; color: #444; font-weight: 700;" id="vPhone">${profile.phone}</p>
-                            <div class="label-tag">INV <span id="vInvId">${nextId}</span></div>
+                            <div class="label-tag" id="vInvIdDisplay">${nextId}</div>
                         </div>
                     </div>
 
@@ -514,7 +518,8 @@
                             <span class="label-tag">Trip Details</span><br>
                             <strong id="vVehDisplay">TOYOTA RUMION</strong><br>
                             VEHICLE NO: <span id="vVehNumDisplay">GJ-01-LT-5558</span><br>
-                            DATE: <span id="vDate">06/04/2026</span>
+                            START DATE: <span id="vStartDate">01/04/2026</span><br>
+                            END DATE: <span id="vEndDate">16/04/2026</span>
                         </div>
                     </div>
 
@@ -604,7 +609,9 @@
         const rate = parseFloat(document.getElementById('iRate').value) || 0;
         const vName = document.getElementById('iVehName').value;
         const vNum = document.getElementById('iVehNum').value;
-        const dDate = document.getElementById('iDate').value;
+        const sDate = document.getElementById('iStartDate').value;
+        const eDate = document.getElementById('iEndDate').value;
+        const invNum = document.getElementById('iInvNum').value;
         const sName = document.getElementById('iSignName').value;
 
         const sunPrice = (desc.includes("B SHIFT")) ? 1730 : 2115;
@@ -619,7 +626,9 @@
         document.getElementById('vDesc').innerHTML = `${pkgName}<br><span style="font-size: 14px; font-weight: bold; color: #222;">${shiftName}</span>`;
         document.getElementById('vVehDisplay').innerText = vName;
         document.getElementById('vVehNumDisplay').innerText = vNum;
-        document.getElementById('vDate').innerText = dDate.split('-').reverse().join('/');
+        document.getElementById('vStartDate').innerText = sDate.split('-').reverse().join('/');
+        document.getElementById('vEndDate').innerText = eDate.split('-').reverse().join('/');
+        document.getElementById('vInvIdDisplay').innerText = invNum;
         document.getElementById('vKm').innerText = km;
         document.getElementById('vDays').innerText = days;
         document.getElementById('vOff').innerText = sundays;
@@ -634,15 +643,17 @@
         applyInvoiceScaling();
     }
 
-    function saveAndPrintInvoice(nextId) {
+    function saveAndPrintInvoice() {
         const desc = document.getElementById('iDesc').value;
         const sundays = parseInt(document.getElementById('iOff').value) || 0;
         const rate = parseFloat(document.getElementById('iRate').value) || 0;
         const sunPrice = (desc.includes("B SHIFT")) ? 1730 : 2115;
+        const invNum = document.getElementById('iInvNum').value;
         
         const invoiceData = {
-            id: nextId,
-            date: document.getElementById('iDate').value,
+            id: invNum,
+            startDate: document.getElementById('iStartDate').value,
+            endDate: document.getElementById('iEndDate').value,
             client: document.getElementById('iBiz').value,
             shift: desc,
             vehName: document.getElementById('iVehName').value,
@@ -655,7 +666,10 @@
             subTotal: rate + (sundays * sunPrice)
         };
         
-        db.push('invoices', invoiceData);
+        // Remove old invoice with same ID to prevent duplicates if editing
+        const invoices = db.get('invoices').filter(i => i.id !== invNum);
+        invoices.push(invoiceData);
+        db.set('invoices', invoices);
         
         // Trigger Print Native Dialog
         setTimeout(() => { 
@@ -681,7 +695,7 @@
             d.setMonth(d.getMonth() - i);
             const ym = d.toISOString().slice(0,7); 
             labels.push(d.toLocaleString('en-US', { month: 'short' }));
-            revData.push(invoices.filter(inv => inv.date.startsWith(ym)).reduce((s,inv)=>s+inv.subTotal, 0));
+            revData.push(invoices.filter(inv => inv.startDate.startsWith(ym)).reduce((s,inv)=>s+inv.subTotal, 0));
         }
 
         chartInstance = new Chart(ctx, { 
