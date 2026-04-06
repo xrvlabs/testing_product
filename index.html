@@ -156,9 +156,6 @@
                 <button onclick="switchTab('dashboard')" id="side-dashboard" class="w-full flex items-center gap-2 p-3 rounded-[5px] font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
                     <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
                 </button>
-                <button onclick="switchTab('invoices')" id="side-invoices" class="w-full flex items-center gap-2 p-3 rounded-[5px] font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
-                    <i data-lucide="file-text" class="w-5 h-5"></i> All Invoices
-                </button>
                 <button onclick="switchTab('reports')" id="side-reports" class="w-full flex items-center gap-2 p-3 rounded-[5px] font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
                     <i data-lucide="bar-chart-2" class="w-5 h-5"></i> Reports
                 </button>
@@ -224,8 +221,8 @@
         if (!localStorage.getItem('inv_seeded')) {
             localStorage.setItem('inv_profile', JSON.stringify({ name: 'Gaurav D.K.', phone: '+91-9537755955', company: 'SMS GROUP' }));
             db.set('invoices', [
-                { id: 'INV-001', date: '2026-03-01', client: 'SMS GROUP', shift: 'PACKAGE 45000 (B SHIFT)', vehName: 'TOYOTA RUMION', vehType: 'SUV', km: 1280, days: 16, sundays: 2, rate: 24740, sunTotal: 3460, subTotal: 28200 },
-                { id: 'INV-002', date: '2026-03-15', client: 'SMS GROUP', shift: 'PACKAGE 55000 (C SHIFT)', vehName: 'INNOVA CRYSTA', vehType: 'SUV', km: 2240, days: 15, sundays: 1, rate: 27500, sunTotal: 2115, subTotal: 29615 }
+                { id: 'INV-001', date: '2026-03-01', client: 'SMS GROUP', shift: 'PACKAGE 45000 (B SHIFT)', vehName: 'TOYOTA RUMION', vehType: 'SUV', vehNum: 'GJ-01-LT-5558', km: 1280, days: 16, sundays: 2, rate: 24740, sunTotal: 3460, subTotal: 28200 },
+                { id: 'INV-002', date: '2026-03-15', client: 'SMS GROUP', shift: 'PACKAGE 55000 (C SHIFT)', vehName: 'INNOVA CRYSTA', vehType: 'SUV', vehNum: 'GJ-01-MB-1234', km: 2240, days: 15, sundays: 1, rate: 27500, sunTotal: 2115, subTotal: 29615 }
             ]);
             localStorage.setItem('inv_seeded', '1');
         }
@@ -437,39 +434,39 @@
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Company</label>
                         <select id="iBiz" oninput="runInvoiceCalculation()" class="field-input text-xs"><option value="${profile.company}">${profile.company}</option></select>
                     </div>
-                    <div class="flex flex-col col-span-2 md:col-span-1">
+                    <div class="flex flex-col">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Shift Selection</label>
                         <select id="iDesc" oninput="updateShiftDefaults(); runInvoiceCalculation()" class="field-input text-xs">
                             <option value="PACKAGE 45000 (B SHIFT)">B SHIFT</option>
                             <option value="PACKAGE 55000 (C SHIFT)">C SHIFT</option>
                         </select>
                     </div>
-                    <div class="flex flex-col">
+                    <div class="flex flex-col col-span-2 md:col-span-1">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Date</label>
                         <input type="date" id="iDate" value="${today()}" oninput="runInvoiceCalculation()" class="field-input text-xs">
                     </div>
                 </div>
                 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                    <div class="flex flex-col">
+                    <div class="flex flex-col col-span-2 md:col-span-1">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Veh. Name</label>
                         <input type="text" id="iVehName" value="TOYOTA RUMION" oninput="runInvoiceCalculation()" class="field-input text-xs">
                     </div>
-                    <div class="flex flex-col">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Veh. Type</label>
-                        <input type="text" id="iVehType" value="SUV" oninput="runInvoiceCalculation()" class="field-input text-xs">
+                    <div class="flex flex-col col-span-2 md:col-span-1">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Veh. Number</label>
+                        <input type="text" id="iVehNum" value="GJ-01-LT-5558" oninput="runInvoiceCalculation()" class="field-input text-xs">
                     </div>
-                    <div class="flex flex-col">
+                    <div class="flex flex-col col-span-2 md:col-span-1">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">KM Limit</label>
                         <input type="number" id="iKm" value="1280" oninput="runInvoiceCalculation()" class="field-input text-xs">
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Days worked</label>
-                        <input type="number" id="iDays" value="16" oninput="runInvoiceCalculation()" class="field-input text-xs">
                     </div>
                 </div>
                 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Days worked</label>
+                        <input type="number" id="iDays" value="16" oninput="runInvoiceCalculation()" class="field-input text-xs">
+                    </div>
                     <div class="flex flex-col">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Sundays</label>
                         <input type="number" id="iOff" value="2" oninput="runInvoiceCalculation()" class="field-input text-xs">
@@ -477,6 +474,10 @@
                     <div class="flex flex-col">
                         <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Pkg Rate (₹)</label>
                         <input type="number" id="iRate" value="24740" oninput="runInvoiceCalculation()" class="field-input text-xs">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1">Signature Name</label>
+                        <input type="text" id="iSignName" value="${profile.name}" oninput="runInvoiceCalculation()" class="field-input text-xs">
                     </div>
                 </div>
 
@@ -511,8 +512,8 @@
                         </div>
                         <div class="box-right">
                             <span class="label-tag">Trip Details</span><br>
-                            <strong id="vVehDisplay">TOYOTA RUMION (SUV)</strong><br>
-                            VEHICLE NO: GJ-01-LT-5558<br>
+                            <strong id="vVehDisplay">TOYOTA RUMION</strong><br>
+                            VEHICLE NO: <span id="vVehNumDisplay">GJ-01-LT-5558</span><br>
                             DATE: <span id="vDate">06/04/2026</span>
                         </div>
                     </div>
@@ -544,14 +545,14 @@
                     <div class="footer-grid">
                         <div class="terms-box">
                             <strong style="display:block; margin-bottom:5px;">TERMS & CONDITIONS:</strong>
-                            <span style="display: block;">1. TOLL, PARKING & BORDER TAXES EXTRA AS PER ACTUALS.</span>
-                            <span style="display: block;">2. DRIVER FOOD & ACCOMMODATION BY CLIENT IF OUTSTATION.</span>
-                            <span style="display: block;">3. VEHICLE USAGE MUST BE WITHIN THE SPECIFIED KM LIMIT.</span>
-                            <span style="display: block;">4. ALL DISPUTES ARE SUBJECT TO LOCAL JURISDICTION ONLY.</span>
+                            <span style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">1. TOLL, PARKING & TAXES EXTRA AS ACTUALS.</span>
+                            <span style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">2. DRIVER ALLOWANCE BY CLIENT IF OUTSTATION.</span>
+                            <span style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">3. USAGE WITHIN SPECIFIED KM LIMIT.</span>
+                            <span style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">4. SUBJECT TO LOCAL JURISDICTION ONLY.</span>
                         </div>
                         <div class="totals-box">
                             <div class="total-row"><span>PACKAGE BASE</span><span id="vPkgBase">₹ 24,740</span></div>
-                            <div class="total-row"><span>SUNDAYS TOTAL (<span id="vSunRate">1730</span> X <span id="vSunCount">2</span>)</span><span id="vSunTotal">₹ 3,460</span></div>
+                            <div class="total-row"><span>SUNDAYS TOTAL x<span id="vSunCount">2</span></span></div>
                             <div class="total-row highlight-total"><span>SUB TOTAL</span><span id="vSub">₹ 28,200</span></div>
                         </div>
                     </div>
@@ -602,8 +603,9 @@
         const sundays = parseInt(document.getElementById('iOff').value) || 0;
         const rate = parseFloat(document.getElementById('iRate').value) || 0;
         const vName = document.getElementById('iVehName').value;
-        const vType = document.getElementById('iVehType').value;
+        const vNum = document.getElementById('iVehNum').value;
         const dDate = document.getElementById('iDate').value;
+        const sName = document.getElementById('iSignName').value;
 
         const sunPrice = (desc.includes("B SHIFT")) ? 1730 : 2115;
         const sunTotal = sundays * sunPrice;
@@ -615,17 +617,17 @@
         
         // Update DOM (Live Preview)
         document.getElementById('vDesc').innerHTML = `${pkgName}<br><span style="font-size: 14px; font-weight: bold; color: #222;">${shiftName}</span>`;
-        document.getElementById('vVehDisplay').innerText = `${vName} (${vType})`;
+        document.getElementById('vVehDisplay').innerText = vName;
+        document.getElementById('vVehNumDisplay').innerText = vNum;
         document.getElementById('vDate').innerText = dDate.split('-').reverse().join('/');
         document.getElementById('vKm').innerText = km;
         document.getElementById('vDays').innerText = days;
         document.getElementById('vOff').innerText = sundays;
+        document.getElementById('vSignName').innerText = sName;
         
         document.getElementById('vAmount').innerText = Math.round(rate).toLocaleString('en-IN');
         document.getElementById('vPkgBase').innerText = "₹ " + Math.round(rate).toLocaleString('en-IN');
-        document.getElementById('vSunRate').innerText = sunPrice;
         document.getElementById('vSunCount').innerText = sundays;
-        document.getElementById('vSunTotal').innerText = "₹ " + Math.round(sunTotal).toLocaleString('en-IN');
         document.getElementById('vSub').innerText = "₹ " + Math.round(subTotal).toLocaleString('en-IN');
         
         // Ensure scale is maintained after height/DOM updates
@@ -644,7 +646,7 @@
             client: document.getElementById('iBiz').value,
             shift: desc,
             vehName: document.getElementById('iVehName').value,
-            vehType: document.getElementById('iVehType').value,
+            vehNum: document.getElementById('iVehNum').value,
             km: document.getElementById('iKm').value,
             days: document.getElementById('iDays').value,
             sundays: sundays,
