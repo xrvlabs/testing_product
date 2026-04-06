@@ -1,633 +1,303 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>LiteSpeed - XRV Elite v10</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Invoice - SMS GROUP</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-
         :root {
-            --bg: #050508;
-            --card-bg: rgba(255, 255, 255, 0.04);
-            --border: rgba(255, 255, 255, 0.15);
-            --accent: #6366f1;
-            --accent-hover: #818cf8;
-            --accent-glow: rgba(99, 102, 241, 0.3);
-            --accent-subtle: rgba(99, 102, 241, 0.08);
-            --text: #ffffff;
-            --text-dim: rgba(255, 255, 255, 0.4);
-            --cursor-dot: #ffffff;
-            --radius: 8px;
-            --btn-text: #ffffff;
-            --font: 'Quantico', sans-serif;
-        }
-
-        [data-theme="light"] {
-            --bg: #f8fafc;
-            --card-bg: rgba(0, 0, 0, 0.03);
-            --border: rgba(0, 0, 0, 0.12);
-            --accent: #4f46e5;
-            --accent-hover: #6366f1;
-            --accent-glow: rgba(79, 70, 229, 0.25);
-            --accent-subtle: rgba(79, 70, 229, 0.06);
-            --text: #0f172a;
-            --text-dim: rgba(15, 23, 42, 0.5);
-            --cursor-dot: #000000;
-            --btn-text: #ffffff;
-        }
-
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            text-transform: uppercase;
-        }
-
-        *::-webkit-scrollbar { display: none; }
-        * { scrollbar-width: none; -ms-overflow-style: none; }
-
-        html, body {
-            height: 100%;
-            height: 100dvh;
-            width: 100%;
-            overflow: hidden;
+            --brand-color: #6a1b9a;
+            --border-strong: #222;
+            --bg-soft: #fcfcfc;
         }
 
         body {
-            background: var(--bg);
+            font-family: 'Quantico', sans-serif;
+            background: #e0e0e0;
+            margin: 0;
+            padding: 20px;
             display: flex;
-            font-family: var(--font);
-            cursor: auto;
-            color: var(--text);
-            transition: background 0.4s ease, color 0.4s ease;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Cursor: hidden by default, shown only when mouse detected */
-        body.has-mouse { cursor: none; }
-
-        .cursor-element {
-            position: fixed; top: 0; left: 0;
-            pointer-events: none; will-change: transform;
-            z-index: 9999; transition: none !important;
-            display: none;
-        }
-        body.has-mouse .cursor-element { display: block; }
-
-        .cursor-glow {
-            width: 600px; height: 600px;
-            margin-left: -300px; margin-top: -300px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--accent) 5%, transparent 60%);
-            opacity: 0.12;
-        }
-        .cursor-dot {
-            width: 6px; height: 6px;
-            margin-left: -3px; margin-top: -3px;
-            border-radius: 50%;
-            background: var(--cursor-dot);
-            mix-blend-mode: difference;
-        }
-        .cursor-ring {
-            width: 30px; height: 30px;
-            margin-left: -15px; margin-top: -15px;
-            border-radius: 50%;
-            border: 1px solid var(--text-dim);
+        .editor-dashboard {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        #techCanvas { position: fixed; inset: 0; pointer-events: none; opacity: 0.1; filter: blur(2px); z-index: 0; }
-        .grid-overlay {
-            position: fixed; inset: 0;
-            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 50px 50px; opacity: 0.15; z-index: 0;
+        .editor-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
-        .wrap {
-            position: relative; z-index: 10;
-            width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            padding: clamp(12px, 3vw, 60px);
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
+        .input-box { display: flex; flex-direction: column; gap: 5px; }
+        .input-box label { font-size: 10px; font-weight: bold; color: #555; text-transform: uppercase; }
+        input, select { 
+            padding: 8px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            font-family: 'Quantico', sans-serif; 
+            font-size: 13px;
         }
 
-        .header {
+        .invoice-card {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            padding: 50px;
+            box-sizing: border-box;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            border: 1px solid #999;
+        }
+
+        .header-section {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding-bottom: clamp(10px, 2vh, 30px);
-            margin-bottom: clamp(10px, 2vh, 30px);
-            border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
-        }
-        .brand h1 {
-            font-family: var(--font);
-            font-size: clamp(1rem, 3.5vw, 1.8rem);
-            font-weight: 700;
-            letter-spacing: 0.4em;
+            align-items: flex-start;
+            border-bottom: 4px solid var(--brand-color);
+            padding-bottom: 15px;
+            margin-bottom: 10px;
         }
 
-        .theme-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            color: var(--text);
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: border-color 0.3s, background 0.3s;
-            position: relative; overflow: hidden; flex-shrink: 0;
-        }
-        body.has-mouse .theme-btn { cursor: none; }
-        .theme-btn:hover {
-            border-color: var(--accent);
-            background: var(--accent-subtle);
-        }
-        .theme-icon-sun, .theme-icon-moon {
-            position: absolute; width: 18px; height: 18px;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-        }
-        [data-theme="dark"] .theme-icon-sun { opacity: 1; transform: rotate(0deg) scale(1); }
-        [data-theme="dark"] .theme-icon-moon { opacity: 0; transform: rotate(90deg) scale(0.5); }
-        [data-theme="light"] .theme-icon-sun { opacity: 0; transform: rotate(-90deg) scale(0.5); }
-        [data-theme="light"] .theme-icon-moon { opacity: 1; transform: rotate(0deg) scale(1); }
+        .logo-box img { width: 140px; height: 100px; object-fit: cover; border: 1px solid #eee; }
+        .owner-text { color: var(--brand-color); font-size: 32px; margin: 0; font-weight: 700; text-transform: uppercase; }
 
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            min-height: 0;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            display: flex;
-            flex-direction: column;
-            gap: clamp(8px, 1.5vh, 18px);
-        }
-
-        .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(8px, 1.5vh, 15px); }
-        .meta-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: clamp(10px, 2vh, 18px);
-            border-radius: var(--radius);
-            backdrop-filter: blur(15px);
-            transition: border-color 0.4s, background 0.4s;
-        }
-        .meta-label {
-            font-family: var(--font);
-            font-size: clamp(0.5rem, 1.5vw, 0.65rem);
-            color: var(--text-dim);
-            letter-spacing: 2px;
-            margin-bottom: 4px;
-        }
-        .meta-value {
-            font-family: var(--font);
-            font-size: clamp(0.7rem, 2vw, 0.9rem);
-            font-weight: 700;
-        }
-
-        .speed-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: clamp(30px, 6vh, 100px) 20px;
-            position: relative; overflow: hidden;
+        .invoice-label-middle {
             text-align: center;
-            transition: border-color 0.4s, background 0.4s;
-        }
-        .speed-card::before {
-            content: ""; position: absolute; inset: -150%;
-            background: conic-gradient(from 0deg, transparent 40%, var(--accent) 50%, transparent 60%);
-            animation: rotate 2s linear infinite; display: none;
-        }
-        .speed-card::after {
-            content: ""; position: absolute; inset: 2px;
-            background: var(--bg); border-radius: 6px; z-index: 1;
-            transition: background 0.4s;
-        }
-        .speed-card.is-testing::before { display: block; }
-        .speed-content { position: relative; z-index: 2; }
-
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .speed-val {
-            font-family: var(--font);
-            font-size: clamp(3.5rem, 12vw, 9rem);
+            font-size: 24px;
             font-weight: 700;
-            line-height: 0.9;
-        }
-        .speed-unit {
-            font-family: var(--font);
-            font-size: clamp(0.7rem, 2vw, 1rem);
-            letter-spacing: 0.5em;
-            color: var(--text-dim);
-            margin-top: clamp(8px, 2vh, 20px);
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
         }
 
-        .metrics-row { display: flex; gap: clamp(6px, 1.2vw, 12px); width: 100%; }
-        .m-card {
-            flex: 1;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: clamp(12px, 2vh, 20px) 5px;
-            text-align: center;
-            min-width: 0;
-            backdrop-filter: blur(10px);
-            transition: border-color 0.4s, background 0.4s;
-        }
-        .m-label {
-            font-family: var(--font);
-            font-size: clamp(0.5rem, 1.3vw, 0.6rem);
-            color: var(--text-dim);
-            margin-bottom: clamp(4px, 1vh, 8px);
-            letter-spacing: 2px;
-        }
-        .m-value {
-            font-family: var(--font);
-            font-size: clamp(0.9rem, 2.5vw, 1.5rem);
-            font-weight: 700;
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; width: 100%; margin-bottom: 20px; }
+        .box-left { border: 1.5px solid var(--border-strong); border-right: none; padding: 15px; }
+        .box-right { border: 1.5px solid var(--border-strong); padding: 15px; }
+
+        .label-tag {
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: #eee;
+            padding: 2px 8px;
+            display: inline-block;
+            margin-bottom: 8px;
+            border: 1px solid #ccc;
         }
 
-        .btn {
-            width: 100%;
-            padding: clamp(14px, 2.5vh, 22px) 30px;
-            background: var(--accent);
-            border: 1px solid var(--accent);
-            color: var(--btn-text);
-            font-family: var(--font);
-            font-size: clamp(0.7rem, 2vw, 0.85rem);
-            font-weight: 700;
-            letter-spacing: 0.4em;
-            border-radius: var(--radius);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 25px var(--accent-glow), 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        body.has-mouse .btn { cursor: none; }
-        .btn::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
-            pointer-events: none;
-        }
-        .btn:hover:not(:disabled) {
-            background: var(--accent-hover);
-            border-color: var(--accent-hover);
-            box-shadow: 0 0 40px var(--accent-glow), 0 6px 25px rgba(0,0,0,0.3);
-            transform: translateY(-2px);
-        }
-        .btn:active:not(:disabled) {
-            transform: translateY(0px) scale(0.985);
-            box-shadow: 0 0 15px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .btn:disabled { opacity: 0.5; box-shadow: none; }
+        .table-box { border: 1.5px solid var(--border-strong); width: 100%; border-collapse: collapse; margin-bottom: 20px; text-transform: uppercase; }
+        .table-box th { background: #f0f0f0; border-bottom: 1.5px solid var(--border-strong); padding: 12px 10px; font-size: 12px; }
+        .table-box td { padding: 15px 10px; border-bottom: 1px solid #eee; font-size: 14px; font-weight: 400; line-height: 1.4; }
+        .table-box th:not(:last-child), .table-box td:not(:last-child) { border-right: 1px solid #ddd; }
 
-        .btn.scanning { animation: btnPulse 1.5s ease-in-out infinite; }
-        @keyframes btnPulse {
-            0%, 100% { box-shadow: 0 0 25px var(--accent-glow), 0 4px 15px rgba(0,0,0,0.2); }
-            50% { box-shadow: 0 0 45px var(--accent-glow), 0 4px 20px rgba(0,0,0,0.3); }
+        .text-left { text-align: left; }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+
+        .footer-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 0; }
+        
+        .terms-box { 
+            border: 1.5px solid var(--border-strong); 
+            border-right: none; 
+            padding: 15px; 
+            font-size: 10px; 
+            line-height: 1.8; 
+        }
+        .term-line { display: block; white-space: nowrap; }
+
+        .totals-box { border: 1.5px solid var(--border-strong); padding: 15px; background: var(--bg-soft); }
+
+        .total-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 14px; border-bottom: 1px dashed #ccc; }
+        
+        .highlight-total { 
+            margin-top: 5px; 
+            font-weight: 700; 
+            font-size: 20px; 
+            color: var(--brand-color); 
+            border-bottom: none !important; /* Horizontal line removed */
+            padding-bottom: 0px; /* Padding adjusted */
         }
 
-        .btn-content {
-            position: relative; z-index: 2;
-            display: flex; align-items: center;
-            justify-content: center; gap: 12px;
+        .handwritten-signature {
+            font-family: 'Dancing Script', cursive;
+            font-size: 32px;
+            color: #000;
+            display: block;
+            margin-bottom: 5px;
+            text-transform: none;
         }
 
-        .spinner {
-            display: none;
-            width: 18px; height: 18px;
-            border: 2.5px solid rgba(255,255,255,0.3);
-            border-top-color: #ffffff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-        .btn.scanning .spinner { display: block; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .footer {
-            padding-top: clamp(8px, 2vh, 30px);
-            font-family: var(--font);
-            font-size: clamp(7px, 1.2vw, 10px);
-            letter-spacing: 0.3em;
-            color: var(--text-dim);
-            text-align: center;
-            flex-shrink: 0;
+        .print-btn {
+            background: var(--brand-color); color: white; padding: 12px 40px;
+            border-radius: 50px; border: none; font-weight: bold; cursor: pointer; margin-bottom: 20px;
+            font-family: 'Quantico', sans-serif;
         }
 
-        /* URL bar spacer for mobile scroll trick */
-        .url-bar-spacer {
-            display: none;
-            height: 0;
-            transition: height 0s;
-        }
-
-        @media (max-height: 500px) {
-            .speed-card { padding: 20px 15px; }
-            .speed-val { font-size: clamp(2.5rem, 10vw, 4rem); }
-            .header { padding-bottom: 8px; margin-bottom: 8px; }
-            .container { gap: 6px; }
-            .meta-item { padding: 8px 10px; }
-            .m-card { padding: 8px 4px; }
-            .btn { padding: 10px 20px; }
-            .footer { padding-top: 6px; }
-        }
-
-        @media (max-height: 650px) and (min-height: 501px) {
-            .speed-card { padding: 25px 15px; }
-            .speed-val { font-size: clamp(3rem, 10vw, 5rem); }
-            .container { gap: 8px; }
+        @media print {
+            .editor-dashboard, .print-btn { display: none; }
+            body { padding: 0; background: white; }
+            .invoice-card { box-shadow: none; border: none; margin: 0; width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <div class="cursor-element cursor-glow" id="glow"></div>
-    <div class="cursor-element cursor-ring" id="ring"></div>
-    <div class="cursor-element cursor-dot" id="dot"></div>
-
-    <div class="grid-overlay"></div>
-    <canvas id="techCanvas"></canvas>
-
-    <!-- Invisible spacer used for URL bar hide trick -->
-    <div class="url-bar-spacer" id="urlSpacer"></div>
-
-    <div class="wrap">
-        <header class="header">
-            <div class="brand"><h1>LiteSpeed</h1></div>
-            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle theme">
-                <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-                <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
-            </button>
-        </header>
-
-        <main class="main-content">
-            <div class="container">
-                <div class="meta-grid">
-                    <div class="meta-item">
-                        <div class="meta-label">ISP Network</div>
-                        <div class="meta-value" id="vIsp">Fetching...</div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Node Access</div>
-                        <div class="meta-value" id="vIp">0.0.0.0</div>
-                    </div>
-                </div>
-
-                <div class="speed-card" id="speedCard">
-                    <div class="speed-content">
-                        <div class="speed-val" id="vDown">0.0</div>
-                        <div class="speed-unit">Mbps</div>
-                    </div>
-                </div>
-
-                <div class="metrics-row">
-                    <div class="m-card"><div class="m-label">Latency</div><div class="m-value" id="vPing">0MS</div></div>
-                    <div class="m-card"><div class="m-label">Jitter</div><div class="m-value" id="vJitter">0MS</div></div>
-                    <div class="m-card"><div class="m-label">Load</div><div class="m-value" id="vData">0MB</div></div>
-                </div>
-
-                <button class="btn" id="startBtn" onclick="runTest()">
-                    <span class="btn-content">
-                        <span class="spinner" id="btnSpinner"></span>
-                        <span id="btnText">Initiate Scan</span>
-                    </span>
-                </button>
+    <div class="editor-dashboard">
+        <div class="editor-row">
+            <div class="input-box"><label>Company</label><select id="iBiz" oninput="run()"><option value="sms">SMS GROUP</option></select></div>
+            <div class="input-box">
+                <label>Shift Selection</label>
+                <select id="iDesc" oninput="updateShiftDefaults(); run()">
+                    <option value="PACKAGE 45000 (B SHIFT)">B SHIFT</option>
+                    <option value="PACKAGE 55000 (C SHIFT)">C SHIFT</option>
+                </select>
             </div>
-        </main>
+            <div class="input-box"><label>Date</label><input type="date" id="iDate" value="2026-04-06" oninput="run()"></div>
+            <div class="input-box"><label>Veh. Name</label><input type="text" id="iVehName" value="TOYOTA RUMION" oninput="run()"></div>
+            <div class="input-box"><label>Veh. Type</label><input type="text" id="iVehType" value="SUV" oninput="run()"></div>
+        </div>
+        <div class="editor-row">
+            <div class="input-box"><label>KM</label><input type="number" id="iKm" value="1280" oninput="run()"></div>
+            <div class="input-box"><label>Days</label><input type="number" id="iDays" value="16" oninput="run()"></div>
+            <div class="input-box"><label>Sundays</label><input type="number" id="iOff" value="2" oninput="run()"></div>
+            <div class="input-box"><label>Pkg Rate</label><input type="number" id="iRate" value="24740" oninput="run()"></div>
+        </div>
+    </div>
 
-        <footer class="footer">XRV Labs // Diagnostic Terminal 10.0 // © 2026</footer>
+    <button class="print-btn" onclick="window.print()">PRINT INVOICE</button>
+
+    <div class="invoice-card">
+        <div class="header-section">
+            <div class="logo-box">
+                <img id="vLogo" src="http://googleusercontent.com/image_collection/image_retrieval/8564286994582804978_0">
+            </div>
+            <div style="text-align: right;">
+                <h1 class="owner-text">Gaurav D.K.</h1>
+                <p style="margin: 5px 0; color: #444; font-weight: 700;">+91-9537755955</p>
+                <div class="label-tag">INV #001</div>
+            </div>
+        </div>
+
+        <div class="invoice-label-middle">INVOICE</div>
+
+        <div class="grid-2">
+            <div class="box-left">
+                <span class="label-tag">Bill To</span><br>
+                <strong id="vBillToComp" style="font-size: 22px; color: var(--brand-color);">SMS GROUP</strong>
+            </div>
+            <div class="box-right">
+                <span class="label-tag">Trip Details</span><br>
+                <strong id="vVehDisplay">TOYOTA RUMION (SUV)</strong><br>
+                VEHICLE NO: GJ-01-LT-5558<br>
+                DATE: <span id="vDate">06/04/2026</span>
+            </div>
+        </div>
+
+        <table class="table-box">
+            <thead>
+                <tr>
+                    <th class="text-left" style="width: 45%;">Description</th>
+                    <th class="text-center">KM</th>
+                    <th class="text-center">DAYS</th>
+                    <th class="text-center">SUNDAYS</th>
+                    <th class="text-center">RATE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-left" id="vDesc">
+                        PACKAGE 45000<br>
+                        <span style="font-size: 14px; font-weight: bold; color: #222;">(B SHIFT)</span>
+                    </td>
+                    <td class="text-center" id="vKm">1280</td>
+                    <td class="text-center" id="vDays">16</td>
+                    <td class="text-center" id="vOff">2</td>
+                    <td class="text-center" id="vAmount">24,740</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="footer-grid">
+            <div class="terms-box">
+                <strong style="display:block; margin-bottom:5px;">TERMS & CONDITIONS:</strong>
+                <span class="term-line">1. TOLL, PARKING & BORDER TAXES EXTRA AS PER ACTUALS.</span>
+                <span class="term-line">2. DRIVER FOOD & ACCOMMODATION BY CLIENT IF OUTSTATION.</span>
+                <span class="term-line">3. VEHICLE USAGE MUST BE WITHIN THE SPECIFIED KM LIMIT.</span>
+                <span class="term-line">4. ALL DISPUTES ARE SUBJECT TO LOCAL JURISDICTION ONLY.</span>
+            </div>
+            <div class="totals-box">
+                <div class="total-row"><span>PACKAGE BASE</span><span id="vPkgBase">₹ 24,740</span></div>
+                <div class="total-row"><span>SUNDAYS TOTAL (<span id="vSunRate">1730</span> X <span id="vSunCount">2</span>)</span><span id="vSunTotal">₹ 3,460</span></div>
+                
+                <div class="total-row highlight-total"><span>SUB TOTAL</span><span id="vSub">₹ 28,200</span></div>
+            </div>
+        </div>
+
+        <div style="margin-top: 80px; display: flex; justify-content: space-between; align-items: flex-end;">
+            <div style="font-size: 11px; color: #777;">SYSTEM GENERATED INVOICE</div>
+            <div style="text-align: center; width: 250px;">
+                <span class="handwritten-signature">Gaurav D.K.</span>
+                <div style="border-top: 1.5px solid #000; padding-top: 5px;">
+                    <small style="font-size: 10px; text-transform: uppercase; color: #555; font-weight: 700;">Authorized Signatory</small>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // ─── THEME TOGGLE ─────────────────────────────────────────────
-        function toggleTheme() {
-            const html = document.documentElement;
-            const isDark = html.getAttribute('data-theme') === 'dark';
-            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        function updateShiftDefaults() {
+            const desc = document.getElementById('iDesc').value;
+            document.getElementById('iKm').value = (desc.includes("B SHIFT")) ? 1280 : 2240;
         }
 
-        // ─── SMART CURSOR: POINTER-TYPE DETECTION ────────────────────
-        let mX = window.innerWidth / 2, mY = window.innerHeight / 2;
-        let hasMouse = false;
+        function run() {
+            const desc = document.getElementById('iDesc').value;
+            const km = document.getElementById('iKm').value;
+            const days = document.getElementById('iDays').value;
+            const sundays = parseInt(document.getElementById('iOff').value) || 0;
+            const rate = parseFloat(document.getElementById('iRate').value) || 0;
+            const vName = document.getElementById('iVehName').value;
+            const vType = document.getElementById('iVehType').value;
 
-        const dotEl = document.getElementById('dot');
-        const ringEl = document.getElementById('ring');
-        const glowEl = document.getElementById('glow');
+            const sunPrice = (desc.includes("B SHIFT")) ? 1730 : 2115;
+            const sunTotal = sundays * sunPrice;
+            const subTotal = rate + sunTotal;
 
-        // Detect real mouse via PointerEvent.pointerType
-        document.addEventListener('pointermove', (e) => {
-            if (e.pointerType === 'mouse') {
-                mX = e.clientX;
-                mY = e.clientY;
-                if (!hasMouse) {
-                    hasMouse = true;
-                    document.body.classList.add('has-mouse');
-                    animateCursor(); // start loop only when mouse found
-                }
-            }
-        });
-
-        // If user switches to touch, hide custom cursor immediately
-        document.addEventListener('pointerdown', (e) => {
-            if (e.pointerType === 'touch' || e.pointerType === 'pen') {
-                if (hasMouse) {
-                    hasMouse = false;
-                    document.body.classList.remove('has-mouse');
-                }
-            }
-        });
-
-        // Re-activate mouse if pointer comes back
-        document.addEventListener('pointerenter', (e) => {
-            if (e.pointerType === 'mouse' && !hasMouse) {
-                hasMouse = true;
-                document.body.classList.add('has-mouse');
-                animateCursor();
-            }
-        });
-
-        function animateCursor() {
-            if (!hasMouse) return; // stop loop on touch devices
-            const t = `translate3d(${mX}px,${mY}px,0)`;
-            dotEl.style.transform = t;
-            ringEl.style.transform = t;
-            glowEl.style.transform = t;
-            requestAnimationFrame(animateCursor);
+            const descParts = desc.split(' (');
+            const pkgName = descParts[0];
+            const shiftName = descParts[1] ? '(' + descParts[1] : '';
+            
+            document.getElementById('vDesc').innerHTML = `${pkgName}<br><span style="font-size: 14px; font-weight: bold; color: #222;">${shiftName}</span>`;
+            
+            document.getElementById('vVehDisplay').innerText = `${vName} (${vType})`;
+            document.getElementById('vDate').innerText = document.getElementById('iDate').value.split('-').reverse().join('/');
+            document.getElementById('vKm').innerText = km;
+            document.getElementById('vDays').innerText = days;
+            document.getElementById('vOff').innerText = sundays;
+            
+            document.getElementById('vAmount').innerText = Math.round(rate).toLocaleString('en-IN');
+            document.getElementById('vPkgBase').innerText = "₹ " + Math.round(rate).toLocaleString('en-IN');
+            document.getElementById('vSunRate').innerText = sunPrice;
+            document.getElementById('vSunCount').innerText = sundays;
+            document.getElementById('vSunTotal').innerText = "₹ " + Math.round(sunTotal).toLocaleString('en-IN');
+            document.getElementById('vSub').innerText = "₹ " + Math.round(subTotal).toLocaleString('en-IN');
         }
-
-        // ─── MOBILE URL BAR AUTO-HIDE ────────────────────────────────
-        (function hideURLBar() {
-            const isTouchDevice = ('ontouchstart' in window) ||
-                                  (navigator.maxTouchPoints > 0) ||
-                                  /Mobi|Android|iPhone|iPad|iPod|tablet/i.test(navigator.userAgent);
-            if (!isTouchDevice) return;
-
-            // Wait for full paint, then trigger the scroll trick
-            window.addEventListener('load', () => {
-                setTimeout(() => {
-                    const html = document.documentElement;
-                    const body = document.body;
-
-                    // Save originals
-                    const origHtmlOverflow = html.style.overflow;
-                    const origBodyOverflow = body.style.overflow;
-                    const origBodyHeight   = body.style.height;
-
-                    // Temporarily make document scrollable & taller
-                    html.style.overflow = 'auto';
-                    body.style.overflow = 'visible';
-                    body.style.height   = (window.innerHeight + 80) + 'px';
-
-                    // Smooth scroll to push URL bar up
-                    requestAnimationFrame(() => {
-                        window.scrollTo({ top: 1, behavior: 'smooth' });
-
-                        // Restore after animation
-                        setTimeout(() => {
-                            html.style.overflow = origHtmlOverflow || '';
-                            body.style.overflow = origBodyOverflow || '';
-                            body.style.height   = origBodyHeight   || '';
-                        }, 600);
-                    });
-                }, 350);
-            });
-
-            // Also re-trigger on orientation change
-            window.addEventListener('orientationchange', () => {
-                setTimeout(() => {
-                    window.scrollTo({ top: 1, behavior: 'smooth' });
-                }, 500);
-            });
-        })();
-
-        // ─── MATRIX RAIN BACKGROUND ──────────────────────────────────
-        const tCanvas = document.getElementById('techCanvas');
-        const tCtx = tCanvas.getContext('2d');
-        let cols = [];
-        function initTech() {
-            tCanvas.width = window.innerWidth; tCanvas.height = window.innerHeight;
-            cols = Array(Math.floor(tCanvas.width / 20)).fill(0);
-        }
-        function drawTech() {
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            tCtx.fillStyle = isDark ? "rgba(5,5,8,0.15)" : "rgba(248,250,252,0.15)";
-            tCtx.fillRect(0, 0, tCanvas.width, tCanvas.height);
-            tCtx.fillStyle = isDark ? "#6366f1" : "#4f46e5";
-            tCtx.font = "11px 'Quantico',monospace";
-            cols.forEach((y, i) => {
-                tCtx.fillText(Math.random() > 0.5 ? "0" : "1", i * 20, y);
-                if (y > 100 + Math.random() * 8000) cols[i] = 0; else cols[i] = y + 20;
-            });
-        }
-        window.addEventListener('resize', initTech);
-        initTech(); setInterval(drawTech, 70);
-
-        // ─── SPEED TEST ENGINE ───────────────────────────────────────
-        const CFG = { endpoint: 'https://speed.cloudflare.com/__down', duration: 8000 };
-        let S = { running: false, totalData: 0, smoothed: 0 };
-        let abortCtrl = null;
-
-        async function fetchMeta() {
-            try {
-                const res = await fetch('https://speed.cloudflare.com/meta', { cache: 'no-store' });
-                const data = await res.json();
-                document.getElementById('vIsp').textContent = (data.asOrganization || 'UNKNOWN').split(' ')[0].toUpperCase();
-                document.getElementById('vIp').textContent = data.clientIp;
-            } catch (e) {}
-        }
-        fetchMeta();
-
-        async function runTest() {
-            if (S.running) return;
-            S.running = true;
-            if (abortCtrl) abortCtrl.abort();
-            abortCtrl = new AbortController();
-            const btn = document.getElementById('startBtn');
-            const btnText = document.getElementById('btnText');
-            const card = document.getElementById('speedCard');
-
-            btn.disabled = true;
-            btnText.textContent = 'Scanning';
-            btn.classList.add('scanning');
-            card.classList.add('is-testing');
-            S.totalData = 0; S.smoothed = 0;
-
-            try {
-                let pings = [];
-                for (let i = 0; i < 8; i++) {
-                    const t = performance.now();
-                    await fetch('https://speed.cloudflare.com/cdn-cgi/trace', { mode: 'no-cors', cache: 'no-store', signal: abortCtrl.signal });
-                    if (i > 0) pings.push(performance.now() - t);
-                    await new Promise(r => setTimeout(r, 40));
-                }
-                document.getElementById('vPing').textContent = Math.round(Math.min(...pings)) + 'MS';
-                let jSum = 0; for (let i = 1; i < pings.length; i++) jSum += Math.abs(pings[i] - pings[i - 1]);
-                document.getElementById('vJitter').textContent = (jSum / (pings.length - 1)).toFixed(1) + 'MS';
-
-                await startDownload(abortCtrl.signal);
-
-                btnText.textContent = 'Scan Complete';
-                btn.classList.remove('scanning');
-
-                setTimeout(() => {
-                    if (!S.running) {
-                        btnText.textContent = 'Restart Scan';
-                    }
-                }, 2000);
-            } catch (e) {
-                btnText.textContent = 'Error';
-                btn.classList.remove('scanning');
-            }
-            finally { btn.disabled = false; card.classList.remove('is-testing'); S.running = false; }
-        }
-
-        async function startDownload(signal) {
-            const start = performance.now();
-            const download = async () => {
-                try {
-                    const resp = await fetch(CFG.endpoint + '?bytes=50000000', { cache: 'no-store', signal });
-                    const reader = resp.body.getReader();
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        const elapsed = (performance.now() - start) / 1000;
-                        if (done || elapsed > (CFG.duration / 1000)) { reader.cancel(); break; }
-                        S.totalData += value.length;
-                        const mbps = (S.totalData * 8 / 1048576) / elapsed;
-                        if (elapsed > 0.2) {
-                            S.smoothed = S.smoothed === 0 ? mbps : (mbps * 0.8) + (S.smoothed * 0.2);
-                            document.getElementById('vDown').textContent = S.smoothed.toFixed(1);
-                            document.getElementById('vData').textContent = (S.totalData / 1048576).toFixed(1) + 'MB';
-                        }
-                    }
-                } catch (e) {}
-            };
-            for (let i = 0; i < 3; i++) download();
-            await new Promise(r => setTimeout(r, CFG.duration));
-        }
+        run();
     </script>
 </body>
 </html>
