@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="theme-color" id="status-bar-color" content="#f8fafc">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>INVOYR</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="INVOYR">
+    <link rel="manifest" href="manifest.json">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    screens: { 'xs': '380px' },
+                    fontFamily: {
+                        'sans': ['Quantico', 'sans-serif'],
+                        'signature': ['Dancing Script', 'cursive']
+                    },
+                    animation: {
+                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'confetti-rain': 'confettiRain 2.5s ease-out forwards',
+                        'shake': 'shake 0.4s ease-in-out'
+                    },
+                    keyframes: {
+                        slideUp: { '0%': { transform: 'translateY(100%)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-20px)' } },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        confettiRain: {
+                            '0%': { transform: 'translateY(-10vh) rotate(0deg)', opacity: 1 },
+                            '100%': { transform: 'translateY(100vh) rotate(720deg)', opacity: 0 }
+                        },
+                        shake: {
+                            '0%, 100%': { transform: 'translateX(0)' },
+                            '20%, 60%': { transform: 'translateX(-5px)' },
+                            '40%, 80%': { transform: 'translateX(5px)' }
+                        }
+                    }
+                }
+            }
+        }
+        if (!localStorage.getItem('inv_theme')) localStorage.setItem('inv_theme', 'light');
+        if (localStorage.getItem('inv_theme') === 'dark') {
+    document.documentElement.classList.add('dark');
+    // Set initial status bar to dark
+    document.addEventListener('DOMContentLoaded', () => {
+        const statusBar = document.getElementById('status-bar-color');
+        if (statusBar) statusBar.setAttribute("content", "#0f172a");
+    });
+}
+
+        // Security & UX Rules Setup
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => { if (e.key.match(/^F([1-9]|1[0-2])$/)) { e.preventDefault(); } });
+        document.addEventListener('wheel', e => { if (e.ctrlKey) { e.preventDefault(); } }, { passive: false });
+        document.addEventListener('touchstart', e => { if (e.touches.length > 1) { e.preventDefault(); } }, { passive: false });
+    </script>
+
+    <style>
+        :root { --safe-bottom: env(safe-area-inset-bottom, 0px); --brand-color: #6a1b9a; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { width: 100%; max-width: 100%; overflow-x: hidden; overscroll-behavior-x: none; }
+        body { font-family: 'Quantico', sans-serif; -webkit-tap-highlight-color: transparent; background-color: #f8fafc; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+        input, textarea, select { -webkit-user-select: auto; user-select: auto; }
+        
+        .dark body { background-color: #0f172a; }
+        body * { transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease; }
+        button, h1, h2, h3, h4, h5, h6 { text-transform: uppercase !important; }
+
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid #e2e8f0; border-radius: 5px; }
+        .dark .glass-card { background: rgba(30, 41, 59, 0.85); border-color: #334155; }
+        .app-container { height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; width: 100%; max-width: 100%; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .field-input { padding: 12px 14px; border: 1px solid #cbd5e1; outline: none; border-radius: 5px; font-size: 14px; width: 100%; background: #ffffff; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .field-input:focus { border-color: #6a1b9a; box-shadow: 0 0 0 2px rgba(106,27,154,0.1); }
+        .dark .field-input { border-color: #334155; background: #1e293b; color: #f1f5f9; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .dark .field-input:focus { border-color: #a855f7; box-shadow: 0 0 0 2px rgba(168,85,247,0.1); }
+
+        .btn-primary { padding: 12px 16px; font-weight: 700; border-radius: 5px; font-size: 14px; transition: all 0.2s; }
+        .btn-primary:active { transform: translateY(2px); }
+        .stat-card { padding: 12px; border: 1px solid #e2e8f0; border-radius: 5px; }
+        .dark .stat-card { border-color: #334155; }
+
+        #main-content { padding: 10px; padding-bottom: 80px; width: 100%; overflow-x: hidden; }
+        #bottom-nav { padding-bottom: calc(var(--safe-bottom) + 4px); border-top: 1px solid #e2e8f0; height: 60px; width: 100%; }
+        .dark #bottom-nav { border-top-color: #334155; }
+
+        @keyframes shimmerAnim { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        .shimmer-box { background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%); background-size: 200% 100%; animation: shimmerAnim 1.5s infinite linear; border-radius: 5px; }
+        .dark .shimmer-box { background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%); background-size: 200% 100%; }
+
+        .bottom-sheet-overlay { transition: opacity 0.3s ease; }
+        .bottom-sheet-content { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 5px 5px 0 0; }
+        .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); }
+
+        .invoice-wrapper { width: 100%; display: flex; justify-content: center; position: relative; overflow: hidden; }
+        .invoice-card { width: 800px; min-height: 1131px; flex-shrink: 0; background: white !important; color: black !important; padding: 40px 20px; box-sizing: border-box; box-shadow: 0 0 20px rgba(0,0,0,0.1); border: 1px solid #ccc; transform-origin: top center; margin: 0 auto; }
+        .invoice-card * { transition: none !important; border-color: #222 !important; color: black !important; }
+        .header-section { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 4px solid var(--brand-color) !important; padding-bottom: 15px; margin-bottom: 10px; }
+        .owner-text { color: var(--brand-color) !important; font-size: 32px; margin: 0; font-weight: 700; text-transform: uppercase; }
+        .inv-label-middle { text-align: center; font-size: 24px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; width: 100%; margin-bottom: 20px; }
+        .box-left, .box-right { border: 1.5px solid #222; padding: 15px; }
+        .box-left { border-right: none; }
+        .label-tag { font-size: 11px; font-weight: bold; text-transform: uppercase; background: #eee !important; padding: 2px 8px; display: inline-block; margin-bottom: 8px; border: 1px solid #ccc; }
+        .table-box { border: 1.5px solid #222; width: 100%; border-collapse: collapse; margin-bottom: 20px; text-transform: uppercase; }
+        .table-box th { background: #f0f0f0 !important; border-bottom: 1.5px solid #222; padding: 12px 10px; font-size: 12px; }
+        .table-box td { padding: 15px 10px; border-bottom: 1px solid #eee; font-size: 14px; font-weight: 400; line-height: 1.4; }
+        .table-box th:not(:last-child), .table-box td:not(:last-child) { border-right: 1px solid #ddd; }
+        .footer-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 0; }
+        .terms-box { border: 1.5px solid #222; border-right: none; padding: 15px; font-size: 10px; line-height: 1.8; }
+        .totals-box { border: 1.5px solid #222; padding: 15px; background: #fcfcfc !important; }
+        .total-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 14px; border-bottom: 1px dashed #ccc; }
+        .highlight-total { margin-top: 5px; font-weight: 700; font-size: 20px; color: var(--brand-color) !important; border-bottom: none !important; }
+
+        @media print {
+            html, body { width: auto; max-width: none; overflow: visible; }
+            body, .app-container, #view-main, #main-content { height: auto !important; overflow: visible !important; display: block !important; background: white !important; padding: 0 !important; }
+            #main-header, #bottom-nav, #login-screen, #email-bs-overlay, #confirm-bs-overlay, #info-bs-overlay, .no-print { display: none !important; }
+            .invoice-wrapper { overflow: visible; padding: 0; display: block; height: auto !important; width: 100%; margin-left: 0; }
+            .invoice-card { box-shadow: none; border: none; margin: 0; width: 100%; padding: 0; min-height: auto; transform: none !important; }
+
+            body.print-bs-mode #view-main, body.print-bs-mode #bottom-nav { display: none !important; }
+            body.print-bs-mode #bs-overlay { display: block !important; opacity: 1 !important; position: static !important; background: white !important; }
+            body.print-bs-mode #bs-content { box-shadow: none !important; transform: none !important; height: auto !important; position: static !important; }
+            
+            body.print-bs-mode #bs-drag-handle, 
+            body.print-bs-mode #bs-header { display: none !important; }
+            body.print-bs-mode #bs-content .flex-1 { padding: 0 !important; background: white !important; overflow: visible !important; }
+        }
+    </style>
+</head>
+<body class="text-slate-900 dark:text-slate-100">
+
+<div id="splash-screen" class="fixed inset-0 bg-purple-50 dark:bg-slate-950 z-[9999] flex flex-col justify-center items-center transition-all duration-1000 ease-in-out">
+    <div class="relative flex flex-col items-center justify-center p-6 w-full h-full">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-purple-300 dark:bg-purple-900/40 rounded-full blur-3xl opacity-60 animate-pulse"></div>
+        <div class="w-28 h-28 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl flex items-center justify-center mb-8 border-4 border-white dark:border-slate-700 relative z-10 animate-slide-up p-2 opacity-0" style="animation-delay: 0.1s;">
+            <img src="my_logo_light.png" alt="" class="w-full h-full object-contain my-logo-img">
+        </div>
+        <h1 class="text-4xl font-black text-purple-600 dark:text-purple-400 mb-6 tracking-tight uppercase animate-fade-in relative z-10 opacity-0" style="animation-delay: 0.4s;">
+            INVOYR
+        </h1>
+        <div class="text-center animate-fade-in relative z-10 opacity-0" style="animation-delay: 0.8s;">
+            <p class="text-sm text-slate-500 dark:text-slate-400 font-bold tracking-widest uppercase mb-1">SEAMLESS INVOICING</p>
+            <p class="text-sm text-purple-500 dark:text-purple-400 font-black tracking-widest uppercase">Ultimate Sophistication</p>
+        </div>
+        <div class="flex gap-2 mt-12 animate-fade-in relative z-10 opacity-0" style="animation-delay: 1.2s;">
+            <div class="w-2.5 h-2.5 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 0ms;"></div>
+            <div class="w-2.5 h-2.5 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 150ms;"></div>
+            <div class="w-2.5 h-2.5 bg-purple-600 rounded-full animate-bounce" style="animation-delay: 300ms;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="login-screen" class="fixed inset-0 bg-purple-50 dark:bg-slate-900 z-[100] flex flex-col justify-between overflow-hidden">
+    <div class="relative flex-1 w-full overflow-hidden flex flex-col items-center justify-center p-6">
+        <div class="absolute top-10 left-4 w-20 h-20 bg-purple-200 dark:bg-purple-900/30 rounded-full blur-2xl opacity-50"></div>
+        <div class="absolute bottom-20 right-4 w-32 h-32 bg-blue-200 dark:bg-blue-900/30 rounded-full blur-2xl opacity-50"></div>
+
+        <div class="w-full max-w-sm relative h-48 mb-8">
+            <div class="glass-card absolute top-0 left-0 w-3/4 p-4 rounded-[5px] shadow-lg rotate-[-6deg] animate-float opacity-80 border-purple-200 dark:border-purple-800">
+                <div class="w-8 h-8 rounded-[5px] bg-purple-100 text-purple-600 flex items-center justify-center mb-2"><i data-lucide="zap" class="w-5 h-5"></i></div>
+                <div class="h-2 w-1/2 bg-slate-200 dark:bg-slate-700 rounded-[5px] mb-1"></div>
+                <div class="h-2 w-3/4 bg-slate-200 dark:bg-slate-700 rounded-[5px]"></div>
+            </div>
+            <div class="glass-card absolute bottom-0 right-0 w-3/4 p-4 rounded-[5px] shadow-xl rotate-[4deg] animate-float-delayed z-10 border-blue-200 dark:border-blue-800 bg-white/90 dark:bg-slate-800/90">
+                <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-2 mb-2">
+                    <span class="text-xs font-bold text-slate-400">INVOICE</span>
+                    <span class="text-xs font-bold text-emerald-500">PAID</span>
+                </div>
+                <h3 class="font-black text-lg">₹ 28,200</h3>
+                <div class="h-1.5 w-full bg-slate-100 dark:bg-slate-700 rounded-[5px] mt-2"></div>
+            </div>
+        </div>
+
+        <div class="text-center z-10">
+            <div class="w-20 h-20 mx-auto bg-white dark:bg-slate-800 rounded-[5px] flex items-center justify-center mb-4 shadow-md border-4 border-white dark:border-slate-700 overflow-hidden p-1">
+                <img src="my_logo_light.png" alt="" class="w-full h-full object-contain my-logo-img">
+            </div>
+            <h1 class="text-3xl font-black text-purple-600 dark:text-purple-400 mb-2 tracking-tight uppercase">INVOYR</h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400 font-bold tracking-wider mb-2">BY XRV LABS PROD.</p>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-slate-800 w-full rounded-t-[5px] pt-8 pb-10 px-6 shadow-[0_-15px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_-15px_40px_rgba(0,0,0,0.5)] relative z-20 animate-slide-up">
+        <div class="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-[5px] mx-auto mb-6"></div>
+        <h2 class="text-center font-black text-xl mb-6">Get Started</h2>
+        <button onclick="window.openEmailLoginSheet()" class="mt-3 flex items-center gap-3 bg-purple-600 text-white font-bold py-3.5 px-6 rounded-[5px] shadow-sm w-full justify-center transition-all hover:bg-purple-700 active:scale-95">
+            <i data-lucide="mail" class="w-5 h-5"></i> Continue with Email
+        </button>
+        <p class="text-center text-[10px] text-slate-400 font-bold mt-6 uppercase tracking-widest">Crafted by Akshar Chaudhary</p>
+    </div>
+</div>
+
+<div id="app" class="app-container" style="display: none;">
+    <section id="view-main" class="flex-1 flex flex-col overflow-hidden w-full max-w-full">
+        <div class="flex-1 flex flex-col overflow-hidden w-full max-w-full">
+            <header id="main-header" class="flex items-center justify-between bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-[10px] py-3 z-10 relative w-full">
+                <h2 id="app-title" class="font-black text-base tracking-wide text-purple-600 dark:text-purple-400 truncate flex-1 pr-2"></h2>
+                <div class="flex items-center gap-3 flex-shrink-0">
+                    <button onclick="window.openInfoSheet()" class="w-9 h-9 rounded-[5px] border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <i data-lucide="qr-code" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="toggleTheme()" class="w-9 h-9 rounded-[5px] border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <i id="theme-icon" data-lucide="sun" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </header>
+            <main id="main-content" class="flex-1 overflow-y-auto no-scrollbar relative w-full max-w-full"></main>
+        </div>
+
+        <nav id="bottom-nav" class="flex justify-around items-center bg-white dark:bg-slate-900 z-50 w-full relative">
+            <button id="nav-btn-dashboard" onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 text-slate-400 p-2 w-16 transition-colors">
+                <i data-lucide="home" class="w-6 h-6"></i>
+                <span class="text-[11px] font-bold">Home</span>
+            </button>
+            <button onclick="window.openNewInvoice()" class="flex flex-col items-center -mt-6 relative z-10 p-2">
+                <div class="w-14 h-14 bg-purple-600 text-white rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-slate-900 transition-transform active:scale-95">
+                    <i data-lucide="plus" class="w-6 h-6"></i>
+                </div>
+            </button>
+            <button id="nav-btn-profile" onclick="window.viewProfile()" class="flex flex-col items-center gap-1 text-slate-400 p-2 w-16 transition-colors">
+                <i data-lucide="settings" class="w-6 h-6"></i>
+                <span class="text-[11px] font-bold">Settings</span>
+            </button>
+        </nav>
+    </section>
+</div>
+
+<div id="email-bs-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] opacity-0 pointer-events-none bottom-sheet-overlay flex flex-col justify-end no-print">
+    <div class="flex-1 w-full" onclick="window.closeEmailLoginSheet()"></div>
+    <div id="email-bs-content" class="bg-white dark:bg-slate-900 w-full shadow-2xl flex flex-col transform translate-y-full bottom-sheet-content pb-safe">
+        <div class="w-full flex justify-center py-3 cursor-pointer" onclick="window.closeEmailLoginSheet()">
+            <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-[5px]"></div>
+        </div>
+        <div class="px-6 pb-8 pt-2">
+            <h3 class="font-black text-xl mb-4 text-slate-800 dark:text-slate-100 uppercase tracking-wide">Email Authentication</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 uppercase ml-1">Email Address</label>
+                    <input type="email" id="auth-email" class="field-input mt-1.5" placeholder="demo@xrvlabs.com">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 uppercase ml-1">Password</label>
+                    <input type="password" id="auth-pass" class="field-input mt-1.5" placeholder="••••••••">
+                </div>
+                <div class="flex mt-4">
+                    <button id="btn-login" onclick="window.doAuth()" class="w-full btn-primary bg-purple-600 text-white flex items-center justify-center hover:bg-purple-700 shadow-md transition-all text-base">
+                        LOGIN
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="bs-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] opacity-0 pointer-events-none bottom-sheet-overlay flex flex-col justify-end no-print">
+    <div class="flex-1 w-full" onclick="closeBottomSheet()"></div>
+    <div id="bs-content" class="bg-white dark:bg-slate-900 w-full h-[88vh] shadow-2xl flex flex-col transform translate-y-full bottom-sheet-content">
+        <div id="bs-drag-handle" class="w-full flex justify-center py-3 cursor-pointer" onclick="closeBottomSheet()">
+            <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-[5px]"></div>
+        </div>
+        <div id="bs-header" class="px-4 pb-3 flex justify-center items-center border-b border-slate-100 dark:border-slate-800">
+            <h3 class="font-black text-sm text-slate-600 dark:text-slate-300 tracking-widest uppercase">Live Preview</h3>
+        </div>
+        <div class="flex-1 overflow-y-auto no-scrollbar p-2 pb-24 bg-slate-50 dark:bg-slate-950 w-full relative block">
+            <div class="invoice-wrapper w-full" id="bs-invoice-inner">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="info-bs-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[250] opacity-0 pointer-events-none bottom-sheet-overlay flex flex-col justify-end no-print">
+    <div class="flex-1 w-full" onclick="window.closeInfoSheet()"></div>
+    <div id="info-bs-content" class="bg-white dark:bg-slate-900 w-full h-[80vh] shadow-2xl flex flex-col transform translate-y-full bottom-sheet-content rounded-t-[15px]">
+        <div class="w-full flex justify-center py-3 cursor-pointer flex-shrink-0" onclick="window.closeInfoSheet()">
+            <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-[5px]"></div>
+        </div>
+        <div class="px-6 flex flex-col items-center text-center flex-1 min-h-0 pt-2 pb-5">
+            
+            <div class="w-16 h-16 flex-shrink-0 bg-white dark:bg-slate-800 rounded-[10px] flex items-center justify-center mb-2 border-[3px] border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden p-1 z-10 relative">
+                <img src="my_logo_light.png" alt="" class="w-full h-full object-contain my-logo-img">
+            </div>
+            
+            <div id="dev-card-container" class="flex-1 w-[calc(100%+3rem)] -mx-6 -my-2 flex items-center justify-center min-h-0 relative cursor-grab active:cursor-grabbing" style="perspective: 1500px; touch-action: none;">
+                
+                <div id="dev-card-inner" class="w-full max-w-[380px] h-full relative" style="transform-style: preserve-3d; will-change: transform;">
+                    
+                    <div class="absolute inset-0 w-full h-full flex items-center justify-center pb-4" style="backface-visibility: hidden;">
+                        <img src="card_front.png" alt="Developer Card Front" class="w-full h-full object-contain scale-[1.20] drop-shadow-[0_15px_15px_rgba(0,0,0,0.3)] dark:drop-shadow-[0_15px_15px_rgba(0,0,0,0.6)] pointer-events-none">
+                    </div>
+                    
+                    <div class="absolute inset-0 w-full h-full flex items-center justify-center pb-4" style="backface-visibility: hidden; transform: rotateY(180deg);">
+                        <img src="card_back.png" alt="Developer Card Back" class="w-full h-full object-contain scale-[1.20] drop-shadow-[0_15px_15px_rgba(0,0,0,0.3)] dark:drop-shadow-[0_15px_15px_rgba(0,0,0,0.6)] pointer-events-none">
+                    </div>
+                    
+                </div>
+
+            </div>
+
+            <button onclick="window.open('https://wa.me/919518159114?text=Hello%2C%20I%20would%20like%20to%20connect', '_blank')" class="w-full max-w-sm flex-shrink-0 btn-primary bg-purple-600 text-white flex items-center justify-center hover:bg-purple-700 shadow-md transition-all mt-2 z-10 relative" style="margin-bottom: 20px;">
+                CONNECT WITH ME
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<div id="confirm-bs-overlay" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[300] opacity-0 pointer-events-none bottom-sheet-overlay flex flex-col justify-end no-print">
+    <div class="flex-1 w-full" onclick="closeConfirmSheet()"></div>
+    <div id="confirm-bs-content" class="bg-white dark:bg-slate-900 w-full shadow-2xl flex flex-col transform translate-y-full bottom-sheet-content pb-safe">
+        <div class="w-full flex justify-center py-3 cursor-pointer" onclick="closeConfirmSheet()">
+            <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-[5px]"></div>
+        </div>
+        <div class="px-6 pb-6 pt-2 flex flex-col items-center text-center">
+            <div id="confirm-icon-box" class="w-16 h-16 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-[5px] flex items-center justify-center mb-4">
+                <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+            </div>
+            <h3 id="confirm-title" class="font-black text-xl mb-2 text-slate-800 dark:text-slate-100 uppercase tracking-wide">Confirm Action</h3>
+            <p id="confirm-message" class="text-sm text-slate-500 dark:text-slate-400 font-bold mb-8">Are you sure?</p>
+
+            <div id="slide-track" class="relative w-full max-w-sm h-14 bg-slate-100 dark:bg-slate-800 rounded-[5px] overflow-hidden flex items-center border border-slate-200 dark:border-slate-700 shadow-inner select-none touch-none">
+                <div id="slide-text" class="absolute w-full text-center text-xs font-black text-slate-400 dark:text-slate-500 z-0 pointer-events-none tracking-widest uppercase transition-opacity duration-200">SLIDE TO CONFIRM</div>
+                <div id="slide-fill" class="absolute left-0 top-0 h-full bg-red-500/10 dark:bg-red-500/20 w-0 z-0 transition-none"></div>
+                <div id="slide-thumb" class="absolute left-1 w-12 h-12 bg-white dark:bg-slate-700 rounded-[5px] shadow-md flex items-center justify-center z-10 cursor-grab text-red-500 active:cursor-grabbing transition-none border border-slate-200 dark:border-slate-600">
+                    <i data-lucide="chevron-right" class="w-6 h-6 pointer-events-none"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener("load", () => {
+        lucide.createIcons();
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                splash.style.transform = 'scale(1.05)';
+                setTimeout(() => { splash.remove(); }, 1000);
+            }, 2500);
+        }
+        
+        // Initialize 3D Card Physics
+        setup3DCard();
+    });
+
+    // Interactive 3D Physics Logic for Developer Card
+    function setup3DCard() {
+        const container = document.getElementById('dev-card-container');
+        const inner = document.getElementById('dev-card-inner');
+        if (!container || !inner) return;
+
+        let isDragging = false;
+        let startX, startY;
+        let lastX, lastTime;
+        let velocityX = 0;
+
+        let rotY = 0, rotX = 0;           // Current visible rotation
+        let targetRotY = 0, targetRotX = 0; // The rotation we are easing towards
+        let baseRotY = 0;                   // The snap point (0, 180, 360, etc.)
+
+        container.addEventListener('pointerdown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            lastX = startX;
+            lastTime = performance.now();
+            velocityX = 0;
+            container.setPointerCapture(e.pointerId);
+        });
+
+        container.addEventListener('pointermove', (e) => {
+            if (!isDragging) return;
+            
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+
+            // Calculate swipe velocity
+            const now = performance.now();
+            const dt = now - lastTime;
+            if (dt > 0) {
+                velocityX = (e.clientX - lastX) / dt;
+            }
+            lastX = e.clientX;
+            lastTime = now;
+
+            // Update rotation targets based on finger drag
+            targetRotY = baseRotY + (deltaX * 0.4); 
+            targetRotX = -(deltaY * 0.15); // Slight tilt up/down
+
+            // Clamp vertical tilt to prevent flipping head-over-heels
+            targetRotX = Math.max(-15, Math.min(15, targetRotX));
+        });
+
+        const release = (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+
+            // If it was just a quick tap without much movement, flip it completely
+            if (Math.abs(deltaX) < 5 && Math.abs(deltaY) < 5) {
+                baseRotY += 180;
+            } else {
+                // Otherwise, evaluate swipe velocity and distance to decide if it should snap forward or back
+                const diff = targetRotY - baseRotY;
+                const velThreshold = 0.5; // Swipe speed required to trigger flip
+                const distThreshold = 60; // Degrees turned required to trigger flip
+
+                if (Math.abs(diff) > distThreshold || Math.abs(velocityX) > velThreshold) {
+                    if (diff > 0 || velocityX > velThreshold) {
+                        baseRotY += 180;
+                    } else {
+                        baseRotY -= 180;
+                    }
+                }
+            }
+
+            // Snap back to vertical orientation and closest face
+            targetRotY = baseRotY;
+            targetRotX = 0; 
+        };
+
+        container.addEventListener('pointerup', release);
+        container.addEventListener('pointercancel', release);
+
+        // Smooth physics render loop (Lerp)
+        function render() {
+            rotY += (targetRotY - rotY) * 0.1;
+            rotX += (targetRotX - rotX) * 0.1;
+            inner.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+            requestAnimationFrame(render);
+        }
+        render();
+    }
+</script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    import { getDatabase, ref, set, get, onValue, child } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyB4cSHDvhcHG9RB-XSytylFCoqr43DUZw0",
+        authDomain: "xrv-business-lite.firebaseapp.com",
+        databaseURL: "https://xrv-business-lite-default-rtdb.firebaseio.com",
+        projectId: "xrv-business-lite",
+        storageBucket: "xrv-business-lite.firebasestorage.app",
+        messagingSenderId: "572956649078",
+        appId: "1:572956649078:web:c036570f2ca9a78fd3e157"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    window.currentUser = null;
+    window.isProfileLoaded = false;
+    window.isInvoicesLoaded = false;
+    window.appData = { invoices: [], profile: { name: '', phone: '' } };
+    window.currentTab = localStorage.getItem('currentTab') || 'dashboard';
+    window.viewingInvoiceId = localStorage.getItem('viewingInvoiceId') || null;
+    window.isInvoiceSimulatingLoad = false;
+    window.isProfileSimulatingLoad = false;
+    window.isEditing = false;
+    window.isSaved = false;
+
+    window.updateLogoTheme = () => {
+        const isDark = document.documentElement.classList.contains('dark');
+        const lightSrc = localStorage.getItem('cached_my_logo_light') || 'my_logo_light.png';
+        const darkSrc = localStorage.getItem('cached_my_logo_dark') || 'my_logo_dark.png';
+        
+        const currentSrc = isDark ? darkSrc : lightSrc;
+        
+        document.querySelectorAll('.my-logo-img, img[src="my_logo.png"], img[src="my_logo_light.png"], img[src="my_logo_dark.png"]').forEach(img => {
+            if (!img.src.includes('googleusercontent')) {
+                img.src = currentSrc;
+            }
+        });
+    };
+
+    window.loadCachedImages = () => {
+        window.updateLogoTheme();
+    };
+    window.loadCachedImages();
+
+    window.cacheImages = async () => {
+        const cacheImg = async (url, key) => {
+            if (localStorage.getItem(key)) return;
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    localStorage.setItem(key, reader.result);
+                    window.loadCachedImages();
+                };
+                reader.readAsDataURL(blob);
+            } catch (e) {
+                console.log(`Could not cache ${url}`, e);
+            }
+        };
+        cacheImg('my_logo_light.png', 'cached_my_logo_light');
+        cacheImg('my_logo_dark.png', 'cached_my_logo_dark');
+        cacheImg('logo.png', 'cached_logo');
+    };
+
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        const savedTab = localStorage.getItem('currentTab') || 'dashboard';
+        const titles = { dashboard: 'Dashboard', profile: 'Settings', 'add-invoice': 'Create Invoice', 'view-invoice': 'Invoice Details' };
+        document.getElementById('app-title').innerText = titles[savedTab] || 'Dashboard';
+    }
+
+    window.addEventListener('popstate', (e) => {
+        let sheetClosed = false;
+        ['bs-overlay', 'info-bs-overlay', 'confirm-bs-overlay', 'email-bs-overlay'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && !el.classList.contains('opacity-0')) {
+                if(id === 'bs-overlay') window.closeBottomSheet();
+                else if(id === 'info-bs-overlay') window.closeInfoSheet();
+                else if(id === 'confirm-bs-overlay') window.closeConfirmSheet();
+                else if(id === 'email-bs-overlay') window.closeEmailLoginSheet();
+                sheetClosed = true;
+            }
+        });
+
+        if (sheetClosed) {
+            history.pushState(null, null, location.href);
+            return;
+        }
+
+        if (window.currentUser && window.currentTab !== 'dashboard') {
+            switchTab('dashboard');
+            history.pushState(null, null, location.href);
+            return;
+        }
+    });
+
+    history.pushState(null, null, location.href);
+
+    const today = () => new Date().toISOString().split('T')[0];
+    const fmt = n => '₹ ' + parseFloat(n).toLocaleString('en-IN');
+
+    // Email/Password Authentication Function
+    window.doAuth = async () => {
+        const email = document.getElementById('auth-email').value.trim();
+        const pass = document.getElementById('auth-pass').value.trim();
+        
+        const loginBtn = document.getElementById('btn-login');
+        const originalHtml = `LOGIN`;
+
+        // Check for empty fields
+        if(!email || !pass) {
+            loginBtn.innerHTML = 'ENTER DETAILS';
+            loginBtn.classList.remove('bg-purple-600', 'hover:bg-purple-700');
+            loginBtn.classList.add('bg-red-600', 'animate-shake');
+
+            setTimeout(() => {
+                loginBtn.innerHTML = originalHtml;
+                loginBtn.classList.remove('bg-red-600', 'animate-shake');
+                loginBtn.classList.add('bg-purple-600', 'hover:bg-purple-700');
+            }, 1000);
+            return;
+        }
+
+        // Start Smooth Loading Animation
+        loginBtn.innerHTML = `
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            AUTHENTICATING
+        `;
+        loginBtn.classList.add('opacity-90', 'pointer-events-none');
+
+        try {
+            // Explicitly enforce local persistence so they stay logged in forever
+            await setPersistence(auth, browserLocalPersistence);
+            await signInWithEmailAndPassword(auth, email, pass);
+            
+            window.closeEmailLoginSheet();
+            
+            // Reset button if they log out later
+            loginBtn.innerHTML = originalHtml;
+            loginBtn.classList.remove('opacity-90', 'pointer-events-none');
+            
+        } catch (error) {
+            // Shake Animation and Invalid Credentials text
+            loginBtn.innerHTML = 'INVALID CREDENTIALS';
+            loginBtn.classList.remove('bg-purple-600', 'hover:bg-purple-700');
+            loginBtn.classList.add('bg-red-600', 'animate-shake');
+
+            // Reset after 1 second
+            setTimeout(() => {
+                loginBtn.innerHTML = originalHtml;
+                loginBtn.classList.remove('bg-red-600', 'animate-shake', 'opacity-90', 'pointer-events-none');
+                loginBtn.classList.add('bg-purple-600', 'hover:bg-purple-700');
+            }, 1000);
+        }
+    };
+
+    window.openEmailLoginSheet = () => {
+        const overlay = document.getElementById('email-bs-overlay');
+        const content = document.getElementById('email-bs-content');
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.add('opacity-100');
+        content.classList.remove('translate-y-full');
+        content.classList.add('translate-y-0');
+        history.pushState(null, null, location.href);
+    };
+
+    window.closeEmailLoginSheet = () => {
+        const overlay = document.getElementById('email-bs-overlay');
+        const content = document.getElementById('email-bs-content');
+        if(!overlay.classList.contains('opacity-0')) {
+             content.classList.remove('translate-y-0');
+             content.classList.add('translate-y-full');
+             overlay.classList.remove('opacity-100');
+             overlay.classList.add('opacity-0');
+             setTimeout(() => overlay.classList.add('pointer-events-none'), 300);
+        }
+    };
+
+    function showLoginScreen() {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('currentTab');
+        window.currentUser = null;
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('app').style.display = 'none';
+    }
+
+    function initAppForUser(user) {
+        localStorage.setItem('isLoggedIn', 'true');
+        window.currentUser = user;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+
+        window.cacheImages();
+        window.isProfileLoaded = false;
+        window.isInvoicesLoaded = false;
+        window.switchTab(window.currentTab);
+
+        const profileRef = ref(database, `INVOYR/XRV BUSINESS LITE 1/users/${user.uid}/profile`);
+        onValue(profileRef, (snapshot) => {
+            let p = snapshot.val();
+            let needsUpdate = false;
+            
+            const fallbackName = user.displayName || (user.email ? user.email.split('@')[0].toUpperCase() : 'NEW USER');
+
+            if (!p) {
+                p = { name: fallbackName, phone: '1234567890', membership_days: 365, created_at: Date.now() };
+                needsUpdate = true;
+            } else {
+                if(!p.name) { p.name = fallbackName; needsUpdate = true; }
+                if(!p.phone) { p.phone = '1234567890'; needsUpdate = true; }
+                if(!p.membership_days) { p.membership_days = 365; needsUpdate = true; }
+                if(!p.created_at) { p.created_at = Date.now(); needsUpdate = true; }
+            }
+            if (needsUpdate) set(profileRef, p).catch(e => console.warn(e));
+
+            window.appData.profile = p;
+            window.isProfileLoaded = true;
+            checkAndReRender();
+        });
+
+        const invoicesRef = ref(database, `INVOYR/XRV BUSINESS LITE 1/users/${user.uid}/invoices`);
+        onValue(invoicesRef, (snapshot) => {
+            if (snapshot.exists()) {
+                window.appData.invoices = Object.values(snapshot.val()).sort((a,b) => a.id.localeCompare(b.id));
+            } else {
+                window.appData.invoices = [];
+            }
+            window.isInvoicesLoaded = true;
+            checkAndReRender();
+        });
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            initAppForUser(user);
+        } else {
+            showLoginScreen();
+        }
+    });
+
+    function checkAndReRender() {
+        if (window.isProfileLoaded && window.isInvoicesLoaded) {
+            document.getElementById('main-content').innerHTML = renderPage(window.currentTab);
+            lucide.createIcons();
+
+            if (window.currentTab === 'add-invoice' || window.currentTab === 'view-invoice') {
+                if(window.currentTab === 'add-invoice' && !window.isEditing) {
+                    window.updateShiftDefaults();
+                    window.runInvoiceCalculation();
+                }
+                setTimeout(window.applyInvoiceScaling, 50);
+            }
+        }
+    }
+
+    window.openNewInvoice = () => {
+        window.isEditing = false;
+        window.isSaved = false;
+        window.switchTab('add-invoice');
+    }
+
+    window.viewProfile = () => {
+        window.isProfileSimulatingLoad = true;
+        window.switchTab('profile');
+        setTimeout(() => {
+            window.isProfileSimulatingLoad = false;
+            if (window.currentTab === 'profile') {
+                document.getElementById('main-content').innerHTML = renderPage('profile');
+                lucide.createIcons();
+            }
+        }, 500);
+    }
+
+    window.switchTab = (tab) => {
+        window.currentTab = tab;
+        localStorage.setItem('currentTab', tab);
+        window.isSaved = false;
+
+        document.querySelectorAll('#bottom-nav button').forEach(b => b.classList.remove('text-purple-600', 'dark:text-purple-400'));
+        const activeNav = document.getElementById('nav-btn-' + tab);
+        if(activeNav) activeNav.classList.add('text-purple-600', 'dark:text-purple-400');
+
+        const titles = { dashboard: 'Dashboard', profile: 'Settings', 'add-invoice': 'Create Invoice', 'view-invoice': 'Invoice Details' };
+        document.getElementById('app-title').innerText = titles[tab] || 'INVOYR';
+
+        document.getElementById('main-content').innerHTML = renderPage(tab);
+        lucide.createIcons();
+
+        if (window.isProfileLoaded && window.isInvoicesLoaded) {
+            if (tab === 'add-invoice' && !window.isEditing) {
+                window.updateShiftDefaults();
+                window.runInvoiceCalculation();
+            }
+            setTimeout(window.applyInvoiceScaling, 50);
+        }
+
+        window.updateThemeIcon();
+        window.scrollTo(0,0);
+
+        history.pushState(null, null, location.href);
+    }
+
+    window.toggleTheme = () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('inv_theme', isDark ? 'dark' : 'light');
+
+    // Dynamically update the status bar color
+    const statusBar = document.getElementById('status-bar-color');
+    if (statusBar) {
+        statusBar.setAttribute("content", isDark ? "#0f172a" : "#f8fafc");
+    }
+
+    window.updateThemeIcon();
+    window.updateLogoTheme();
+}
+
+    window.updateThemeIcon = () => {
+        const i = document.getElementById('theme-icon');
+        if (i) {
+            i.setAttribute('data-lucide', document.documentElement.classList.contains('dark') ? 'sun' : 'moon');
+            lucide.createIcons();
+        }
+    }
+
+    window.openBottomSheet = () => {
+        const overlay = document.getElementById('bs-overlay');
+        const content = document.getElementById('bs-content');
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.add('opacity-100');
+        content.classList.remove('translate-y-full');
+        content.classList.add('translate-y-0');
+        setTimeout(window.applyInvoiceScaling, 50);
+        history.pushState(null, null, location.href);
+    };
+
+    window.closeBottomSheet = () => {
+        const overlay = document.getElementById('bs-overlay');
+        const content = document.getElementById('bs-content');
+        if(!overlay.classList.contains('opacity-0')) {
+             content.classList.remove('translate-y-0');
+             content.classList.add('translate-y-full');
+             overlay.classList.remove('opacity-100');
+             overlay.classList.add('opacity-0');
+             setTimeout(() => overlay.classList.add('pointer-events-none'), 300);
+        }
+    };
+
+    window.openInfoSheet = () => {
+        const overlay = document.getElementById('info-bs-overlay');
+        const content = document.getElementById('info-bs-content');
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.add('opacity-100');
+        content.classList.remove('translate-y-full');
+        content.classList.add('translate-y-0');
+        history.pushState(null, null, location.href);
+    };
+
+    window.closeInfoSheet = () => {
+        const overlay = document.getElementById('info-bs-overlay');
+        const content = document.getElementById('info-bs-content');
+        if(!overlay.classList.contains('opacity-0')) {
+            content.classList.remove('translate-y-0');
+            content.classList.add('translate-y-full');
+            overlay.classList.remove('opacity-100');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => overlay.classList.add('pointer-events-none'), 300);
+        }
+    };
+
+    window.applyInvoiceScaling = () => {
+        document.querySelectorAll('.invoice-wrapper').forEach(wrapper => {
+            const card = wrapper.querySelector('.invoice-card');
+            if (!card) return;
+            const wrapperWidth = wrapper.clientWidth;
+            if(wrapperWidth === 0) return;
+            const originalWidth = 800;
+            const scale = wrapperWidth / originalWidth;
+            card.style.transform = `scale(${scale})`;
+            wrapper.style.height = `${card.offsetHeight * scale}px`;
+        });
+    }
+    window.addEventListener('resize', window.applyInvoiceScaling);
+
+    window.printPreview = () => {
+        document.body.classList.add('print-bs-mode');
+        window.print();
+        setTimeout(() => document.body.classList.remove('print-bs-mode'), 1000);
+    }
+
+    window.fireRain = () => {
+        for(let i=0; i<40; i++) {
+            let drop = document.createElement('div');
+            drop.className = 'fixed w-1.5 h-3 rounded-[5px] z-[9999] pointer-events-none animate-confetti-rain';
+            drop.style.left = Math.random() * 100 + 'vw';
+            drop.style.top = '-20px';
+            drop.style.backgroundColor = ['#a855f7', '#3b82f6', '#10b981', '#f59e0b', '#ec4899'][Math.floor(Math.random()*5)];
+            drop.style.animationDuration = (Math.random() * 1.5 + 1) + 's';
+            drop.style.animationDelay = (Math.random() * 0.2) + 's';
+            document.body.appendChild(drop);
+            setTimeout(() => drop.remove(), 3500);
+        }
+    }
+
+    window.pendingConfirmAction = null;
+    const setupSlider = () => {
+        const thumb = document.getElementById('slide-thumb');
+        const fill = document.getElementById('slide-fill');
+        const track = document.getElementById('slide-track');
+        const text = document.getElementById('slide-text');
+        if(!thumb) return;
+
+        let isDragging = false;
+        let startX = 0;
+
+        const handleStart = (e) => {
+            isDragging = true;
+            startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            thumb.style.transition = 'none';
+            fill.style.transition = 'none';
+        };
+
+        const handleMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const currentX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+    let diff = currentX - startX;
+    const maxTrack = track.clientWidth - thumb.clientWidth - 8;
+
+    if (diff < 0) diff = 0;
+    if (diff > maxTrack) diff = maxTrack;
+
+    thumb.style.transform = `translateX(${diff}px)`;
+    fill.style.width = `calc(${diff}px + 1.5rem)`;
+    text.style.opacity = 1 - (diff / maxTrack);
+
+    if (diff >= maxTrack * 0.90) {
+        isDragging = false;
+        thumb.style.transform = `translateX(${maxTrack}px)`;
+        
+        // --- ADDED HAPTIC FEEDBACK ---
+        // Checks if the browser/device supports vibration, then triggers a 50ms pulse
+        if (navigator.vibrate) {
+            navigator.vibrate(50); 
+        }
+        // -----------------------------
+
+        setTimeout(() => {
+            const actionToExecute = window.pendingConfirmAction;
+            window.closeConfirmSheet();
+            if(actionToExecute) actionToExecute();
+        }, 150);
+    }
+};
+
+        const handleEnd = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            thumb.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+            fill.style.transition = 'width 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+            text.style.transition = 'opacity 0.3s ease';
+            thumb.style.transform = `translateX(0px)`;
+            fill.style.width = '0px';
+            text.style.opacity = '1';
+        };
+
+        thumb.addEventListener('touchstart', handleStart, {passive: false});
+        document.addEventListener('touchmove', handleMove, {passive: false});
+        document.addEventListener('touchend', handleEnd);
+
+        thumb.addEventListener('mousedown', handleStart);
+        document.addEventListener('mousemove', handleMove);
+        document.addEventListener('mouseup', handleEnd);
+    };
+
+    setupSlider();
+
+    window.openConfirmSheet = (title, msg, isDestructive, actionFn) => {
+        window.pendingConfirmAction = actionFn;
+        document.getElementById('confirm-title').innerText = title;
+        document.getElementById('confirm-message').innerText = msg;
+
+        const iconBox = document.getElementById('confirm-icon-box');
+        const thumb = document.getElementById('slide-thumb');
+        const fill = document.getElementById('slide-fill');
+
+        if (isDestructive) {
+            iconBox.className = "w-16 h-16 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-[5px] flex items-center justify-center mb-4";
+            iconBox.innerHTML = '<i data-lucide="alert-triangle" class="w-8 h-8"></i>';
+            thumb.className = "absolute left-1 w-12 h-12 bg-white dark:bg-slate-700 rounded-[5px] shadow-md flex items-center justify-center z-10 cursor-grab text-red-500 active:cursor-grabbing transition-none border border-slate-200 dark:border-slate-600";
+            fill.className = "absolute left-0 top-0 h-full bg-red-500/10 dark:bg-red-500/20 w-0 z-0 transition-none";
+        } else {
+            iconBox.className = "w-16 h-16 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-[5px] flex items-center justify-center mb-4";
+            iconBox.innerHTML = '<i data-lucide="log-out" class="w-8 h-8"></i>';
+            thumb.className = "absolute left-1 w-12 h-12 bg-white dark:bg-slate-700 rounded-[5px] shadow-md flex items-center justify-center z-10 cursor-grab text-purple-500 active:cursor-grabbing transition-none border border-slate-200 dark:border-slate-600";
+            fill.className = "absolute left-0 top-0 h-full bg-purple-500/10 dark:bg-purple-500/20 w-0 z-0 transition-none";
+        }
+        lucide.createIcons();
+
+        thumb.style.transition = 'none'; fill.style.transition = 'none';
+        thumb.style.transform = `translateX(0px)`; fill.style.width = '0px';
+        document.getElementById('slide-text').style.opacity = '1';
+
+        const overlay = document.getElementById('confirm-bs-overlay');
+        const content = document.getElementById('confirm-bs-content');
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.add('opacity-100');
+        content.classList.remove('translate-y-full');
+        content.classList.add('translate-y-0');
+
+        history.pushState(null, null, location.href);
+    };
+
+    window.closeConfirmSheet = () => {
+        window.pendingConfirmAction = null;
+        const overlay = document.getElementById('confirm-bs-overlay');
+        const content = document.getElementById('confirm-bs-content');
+        if(!overlay.classList.contains('opacity-0')) {
+             content.classList.remove('translate-y-0');
+             content.classList.add('translate-y-full');
+             overlay.classList.remove('opacity-100');
+             overlay.classList.add('opacity-0');
+             setTimeout(() => overlay.classList.add('pointer-events-none'), 300);
+        }
+    };
+
+    window.viewInvoice = (id) => {
+        window.viewingInvoiceId = id;
+        localStorage.setItem('viewingInvoiceId', id);
+        window.isInvoiceSimulatingLoad = true;
+        window.switchTab('view-invoice');
+
+        setTimeout(() => {
+            window.isInvoiceSimulatingLoad = false;
+            if(window.currentTab === 'view-invoice') window.switchTab('view-invoice');
+        }, 1000);
+    }
+
+    window.editInvoice = (id) => {
+        const inv = window.appData.invoices.find(i => i.id === id);
+        if(!inv) return;
+        window.isEditing = true;
+        window.switchTab('add-invoice');
+
+        setTimeout(() => {
+            document.getElementById('iBiz').value = inv.client;
+            document.getElementById('iDesc').value = inv.shift;
+            document.getElementById('iInvNum').value = inv.id;
+            document.getElementById('iStartDate').value = inv.startDate;
+            document.getElementById('iEndDate').value = inv.endDate;
+            document.getElementById('iVehName').value = inv.vehName;
+            document.getElementById('iVehNum').value = inv.vehNum;
+            document.getElementById('iKm').value = inv.km;
+            document.getElementById('iDays').value = inv.days;
+            document.getElementById('iOff').value = inv.sundays;
+            document.getElementById('iRate').value = inv.rate;
+            window.runInvoiceCalculation();
+        }, 100);
+    }
+
+    window.deleteInvoice = (id) => {
+        if(!window.currentUser) return;
+        window.openConfirmSheet(
+            "Delete Invoice",
+            "Are you sure you want to delete this invoice? This action cannot be undone.",
+            true,
+            () => {
+                set(ref(database, `INVOYR/XRV BUSINESS LITE 1/users/${window.currentUser.uid}/invoices/${id}`), null)
+                    .then(() => window.switchTab('dashboard'))
+                    .catch((err) => { alert("Failed to delete the invoice."); console.error(err); });
+            }
+        );
+    }
+
+    window.logoutUser = () => {
+        window.openConfirmSheet(
+            "Sign Out",
+            "Are you sure you want to sign out of INVOYR?",
+            false,
+            () => {
+                signOut(auth);
+            }
+        );
+    };
+
+    function generateInvoiceCardHTML(inv, profile) {
+        const sunPrice = (inv.shift && inv.shift.includes("B SHIFT")) ? 1730 : 2115;
+        const sunTotalAmount = inv.sundays * sunPrice;
+        const subTotalText = inv.subTotal || (inv.rate + sunTotalAmount);
+
+        const descParts = inv.shift ? inv.shift.split(' (') : ['PACKAGE', ')'];
+        const pkgName = descParts[0];
+        const shiftName = descParts[1] ? '(' + descParts[1] : '';
+        const sDateStr = inv.startDate ? inv.startDate.split('-').reverse().join('/') : '';
+        const eDateStr = inv.endDate ? inv.endDate.split('-').reverse().join('/') : '';
+        const displayClient = inv.client || "CLIENT NAME";
+
+        const logoSrc = localStorage.getItem('cached_logo') || 'logo.png';
+
+        return `
+        <div class="invoice-card" id="printable-invoice">
+            <div class="header-section">
+                <div class="logo-box"><img src="${logoSrc}" style="width: 190px; height: 130px; object-fit: contain;"></div>
+                <div style="text-align: right;">
+                    <h1 class="owner-text" id="vOwnerName">${profile.name || ''}</h1>
+                    <p style="margin: 5px 0; color: #444; font-weight: 700;" id="vPhone">${profile.phone || ''}</p>
+                    <div class="label-tag" id="vInvIdDisplay">${inv.id}</div>
+                </div>
+            </div>
+
+            <div class="inv-label-middle">INVOICE</div>
+
+            <div class="grid-2">
+                <div class="box-left">
+                    <span class="label-tag">Bill To</span><br>
+                    <strong id="vBillToComp" style="font-size: 22px; color: var(--brand-color);">${displayClient}</strong>
+                </div>
+                <div class="box-right">
+                    <span class="label-tag">Trip Details</span><br>
+                    <strong id="vVehDisplay">${inv.vehName}</strong><br>
+                    <span id="vVehNumDisplay">${inv.vehNum}</span><br>
+          
+                    <span id="vBillingDuration" style="font-weight: 700;">${sDateStr} TO ${eDateStr}</span>
+                </div>
+            </div>
+
+            <table class="table-box">
+                <thead>
+                    <tr>
+                        <th class="text-left" style="width: 45%;">Description</th>
+                        <th class="text-center">KM</th>
+                        <th class="text-center">DAYS</th>
+                        <th class="text-center">SUNDAYS</th>
+                        <th class="text-center">RATE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-left" id="vDesc">${pkgName}<br><span style="font-size: 14px; font-weight: bold; color: #222;">${shiftName}</span></td>
+                        <td class="text-center" id="vKm">${inv.km}</td>
+                        <td class="text-center" id="vDays">${inv.days}</td>
+                        <td class="text-center" id="vOff">${inv.sundays}</td>
+                        <td class="text-center" id="vAmount">${Math.round(inv.rate).toLocaleString('en-IN')}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="footer-grid">
+                <div class="terms-box">
+                    <strong style="display:block; margin-bottom:5px;">TERMS & CONDITIONS:</strong>
+                    <span style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">1. TOLL, PARKING & TAXES EXTRA AS ACTUALS.</span>
+                    <span style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">2. DRIVER ALLOWANCE BY CLIENT IF OUTSTATION.</span>
+                    <span style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">3. USAGE WITHIN SPECIFIED KM LIMIT.</span>
+                    <span style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">4. SUBJECT TO LOCAL JURISDICTION ONLY.</span>
+                </div>
+                <div class="totals-box">
+                    <div class="total-row"><span>PACKAGE BASE</span><span id="vPkgBase">₹ ${Math.round(inv.rate).toLocaleString('en-IN')}</span></div>
+                    <div class="total-row"><span>SUNDAYS TOTAL x<span id="vSunCount">${inv.sundays}</span></span><span id="vSunTotalAmount">₹ ${Math.round(sunTotalAmount).toLocaleString('en-IN')}</span></div>
+                    <div class="total-row highlight-total"><span>SUB TOTAL</span><span id="vSub">₹ ${Math.round(subTotalText).toLocaleString('en-IN')}</span></div>
+                </div>
+            </div>
+
+            <div style="margin-top: 80px; display: flex; justify-content: space-between; align-items: flex-end;">
+                <div style="font-size: 11px; color: #777; font-weight:bold;">SYSTEM GENERATED INVOICE</div>
+                <div style="text-align: center; width: 250px;">
+                    <span class="font-signature" style="font-size: 32px; color: #000; display: block; margin-bottom: 5px; text-transform:none;" id="vSignName">${profile.name || ''}</span>
+                    <div style="border-top: 1.5px solid #000; padding-top: 5px;">
+                        <small style="font-size: 10px; text-transform: uppercase; color: #555; font-weight: 700;">Authorized Signatory</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+
+    function renderPage(tab) {
+        const isLoaded = window.isProfileLoaded && window.isInvoicesLoaded;
+        const invoices = window.appData.invoices;
+        const profile = window.appData.profile;
+
+        if (tab === 'dashboard') {
+            if (!isLoaded) {
+                return `
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="stat-card glass-card rounded-[5px] flex flex-col justify-center py-4 h-[88px]"><p class="font-bold text-slate-500 text-[11px] truncate">TOTAL INVOICES</p><div class="shimmer-box h-7 w-12 mt-1"></div></div>
+                    <div class="stat-card glass-card rounded-[5px] flex flex-col justify-center py-4 h-[88px]"><p class="font-bold text-slate-500 text-[11px] truncate">TOTAL REVENUE</p><div class="shimmer-box h-7 w-24 mt-1"></div></div>
+                </div>
+                <div class="flex justify-between items-end mb-3 px-1"><h3 class="font-black text-sm text-slate-400 truncate">RECENT INVOICES</h3></div>
+                <div class="space-y-3 pb-4">
+                    <div class="glass-card p-4 rounded-[5px] flex justify-between items-center"><div class="flex-1"><div class="shimmer-box h-5 w-3/4 mb-2"></div><div class="shimmer-box h-3 w-1/2"></div></div><div class="shimmer-box h-6 w-20"></div></div>
+                    <div class="glass-card p-4 rounded-[5px] flex justify-between items-center"><div class="flex-1"><div class="shimmer-box h-5 w-2/3 mb-2"></div><div class="shimmer-box h-3 w-1/3"></div></div><div class="shimmer-box h-6 w-20"></div></div>
+                </div>`;
+            }
+
+            const totalRevs = invoices.reduce((sum, i) => sum + (i.subTotal || 0), 0);
+            let html = `
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="stat-card glass-card rounded-[5px] flex flex-col justify-center py-4">
+                        <p class="font-bold text-slate-500 text-[11px] truncate">TOTAL INVOICES</p>
+                        <h3 class="font-black text-2xl text-slate-800 dark:text-white truncate">${invoices.length}</h3>
+                    </div>
+                    <div class="stat-card bg-purple-600 text-white rounded-[5px] border-none shadow-md flex flex-col justify-center py-4">
+                        <p class="font-bold opacity-80 text-[11px] truncate">TOTAL REVENUE</p>
+                        <h3 class="font-black text-2xl truncate">${fmt(totalRevs)}</h3>
+                    </div>
+                </div>
+            `;
+
+            if (invoices.length === 0) {
+                html += `
+                <div class="flex-1 flex flex-col items-center justify-center pt-10 pb-12 animate-fade-in">
+                    <div class="w-32 h-32 relative mb-8 mt-4">
+                        <div class="absolute inset-0 bg-purple-200 dark:bg-purple-900/40 rounded-[5px] blur-2xl animate-pulse"></div>
+                        <div class="relative bg-white dark:bg-slate-800 w-full h-full rounded-[5px] shadow-lg border border-slate-100 dark:border-slate-700 flex items-center justify-center animate-float">
+                            <i data-lucide="folder-open" class="w-12 h-12 text-purple-400"></i>
+                        </div>
+                        <div class="absolute -bottom-2 -right-2 bg-emerald-100 dark:bg-emerald-900/50 w-12 h-12 rounded-[5px] border-[3px] border-[#f8fafc] dark:border-[#0f172a] flex items-center justify-center z-10 animate-float-delayed">
+                            <i data-lucide="sparkles" class="w-5 h-5 text-emerald-500"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-black text-xl text-slate-800 dark:text-slate-100 mb-2 uppercase tracking-tight">No Invoices Yet</h3>
+                    <p class="text-sm font-bold text-slate-400 text-center max-w-[250px] mb-8">Start your journey by creating your very first invoice right now.</p>
+                    <button onclick="window.openNewInvoice()" class="px-6 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black rounded-[5px] shadow-lg hover:scale-105 active:scale-95 transition-transform flex items-center gap-2">
+                        <i data-lucide="plus" class="w-5 h-5"></i> Create Invoice
+                    </button>
+                </div>`;
+            } else {
+                html += `
+                <div class="flex justify-between items-end mb-3 px-1"><h3 class="font-black text-sm text-slate-400 truncate">RECENT INVOICES</h3></div>
+                <div class="space-y-3 pb-4">`;
+                [...invoices].reverse().forEach(inv => {
+                    // Extract only the first two words of the client name
+                    const shortClient = inv.client ? inv.client.trim().split(/\s+/).slice(0, 2).join(' ') : 'CLIENT';
+                    
+                    html += `
+                    <div onclick="viewInvoice('${inv.id}')" class="glass-card p-4 rounded-[5px] flex justify-between items-end gap-2 cursor-pointer hover:border-purple-400 transition-colors">
+                        <div class="min-w-0 flex-1">
+                            <h4 class="font-black text-base truncate leading-tight">${shortClient}</h4>
+                            <p class="font-bold text-sm text-purple-600 mt-1 truncate leading-none">${inv.id} • ${inv.startDate}</p>
+                        </div>
+                        <div class="text-right flex-shrink-0">
+                            <h3 class="font-black text-base text-emerald-600 leading-none">${fmt(inv.subTotal)}</h3>
+                        </div>
+                    </div>`;
+                });
+                html += `</div>`;
+            }
+            return html;
+        }
+
+        if (tab === 'view-invoice') {
+            if (!isLoaded || window.isInvoiceSimulatingLoad) {
+                return `
+                <div class="flex items-center justify-between mb-4 gap-2">
+                    <div class="shimmer-box h-9 w-12 rounded-[5px]"></div>
+                    <div class="shimmer-box h-9 w-32 rounded-[5px]"></div>
+                </div>
+                <div class="invoice-wrapper"><div class="shimmer-box w-[800px] h-[1131px] max-w-full rounded-[5px]"></div></div>`;
+            }
+
+            const inv = invoices.find(i => i.id === window.viewingInvoiceId);
+            if(!inv) return `<div class="text-center p-10 font-bold text-red-500">Invoice Not Found.</div>`;
+
+            return `
+                <div class="animate-fade-in">
+                    <div class="flex items-center justify-between mb-4 no-print gap-2">
+                        <button onclick="switchTab('dashboard')" class="p-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-[5px] hover:bg-slate-300 transition-colors">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </button>
+                        <div class="flex items-center gap-2">
+                            <button onclick="editInvoice('${inv.id}')" class="p-2 bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 rounded-[5px] hover:bg-blue-200 transition-colors" title="Edit Invoice">
+                                <i data-lucide="edit-3" class="w-5 h-5"></i>
+                            </button>
+                            <button onclick="deleteInvoice('${inv.id}')" class="p-2 bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 rounded-[5px] hover:bg-red-200 transition-colors" title="Delete Invoice">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </button>
+                            <button onclick="window.print()" class="px-4 py-2 flex items-center gap-2 bg-purple-600 text-white rounded-[5px] font-bold text-sm shadow hover:bg-purple-700 transition-colors">
+                                <i data-lucide="printer" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="invoice-wrapper">
+                        ${generateInvoiceCardHTML(inv, profile)}
+                    </div>
+                </div>
+            `;
+        }
+
+        if (tab === 'profile') {
+            if (!isLoaded || window.isProfileSimulatingLoad) {
+                 return `
+                <div class="space-y-4">
+                    <div class="glass-card rounded-[5px] p-6 text-center border border-slate-200 dark:border-slate-700 flex flex-col items-center"><div class="w-20 h-20 rounded-[5px] mb-3 shimmer-box"></div><div class="shimmer-box h-5 w-32 mb-2"></div><div class="shimmer-box h-3 w-40"></div></div>
+                    <div class="glass-card rounded-[5px] p-4 border border-slate-200 dark:border-slate-700 space-y-4"><div class="shimmer-box h-4 w-32 mb-2"></div><div><div class="shimmer-box h-10 w-full mt-1.5"></div></div><div><div class="shimmer-box h-10 w-full mt-1.5"></div></div></div>
+                </div>`;
+            }
+
+            const defaultAvatar = localStorage.getItem('cached_my_logo') || "my_logo.png";
+            const avatarUrl = window.currentUser?.photoURL || defaultAvatar;
+
+            const createdAt = profile.created_at || Date.now();
+            const memDays = profile.membership_days || 365;
+            const daysPassed = Math.floor((Date.now() - createdAt) / (1000 * 60 * 60 * 24));
+            let daysLeft = memDays - daysPassed;
+            if (daysLeft < 0) daysLeft = 0;
+            const expiryDate = new Date(createdAt + memDays * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+
+            return `
+                <div class="space-y-4 animate-fade-in w-full">
+                    <div class="glass-card rounded-[5px] p-6 text-center border border-slate-200 dark:border-slate-700 w-full">
+                        <div class="w-20 h-20 mx-auto bg-purple-100 rounded-[5px] border-[3px] border-purple-500 overflow-hidden mb-3">
+                            <img src="${avatarUrl}" class="w-full h-full object-contain">
+                        </div>
+                        <h2 class="font-black text-base uppercase truncate">${profile.name || 'Settings'}</h2>
+                        <p class="text-xs text-slate-500 font-bold">${window.currentUser?.email}</p>
+                    </div>
+
+                    <div class="glass-card rounded-[5px] p-4 border border-slate-200 dark:border-slate-700 flex justify-between items-center bg-gradient-to-r from-purple-50 dark:from-purple-900/10 to-transparent w-full">
+                        <div>
+                            <h3 class="font-black text-[10px] text-slate-400 tracking-widest uppercase mb-1">MEMBERSHIP EXPIRES</h3>
+                            <p class="font-bold text-sm text-slate-800 dark:text-slate-200">${expiryDate}</p>
+                        </div>
+                        <div class="bg-purple-600 text-white px-3 py-1.5 rounded-[5px] flex flex-col items-center justify-center shadow-md">
+                            <span class="text-lg font-black leading-none mb-0.5">${daysLeft}</span>
+                            <span class="text-[9px] uppercase tracking-widest font-bold text-purple-100">Days Left</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pb-2 pt-2 w-full">
+                        <div class="w-full">
+                            <label class="text-[11px] font-bold text-slate-500 uppercase ml-1">Owner Name (Signature)</label>
+                            <input type="text" id="p-name" value="${profile.name || ''}" oninput="window.saveProfile()" class="field-input mt-1.5 shadow-sm w-full">
+                        </div>
+                        <div class="w-full">
+                            <label class="text-[11px] font-bold text-slate-500 uppercase ml-1">Phone Number</label>
+                            <input type="text" id="p-phone" value="${profile.phone || ''}" oninput="window.saveProfile()" class="field-input mt-1.5 shadow-sm w-full">
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-[5px] p-4 text-center border border-slate-200 dark:border-slate-700 w-full">
+                         <button onclick="window.logoutUser()" class="text-slate-600 dark:text-slate-300 font-bold text-sm uppercase flex items-center justify-center w-full hover:text-purple-600 transition-colors">
+                            <i data-lucide="log-out" class="w-4 h-4 inline mr-2"></i> Sign Out of INVOYR
+                         </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (tab === 'add-invoice') {
+            if (!isLoaded) {
+                 return `
+                 <div class="w-full pb-10">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                        ${Array(12).fill('<div class="shimmer-box h-[68px] w-full rounded-[5px]"></div>').join('')}
+                    </div>
+                 </div>`;
+            }
+
+            let maxNum = 0;
+            invoices.forEach(i => {
+                const match = i.id.match(/INV-(\d+)/);
+                if(match) {
+                    const num = parseInt(match[1]);
+                    if(num > maxNum) maxNum = num;
+                }
+            });
+            const nextId = 'INV-' + String(maxNum + 1).padStart(3, '0');
+
+            return `
+            <div class="flex flex-col w-full max-w-full pb-10">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">Company / Bill To</label>
+                        <input type="text" id="iBiz" value="SMS GROUP" oninput="runInvoiceCalculation()" class="field-input" placeholder="Client Company">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">Shift Selection</label>
+                        <select id="iDesc" onchange="updateShiftDefaults(); runInvoiceCalculation()" class="field-input">
+                            <option value="PACKAGE 45000 (B SHIFT)">B SHIFT</option>
+                            <option value="PACKAGE 55000 (C SHIFT)">C SHIFT</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">Invoice No.</label>
+                        <input type="text" id="iInvNum" value="${window.isEditing ? '...' : nextId}" oninput="runInvoiceCalculation()" class="field-input" ${window.isEditing ? 'disabled style="opacity:0.6"' : ''}>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">Start Date</label>
+                        <input type="date" id="iStartDate" value="${today()}" oninput="runInvoiceCalculation()" class="field-input">
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">End Date</label>
+                        <input type="date" id="iEndDate" value="${today()}" oninput="runInvoiceCalculation()" class="field-input">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">Veh. Name</label>
+                        <input type="text" id="iVehName" value="TOYOTA RUMION" oninput="runInvoiceCalculation()" class="field-input">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">Veh. Number</label>
+                        <input type="text" id="iVehNum" value="GJ-01-LT-5558" oninput="runInvoiceCalculation()" class="field-input">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">KM Limit</label>
+                        <input type="number" id="iKm" value="1280" oninput="runInvoiceCalculation()" class="field-input">
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">Days worked</label>
+                        <input type="number" id="iDays" value="26" oninput="runInvoiceCalculation()" class="field-input">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">Sundays</label>
+                        <input type="number" id="iOff" value="4" oninput="runInvoiceCalculation()" class="field-input">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">Pkg Rate (₹)</label>
+                        <input type="number" id="iRate" value="45000" oninput="runInvoiceCalculation()" class="field-input">
+                    </div>
+                    <div class="flex flex-col cursor-not-allowed opacity-60">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">Signature</label>
+                        <input type="text" id="iSignName" value="${profile.name || ''}" disabled class="field-input">
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button id="save-btn" onclick="saveAndPrintInvoice()" class="flex-1 btn-primary bg-purple-600 text-white flex items-center justify-center hover:bg-purple-700 shadow-md transition-all tracking-wide">
+                        ${window.isEditing ? 'UPDATE DATABASE' : 'SAVE TO DATABASE'}
+                    </button>
+                    <button onclick="window.openBottomSheet()" class="px-5 btn-primary bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm" title="Live Preview">
+                        <i data-lucide="eye" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        return '';
+    }
+
+    window.saveProfile = () => {
+        if (!window.currentUser) return;
+        const p = { ...window.appData.profile, name: document.getElementById('p-name').value, phone: document.getElementById('p-phone').value };
+        window.appData.profile = p;
+        set(ref(database, `INVOYR/XRV BUSINESS LITE 1/users/${window.currentUser.uid}/profile`), p);
+    }
+
+    window.updateShiftDefaults = () => {
+        const desc = document.getElementById('iDesc').value;
+        const isBShift = desc.includes("B SHIFT");
+        document.getElementById('iKm').value = isBShift ? 1280 : 2240;
+        document.getElementById('iRate').value = isBShift ? 45000 : 55000;
+    }
+
+    window.runInvoiceCalculation = () => {
+        if(!window.isProfileLoaded || !window.isInvoicesLoaded) return;
+
+        if (window.isSaved) {
+            window.isSaved = false;
+            const btn = document.getElementById('save-btn');
+            if (btn) {
+                btn.innerHTML = window.isEditing ? 'UPDATE DATABASE' : 'SAVE TO DATABASE';
+                btn.classList.remove('bg-emerald-600', 'pointer-events-none', 'opacity-90');
+                btn.classList.add('bg-purple-600', 'hover:bg-purple-700');
+                btn.disabled = false;
+            }
+        }
+
+        const desc = document.getElementById('iDesc').value;
+        const km = document.getElementById('iKm').value;
+        const days = document.getElementById('iDays').value;
+        const sundays = parseInt(document.getElementById('iOff').value) || 0;
+        const rate = parseFloat(document.getElementById('iRate').value) || 0;
+        const vName = document.getElementById('iVehName').value;
+        const vNum = document.getElementById('iVehNum').value;
+        const sDate = document.getElementById('iStartDate').value;
+        const eDate = document.getElementById('iEndDate').value;
+        let invNum = document.getElementById('iInvNum').value;
+
+        if(!window.isEditing && (!invNum || invNum === '...')) {
+             let maxNum = 0;
+             window.appData.invoices.forEach(i => {
+                const match = i.id.match(/INV-(\d+)/);
+                if(match) {
+                    const num = parseInt(match[1]);
+                    if(num > maxNum) maxNum = num;
+                }
+             });
+             invNum = 'INV-' + String(maxNum + 1).padStart(3, '0');
+             document.getElementById('iInvNum').value = invNum;
+        }
+
+        const sunPrice = (desc.includes("B SHIFT")) ? 1730 : 2115;
+        const sunTotal = sundays * sunPrice;
+        const subTotal = rate + sunTotal;
+
+        const liveInv = {
+            id: invNum, startDate: sDate, endDate: eDate, client: document.getElementById('iBiz').value,
+            shift: desc, vehName: vName, vehNum: vNum, km: km, days: days, sundays: sundays,
+            rate: rate, subTotal: subTotal
+        };
+
+        const container = document.getElementById('bs-invoice-inner');
+        if(container) {
+            container.innerHTML = generateInvoiceCardHTML(liveInv, window.appData.profile);
+        }
+    }
+
+    window.saveAndPrintInvoice = () => {
+        if(!window.currentUser) return alert("You must be logged in to save.");
+
+        const desc = document.getElementById('iDesc').value;
+        const sundays = parseInt(document.getElementById('iOff').value) || 0;
+        const rate = parseFloat(document.getElementById('iRate').value) || 0;
+        const sunPrice = (desc.includes("B SHIFT")) ? 1730 : 2115;
+        const invNum = document.getElementById('iInvNum').value;
+
+        const invoiceData = {
+            id: invNum,
+            startDate: document.getElementById('iStartDate').value,
+            endDate: document.getElementById('iEndDate').value,
+            client: document.getElementById('iBiz').value,
+            shift: desc,
+            vehName: document.getElementById('iVehName').value,
+            vehNum: document.getElementById('iVehNum').value,
+            km: document.getElementById('iKm').value,
+            days: document.getElementById('iDays').value,
+            sundays: sundays,
+            rate: rate,
+            sunTotal: sundays * sunPrice,
+            subTotal: rate + (sundays * sunPrice),
+            createdAt: new Date().toISOString()
+        };
+
+        const isDuplicate = window.appData.invoices.some(inv =>
+            inv.client === invoiceData.client &&
+            inv.shift === invoiceData.shift &&
+            inv.vehNum === invoiceData.vehNum &&
+            inv.startDate === invoiceData.startDate &&
+            inv.endDate === invoiceData.endDate &&
+            inv.km == invoiceData.km &&
+            inv.days == invoiceData.days &&
+            inv.sundays == invoiceData.sundays &&
+            inv.rate == invoiceData.rate &&
+            inv.id !== invoiceData.id
+        );
+
+        if (isDuplicate) {
+            alert("An invoice with these exact details already exists! Duplicates are not allowed.");
+            return;
+        }
+
+        const markAsSaved = () => {
+            window.isEditing = true;
+            window.isSaved = true;
+            const btn = document.getElementById('save-btn');
+            if(btn) {
+                btn.innerHTML = `GENERATED SUCCESSFULLY`;
+                btn.classList.remove('bg-purple-600', 'hover:bg-purple-700');
+                btn.classList.add('bg-emerald-600', 'pointer-events-none', 'opacity-90');
+                btn.disabled = true;
+            }
+            window.fireRain();
+        };
+
+        set(ref(database, `INVOYR/XRV BUSINESS LITE 1/users/${window.currentUser.uid}/invoices/${invNum}`), invoiceData).then(() => {
+            markAsSaved();
+        }).catch((err) => {
+            console.error("Save Error:", err);
+            alert("Failed to save invoice.");
+        });
+    }
+</script>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Service Worker registered!', reg))
+                .catch(err => console.error('Service Worker registration failed: ', err));
+        });
+    }
+</script>
+</body>
+</html>
