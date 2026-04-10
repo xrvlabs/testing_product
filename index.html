@@ -192,7 +192,7 @@
             position: relative;
             min-height: 220px;
             display: flex;
-            overflow: hidden; /* Ensures image stays contained */
+            overflow: hidden; 
         }
         @media (min-width: 768px) {
             .hero-slide { min-height: 350px; }
@@ -205,8 +205,8 @@
             height: 100%;
             object-fit: cover;
             z-index: 0;
-            opacity: 0.65; /* Darkened slightly to make text pop */
-            display: block; /* Fixes any inline spacing bugs */
+            opacity: 0.65; 
+            display: block; 
         }
         
         .hero-content {
@@ -453,6 +453,7 @@
         .tab-content-box h4 { margin-bottom: 8px; font-size: 14px; text-transform: uppercase; color: var(--blue-accent); }
         .tab-content-box p { color: var(--text-muted); margin-bottom: 4px; }
 
+
         /* HUGE FOOTER SETTINGS */
         .mega-footer { 
             background: #ffffff; 
@@ -472,9 +473,41 @@
             padding: 16px 24px; border-bottom: 1px solid var(--border-color); gap: 16px; background: white;
         }
         .ftb-left { display: flex; align-items: center; gap: 16px; font-size: 13px; font-weight: 800; text-transform: uppercase; }
+        
+        /* Smooth Expanding Social Icons */
         .social-icons { display: flex; gap: 8px; }
-        .social-icon { width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; cursor: pointer; transition: transform 0.2s;}
-        .social-icon:hover { transform: translateY(-2px); }
+        .social-icon { 
+            max-width: 32px; 
+            height: 32px; 
+            border-radius: 4px; 
+            display: flex; 
+            align-items: center; 
+            color: white; 
+            font-size: 16px; 
+            cursor: pointer; 
+            transition: max-width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.2s;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .social-icon i {
+            min-width: 32px;
+            text-align: center;
+            display: inline-block;
+        }
+        .social-text {
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            padding-right: 12px;
+            transition: opacity 0.3s ease;
+        }
+        .social-icon.expanded {
+            max-width: 140px; 
+        }
+        .social-icon.expanded .social-text {
+            opacity: 1;
+        }
+
         .si-fb { background: #3b5998; } .si-ig { background: #e1306c; } .si-x { background: #000000; } .si-yt { background: #ff0000; } .si-in { background: #0077b5; }
         
         .ftb-right { display: flex; align-items: center; gap: 16px; font-size: 13px; font-weight: 800; text-transform: uppercase; flex-wrap: wrap;}
@@ -486,7 +519,7 @@
             gap: 24px; padding: 40px 24px; max-width: 1600px; margin: 0 auto;
         }
         
-/* Hide Specific Footer Sections & Adjust Top Bar on Mobile/Tablet */
+        /* Hide Specific Footer Sections & Adjust Top Bar on Mobile/Tablet */
         @media(max-width: 1023px) {
             .hide-on-mobile-tablet { display: none !important; }
             .fm-address-col { border-left: none !important; padding-left: 0 !important; border-top: none !important; padding-top: 0 !important;}
@@ -789,11 +822,26 @@
                 <div class="ftb-left">
                     <span class="hide-on-mobile-tablet">STAY CONNECTED</span>
                     <div class="social-icons">
-                        <div class="social-icon si-fb"><i class="fa-brands fa-facebook-f"></i></div>
-                        <div class="social-icon si-ig"><i class="fa-brands fa-instagram"></i></div>
-                        <div class="social-icon si-x"><i class="fa-brands fa-x-twitter"></i></div>
-                        <div class="social-icon si-yt"><i class="fa-brands fa-youtube"></i></div>
-                        <div class="social-icon si-in"><i class="fa-brands fa-linkedin-in"></i></div>
+                        <div class="social-icon si-fb" onclick="toggleSocial(event, this)">
+                            <i class="fa-brands fa-facebook-f"></i>
+                            <span class="social-text">Facebook</span>
+                        </div>
+                        <div class="social-icon si-ig" onclick="toggleSocial(event, this)">
+                            <i class="fa-brands fa-instagram"></i>
+                            <span class="social-text">Instagram</span>
+                        </div>
+                        <div class="social-icon si-x" onclick="toggleSocial(event, this)">
+                            <i class="fa-brands fa-x-twitter"></i>
+                            <span class="social-text">Twitter</span>
+                        </div>
+                        <div class="social-icon si-yt" onclick="toggleSocial(event, this)">
+                            <i class="fa-brands fa-youtube"></i>
+                            <span class="social-text">YouTube</span>
+                        </div>
+                        <div class="social-icon si-in" onclick="toggleSocial(event, this)">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                            <span class="social-text">LinkedIn</span>
+                        </div>
                     </div>
                     <span class="hide-on-mobile-tablet">240K+ <span style="font-weight:400; text-transform:none;">Followers</span></span>
                 </div>
@@ -1474,6 +1522,29 @@
                 `;
         }
     }
+
+    // --- Footer Social Expanding Logic ---
+    function toggleSocial(event, element) {
+        event.stopPropagation(); // Prevents document click from immediately closing it
+        
+        const isCurrentlyExpanded = element.classList.contains('expanded');
+        
+        // First, close all icons
+        document.querySelectorAll('.social-icon').forEach(icon => icon.classList.remove('expanded'));
+        
+        // If the clicked icon wasn't already expanded, open it
+        if (!isCurrentlyExpanded) {
+            element.classList.add('expanded');
+        }
+    }
+
+    // Close expanded social icons if clicked anywhere else
+    document.addEventListener('click', (event) => {
+        const isClickInsideSocialIcon = event.target.closest('.social-icon');
+        if (!isClickInsideSocialIcon) {
+            document.querySelectorAll('.social-icon').forEach(icon => icon.classList.remove('expanded'));
+        }
+    });
 
     // --- Initialization ---
     document.addEventListener('DOMContentLoaded', () => {
