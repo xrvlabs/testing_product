@@ -26,6 +26,7 @@
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Performance, Smoothness & Quantico Font */
         html { scroll-behavior: smooth; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Quantico', sans-serif; -webkit-tap-highlight-color: transparent; }
         
@@ -37,7 +38,7 @@
             position: relative; overflow-x: hidden; display: flex; flex-direction: column; contain: paint;
         }
 
-        /* Scrollbar */
+        /* Scrollbar Visibility Control */
         @media (max-width: 1023px) {
             ::-webkit-scrollbar { display: none; }
             * { -ms-overflow-style: none; scrollbar-width: none; }
@@ -46,133 +47,393 @@
             ::-webkit-scrollbar { width: 8px; height: 8px; }
             ::-webkit-scrollbar-track { background: #f8f9fa; }
             ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+            ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+            * { scrollbar-width: thin; scrollbar-color: #c1c1c1 #f8f9fa; }
         }
 
-        .view-section { display: none; flex-direction: column; padding-bottom: 90px; animation: fadeIn 0.3s ease-in-out; min-height: 100vh; background: var(--primary-bg); }
+        .view-section { display: none; flex-direction: column; padding-bottom: 90px; animation: fadeIn 0.3s ease-in-out; will-change: opacity, transform; min-height: 100vh; background: var(--primary-bg); }
         .view-section.active { display: flex; }
+        #authView { padding-bottom: 0; background: white;}
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Header Styles */
+        /* Skeletons */
+        .skeleton {
+            background: #f6f7f8; background-image: linear-gradient(90deg, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+            background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: var(--card-radius);
+        }
+        @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+        .skel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 0 10px 32px; }
+        @media (min-width: 768px) { .skel-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
+        .skel-card { border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 12px; height: 280px; display: flex; flex-direction: column; gap: 12px; background: white; }
+        .skel-img { height: 140px; width: 100%; border-radius: var(--card-radius); }
+        .skel-text-1 { height: 14px; width: 90%; }
+        .skel-text-2 { height: 12px; width: 70%; }
+        .skel-price { height: 20px; width: 50%; margin-top: auto; }
+        .skel-btn { height: 32px; width: 100%; border-radius: var(--card-radius); }
+
+        /* Header */
         .sticky-header-container { position: sticky; top: 0; z-index: 500; background: white; }
         .header-master { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 10px; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .header-logo { display: none; align-items: center; gap: 6px; cursor: pointer; }
+        .header-logo { display: none; align-items: center; gap: 6px; cursor: pointer; line-height: 1; }
         .header-logo i { color: var(--orange-accent); font-size: 28px; }
-        .header-logo-text .main { font-size: 20px; font-weight: 800; color: var(--blue-accent); }
-        .header-logo-text .sub { font-size: 9px; font-weight: 700; color: var(--orange-accent); letter-spacing: 1px; display: block; margin-top: -4px;}
+        .header-logo-text { display: flex; flex-direction: column; }
+        .header-logo-text .main { font-size: 20px; font-weight: 800; color: var(--blue-accent); letter-spacing: 0.5px;}
+        .header-logo-text .sub { font-size: 9px; font-weight: 700; color: var(--orange-accent); align-self: flex-end; margin-top: -2px; letter-spacing: 1px;}
+        
+        .location-block { display: flex; align-items: center; gap: 8px; order: 1; }
+        .location-icon { color: var(--blue-accent); font-size: 20px; }
+        .location-text .label { font-size: 11px; font-weight: 700; text-transform: uppercase;}
+        .location-text .pincode { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; text-transform: uppercase;}
         
         .search-container { flex: 1 1 100%; order: 3; display: flex; align-items: center; gap: 10px; }
         .search-input-box { flex: 1; display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 8px 12px; background: white; }
-        .search-input-box input { flex: 1; border: none; outline: none; font-size: 14px; margin-left: 8px; width: 100%; }
+        .search-input-box input { flex: 1; border: none; outline: none; font-size: 14px; margin-left: 8px; width: 100%; font-family: 'Quantico', sans-serif; color: var(--text-dark);}
         
         .header-actions { display: flex; align-items: center; gap: 16px; margin-left: auto; order: 2; }
         .auth-trigger { font-size: 14px; font-weight: 700; display:flex; gap:6px; align-items:center; cursor: pointer; color: var(--text-dark); background: #f1f5f9; padding: 6px 12px; border-radius: var(--card-radius); text-transform: uppercase;}
         
+        /* Cart Badges */
+        .cart-wrapper { position: relative; cursor: pointer; }
+        .cart-badge { position: absolute; top: -8px; right: -8px; background: var(--red-accent); color: white; font-size: 10px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
         .nav-pills { display: flex; gap: 10px; padding: 12px 10px; overflow-x: auto; background: white; white-space: nowrap; border-bottom: 1px solid var(--border-color); }
-        .pill { padding: 8px 16px; border: 1px solid var(--border-color); border-radius: var(--card-radius); font-size: 13px; font-weight: 700; cursor: pointer; text-transform: uppercase;}
+        .pill { padding: 8px 16px; border: 1px solid var(--border-color); border-radius: var(--card-radius); font-size: 13px; font-weight: 700; color: var(--text-dark); cursor: pointer; text-transform: uppercase; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
+        .pill:hover, .pill.active { background: var(--blue-light); color: var(--blue-accent); border-color: var(--blue-accent); }
 
         @media (min-width: 1024px) {
             .header-master { flex-wrap: nowrap; padding: 16px 10px; }
             .header-logo { display: flex; order: 1; margin-right: 20px; }
+            .location-block { order: 2; margin-right: 20px; }
             .search-container { flex: 1; order: 3; margin: 0 10px; }
             .header-actions { order: 4; }
-            .nav-pills { justify-content: center; }
+            .nav-pills { justify-content: center; padding: 16px 10px; }
         }
 
-        /* Products Grid */
-        .section-header { padding: 16px 10px; }
-        .section-header h3 { font-size: 16px; font-weight: 800; border: 1px solid var(--border-color); padding: 12px; border-radius: var(--card-radius); background: white; text-transform: uppercase; display: flex; justify-content: space-between;}
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 10px; }
-        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
-        .product-card { border: 1px solid var(--border-color); border-radius: var(--card-radius); background: white; padding: 10px; position: relative; cursor: pointer;}
-        .product-card img { width: 100%; height: 160px; object-fit: contain; }
-
-        /* PROFILE MODAL / BOTTOM SHEET SYSTEM */
-        #profileOverlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.5); z-index: 2000; 
-            display: none; opacity: 0; transition: opacity 0.3s ease;
-            backdrop-filter: blur(4px);
-        }
+        /* Megamenu */
+        .megamenu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.4); z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; backdrop-filter: blur(2px); display: none; }
+        .megamenu-overlay.active { opacity: 1; visibility: visible; }
+        .megamenu { position: static; width: 100%; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: none; flex-direction: column; overflow: hidden; border-bottom: 1px solid var(--border-color); }
+        .megamenu.active { display: flex; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .bs-header { display: none; }
+        .mm-search { padding: 12px 10px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .mm-search input { width: 100%; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 8px 14px; font-size: 13px; outline: none; font-family: 'Quantico', sans-serif;}
+        .mm-body { display: flex; flex-direction: column; }
+        .mm-sidebar { width: 100%; background: white; border-bottom: 1px solid var(--border-color); padding: 12px 0; }
+        .mm-sidebar-title { display: none; }
+        .mm-cat-list { display: flex; overflow-x: auto; padding: 0 10px; gap: 8px; list-style: none; -ms-overflow-style: none; scrollbar-width: none; }
+        .mm-cat-list::-webkit-scrollbar { display: none; }
+        .mm-cat-list li { padding: 8px 16px; font-size: 12px; color: var(--text-dark); font-weight: 700; cursor: pointer; border: 1px solid var(--border-color); border-radius: 20px; white-space: nowrap; transition: var(--transition); }
+        .mm-cat-list li:hover { background: #f1f5f9; }
+        .mm-cat-list li.active { background: var(--blue-dark); color: white; border-color: var(--blue-dark); }
+        .mm-cat-list li i.icon, .mm-cat-list li i.arrow { display: none; }
+        .mm-content { display: block; padding: 16px 10px; background: #f8fafc; max-height: 55vh; overflow-y: hidden; }
+        .mm-content-header { font-size: 14px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; color: var(--text-dark);}
+        .mm-content-header span { background: var(--border-color); color: var(--text-dark); font-size: 10px; padding: 2px 6px; border-radius: var(--card-radius); }
         
-        #profileComponent {
-            position: fixed; z-index: 2001; background: white;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column;
+        .mm-grid { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; -ms-overflow-style: none; scrollbar-width: none; }
+        .mm-grid::-webkit-scrollbar { display: none; }
+        .subcat-card { flex: 0 0 100px; border: 1px solid var(--border-color); border-radius: var(--card-radius); overflow: hidden; cursor: pointer; transition: var(--transition); text-align: center; display: flex; flex-direction: column; background: white; }
+        .subcat-card:hover { border-color: var(--blue-accent); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transform: translateY(-2px); }
+        .subcat-img { background: #fff; padding: 8px; height: 80px; display: flex; justify-content: center; align-items: center; border-bottom: 1px solid var(--border-color);}
+        .subcat-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .subcat-title { font-size: 11px; font-weight: 700; color: var(--text-dark); padding: 8px; text-transform: uppercase; white-space: normal;}
+
+        @media (min-width: 1024px) { 
+            .megamenu-overlay { display: block; }
+            .megamenu { position: fixed; top: 135px; left: 50%; right: auto; bottom: auto; transform: translateX(-50%); width: calc(100% - 40px); max-width: 1000px; border-radius: var(--card-radius); box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 1px solid var(--border-color); max-height: 75vh; z-index: 1001; opacity: 0; visibility: hidden; display: flex; flex-direction: column; transition: opacity 0.3s ease, visibility 0.3s; } 
+            .megamenu.active { opacity: 1; visibility: visible; animation: none; }
+            .mm-body { flex-direction: row; flex: 1; overflow: hidden; }
+            .mm-sidebar { width: 280px; flex-shrink: 0; flex: unset; border-right: 1px solid var(--border-color); border-bottom: none; display: flex; flex-direction: column; background: #fbfbfb; padding: 0;}
+            .mm-sidebar-title { display: block; padding: 16px 20px 8px; font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+            .mm-cat-list { display: block; padding: 0; overflow: visible; }
+            .mm-cat-list li { border-radius: 0; border: none; background: transparent; padding: 12px 20px; font-size: 14px; color: var(--text-dark); border-left: 3px solid transparent; display: flex; align-items: center; gap: 12px; white-space: normal; }
+            .mm-cat-list li i.icon { display: inline-block; width: 20px; text-align: center; font-size: 16px; color: #94a3b8; }
+            .mm-cat-list li i.arrow { display: inline-block; margin-left: auto; font-size: 10px; color: var(--text-muted); }
+            .mm-cat-list li.active { background: #e0f2fe; color: var(--blue-accent); border-left-color: var(--blue-accent); }
+            .mm-cat-list li.active i.icon { color: var(--blue-accent); }
+            .mm-content { flex: 1; padding: 24px; max-height: none; background: white; overflow-y: auto;}
+            .mm-content-header { font-size: 16px; margin-bottom: 20px; }
+            .mm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 16px; overflow-x: visible; padding-bottom: 0;}
+            .subcat-card { flex: unset; } 
+            .subcat-img { height: 100px; padding: 12px; }
+            .subcat-title { font-size: 12px; padding: 12px 8px; }
         }
 
-        /* Desktop Mode: Dialog */
+        /* Hero & Products */
+        .hero-banner { margin: 16px 10px; border-radius: var(--card-radius); overflow: hidden; position: relative; background: linear-gradient(to right, #4a5568, #a0aec0); height: auto; min-height: 180px; }
+        @media (min-width: 768px) { .hero-banner { min-height: 300px; margin: 20px 10px; } }
+        .hero-content { position: absolute; top: 0; left: 0; padding: 20px; color: white; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+        .hero-content .hero-brand { font-size: clamp(12px, 2vw, 18px); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
+        .hero-content h2 { font-size: clamp(22px, 5vw, 48px); margin-bottom: 8px; line-height: 1.1; font-weight: 700; text-transform: uppercase;}
+        .hero-content h2 span { font-size: 0.4em; border: 1px solid white; border-radius: var(--card-radius); padding: 4px 8px; vertical-align: middle; position: relative; top: -4px;}
+        .hero-content .hero-desc { font-size: clamp(11px, 1.5vw, 16px); opacity: 0.9; margin-bottom: 16px; font-weight: 400; text-transform: uppercase; }
+        .hero-btn { background: #1a1a1a; color: white; padding: clamp(8px, 1.5vw, 12px) clamp(16px, 3vw, 24px); border-radius: var(--card-radius); font-size: clamp(11px, 1.5vw, 14px); font-weight: 700; width: fit-content; cursor: pointer; text-transform: uppercase; }
+
+        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; margin-bottom: 16px; margin-top: 16px; }
+        .section-header h3 { font-size: 16px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border-color); padding: 12px 16px; border-radius: var(--card-radius); width: 100%; justify-content: space-between; text-transform: uppercase; background: white;}
+        .section-header h3 i { color: var(--blue-accent); font-size: 18px; }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 0 10px 32px; }
+        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
+        
+        .product-card { border: 1px solid var(--border-color); border-radius: var(--card-radius); background: white; display: flex; flex-direction: column; position: relative; cursor: pointer; transition: var(--transition); will-change: transform, box-shadow; content-visibility: auto; }
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: #cbd5e1; }
+        .product-image-container { position: relative; padding: 16px; height: 160px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: var(--card-radius) var(--card-radius) 0 0; }
+        .product-image-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .wishlist-btn { position: absolute; top: 8px; right: 8px; background: white; border: none; font-size: 18px; color: #999; cursor: pointer; border-radius: 50%; padding: 6px; z-index: 5; transition: color 0.2s;}
+        .wishlist-btn:hover { color: var(--red-accent); }
+        .freebies-tag { position: absolute; bottom: 12px; left: 12px; background: #c026d3; color: white; font-size: 9px; font-weight: 700; padding: 4px 8px; border-radius: var(--card-radius); display: flex; align-items: center; gap: 4px; z-index: 5; text-transform: uppercase;}
+        .add-btn { position: absolute; bottom: -14px; right: 12px; background: white; border: 1px solid var(--blue-accent); color: var(--blue-accent); border-radius: var(--card-radius); padding: 6px 16px; font-size: 13px; font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,0.05); z-index: 5; transition: background 0.2s; cursor: pointer; text-transform: uppercase;}
+        .add-btn:hover { background: var(--blue-light); }
+        
+        .product-details { padding: 24px 12px 16px; flex: 1; display: flex; flex-direction: column; }
+        .product-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; color: var(--text-dark); text-transform: uppercase;}
+        .product-price { display: flex; align-items: baseline; gap: 8px; margin-top: auto; }
+        .current-price { font-size: 16px; font-weight: 700; color: var(--text-dark); }
+        .mrp-price { font-size: 12px; color: var(--text-muted); text-decoration: line-through; }
+        .coin-reward { font-size: 11px; color: #d97706; display: flex; align-items: center; gap: 4px; margin-top: 6px; font-weight: 700; text-transform: uppercase;}
+        .coin-icon { background: #fef3c7; border-radius: 50%; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; color: #d97706; font-weight: 700;}
+
+        .floating-actions { position: fixed; bottom: 20px; right: 10px; z-index: 100; display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+        .help-btn { background: var(--green-light); color: var(--green-accent); border: 1px solid #c8e6c9; padding: 8px 16px; border-radius: var(--card-radius); font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; text-transform: uppercase;}
+        .floating-p-btn { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; box-shadow: 0 6px 16px rgba(0,0,0,0.2); cursor: pointer; border: 2px solid white;}
+
+        /* Product Detail View */
+        .pd-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; position: sticky; top: 0; background: white; z-index: 100; border-bottom: 1px solid var(--border-color); }
+        .pd-header-actions { display: flex; gap: 16px; font-size: 20px; color: var(--text-dark); cursor: pointer; }
+        .pd-wrapper { display: flex; flex-direction: column; max-width: 1440px; margin: 0 auto;}
+        @media (min-width: 768px) { .pd-wrapper { flex-direction: row; gap: 24px; padding: 24px 10px; align-items: flex-start; } }
+        .pd-hero { background: #fff; position: relative; height: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; border-bottom: 1px solid var(--border-color); }
+        @media (min-width: 768px) { .pd-hero { flex: 1; border: 1px solid var(--border-color); border-radius: var(--card-radius); position: sticky; top: 90px; height: 500px; } }
+        .pd-hero img { width: 100%; height: 100%; object-fit: contain; padding: 20px; }
+        
+        .pd-info-block { background: white; padding: 16px 10px; border-radius: var(--card-radius) var(--card-radius) 0 0; margin-top: -16px; position: relative; z-index: 10; }
+        @media (min-width: 768px) { .pd-info-block { flex: 1.2; margin-top: 0; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 24px; } }
+        .pd-title { font-size: 18px; font-weight: 700; color: var(--text-dark); line-height: 1.4; margin-bottom: 8px; text-transform: uppercase;}
+        .pd-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
+        .pd-pricing-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        .pd-price-big { font-size: 28px; font-weight: 700; color: var(--text-dark); }
+        .pd-mrp-strike { font-size: 14px; color: var(--text-muted); text-decoration: line-through; }
+        .pd-discount-tag { background: #e0f2fe; color: #0284c7; font-size: 12px; font-weight: 700; padding: 6px 10px; border-radius: var(--card-radius); display: flex; align-items: center; gap: 4px; }
+        .pd-delivery-strip { display: flex; align-items: center; gap: 16px; font-size: 12px; font-weight: 700; color: var(--text-dark); border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px; flex-wrap: wrap; text-transform: uppercase;}
+        .pd-delivery-strip i { color: var(--blue-accent); font-size: 16px; }
+        .pd-freebie-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--card-radius); padding: 16px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 24px; }
+        .freebie-icon { width: 40px; height: 40px; background: white; border-radius: var(--card-radius); display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 18px; flex-shrink: 0; border: 1px solid var(--border-color); }
+        .freebie-text { font-size: 13px; color: var(--text-dark); line-height: 1.5; text-transform: uppercase;}
+        .freebie-text span { color: #16a34a; font-weight: 700; }
+        .pd-action-btns { display: flex; gap: 12px; margin-bottom: 24px; }
+        .pd-doc-btn { border: 1px solid var(--blue-accent); color: var(--blue-accent); background: white; padding: 10px 20px; border-radius: var(--card-radius); font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: background 0.2s; text-transform: uppercase;}
+        .pd-doc-btn:hover { background: var(--blue-light); }
+
+        .pd-bottom-bar { position: fixed; bottom: 0; width: 100%; max-width: 100%; background: white; padding: 12px 10px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); z-index: 1000; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); left: 0; }
+        .bottom-price-info { display: flex; flex-direction: column; }
+        .bottom-price { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .bottom-mrp { font-size: 13px; color: var(--text-muted); text-decoration: line-through; font-weight: 400; }
+        .bottom-tag-off { color: #0284c7; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 4px;}
+        .bottom-btn { background: var(--blue-accent); color: white; border: none; padding: 14px 48px; border-radius: var(--card-radius); font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.2s; text-transform: uppercase;}
+        .bottom-btn:hover { background: var(--blue-hover); }
+
+        /* Auth View */
+        .auth-view-layout { display: flex; flex-direction: column; min-height: 100vh; position: relative; }
         @media (min-width: 1024px) {
-            #profileComponent {
-                width: 900px; height: auto; max-height: 85vh;
-                top: 50%; left: 50%; transform: translate(-50%, -40%) scale(0.95);
-                border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-                padding: 24px; opacity: 0; pointer-events: none;
-            }
-            #profileComponent.active {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1; pointer-events: auto;
-            }
+            .auth-view-layout { flex-direction: row; align-items: center; justify-content: flex-end; padding: 40px 10%; background: url('https://placehold.co/1920x1080/1a1a1a/ffffff?text=Dental+Clinic+Background') center/cover no-repeat; }
+            .auth-view-layout::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%); z-index: 0; }
+        }
+        .auth-desktop-promo { display: none; position: relative; z-index: 1; flex: 1; color: white; padding-right: 40px; }
+        @media (min-width: 1024px) { .auth-desktop-promo { display: block; } }
+        .auth-desktop-promo h1 { font-size: 36px; line-height: 1.3; font-weight: 800; margin-bottom: 24px; text-transform: uppercase;}
+        .auth-perks { display: flex; gap: 16px; font-size: 13px; font-weight: 700; text-transform: uppercase; flex-wrap: wrap;}
+        .auth-perks span { display: flex; align-items: center; gap: 6px; }
+        .auth-perks i { color: #a7f3d0; font-size: 16px; }
+        .auth-mobile-slider-wrapper { overflow: hidden; width: 100%; height: 260px; position: absolute; top: 0; left: 0; z-index: 0; }
+        @media(min-width: 1024px){ .auth-mobile-slider-wrapper { display: none; } }
+        .auth-slider-track { display: flex; width: 200%; height: 100%; animation: slideMarquee 15s linear infinite; }
+        .auth-slider-track img { width: 25%; height: 100%; object-fit: cover; }
+        @keyframes slideMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .slider-fade-bottom { position: absolute; bottom: 0; left: 0; width: 100%; height: 160px; background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,1) 100%); z-index: 2; pointer-events: none;}
+        .mobile-auth-close { position: absolute; top: 16px; right: 10px; background: rgba(0,0,0,0.5); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10; cursor: pointer; }
+        @media (min-width: 1024px) { .mobile-auth-close { display: none; } }
+
+        .auth-card { position: relative; z-index: 1; padding: 0 10px; margin-top: 140px; display: flex; flex-direction: column; width: 100%; background: transparent; }
+        @media (min-width: 1024px) { .auth-card { margin-top: 0; width: 450px; background: white; padding: 40px; border-radius: var(--card-radius); box-shadow: 0 10px 40px rgba(0,0,0,0.3); flex-shrink: 0; } }
+        .auth-close-desktop { display: none; position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; }
+        @media (min-width: 1024px) { .auth-close-desktop { display: block; } }
+        .auth-close-desktop:hover { color: var(--red-accent); }
+        .auth-logo { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; cursor: pointer; }
+        .auth-logo i { color: var(--orange-accent); font-size: 36px; margin-bottom: 8px;}
+        .auth-logo .main { font-size: 22px; font-weight: 800; color: var(--blue-accent); line-height: 1;}
+        .auth-logo .sub { font-size: 10px; font-weight: 700; color: var(--orange-accent); line-height: 1; letter-spacing: 1px;}
+        .auth-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; text-align: center; color: var(--text-dark); text-transform: uppercase;}
+        .auth-subtitle { font-size: 11px; color: var(--text-muted); text-align: center; margin-bottom: 24px; text-transform: uppercase;}
+        .auth-tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 24px; }
+        .auth-tab { flex: 1; text-align: center; padding: 12px; font-size: 15px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: var(--transition); border-radius: var(--card-radius) var(--card-radius) 0 0; text-transform: uppercase;}
+        .auth-tab.active { color: var(--blue-accent); border-bottom: 2px solid var(--blue-accent); margin-bottom: -2px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark); }
+        .form-input { width: 100%; padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--card-radius); font-size: 15px; outline: none; transition: var(--transition); font-family: 'Quantico', sans-serif;}
+        .auth-submit-btn { width: 100%; background: var(--blue-dark); color: white; border: none; padding: 14px; border-radius: var(--card-radius); font-size: 15px; font-weight: 700; cursor: pointer; transition: var(--transition); font-family: 'Quantico', sans-serif; text-transform: uppercase; margin-top: 8px;}
+        .auth-submit-btn:hover { background: #172554; }
+        .auth-divider { display: flex; align-items: center; text-align: center; margin: 24px 0; color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .auth-divider::before, .auth-divider::after { content: ''; flex: 1; border-bottom: 1px solid #e0e0e0; }
+        .auth-divider span { padding: 0 10px; }
+        .auth-google-btn { width: 100%; background: white; color: var(--text-dark); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--card-radius); font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px; font-family: 'Quantico', sans-serif; text-transform: uppercase;}
+        .auth-google-btn img { width: 18px; height: 18px; }
+        .auth-google-btn:hover { background: #f8fafc; }
+        .auth-footer-text { text-align: center; margin-top: 32px; font-size: 10px; font-weight: 700; color: var(--text-muted); line-height: 1.6; text-transform: uppercase; padding-bottom: 20px;}
+        .auth-footer-text a { color: var(--blue-accent); text-decoration: none; }
+
+        /* Profile View Updates - EDGE TO EDGE WIDE LAYOUT */
+        .profile-header-bar { display: flex; align-items: center; padding: 16px 10px; background: white; border-bottom: 1px solid var(--border-color); font-size: 16px; font-weight: 700; gap: 16px; text-transform: uppercase;}
+        
+        /* Changed to 100% width with 10px margins mapping requested */
+        .profile-wrapper-wide { width: 100%; padding: 0 10px 40px; margin: 0 auto; display: flex; flex-direction: column; }
+
+        /* Complex 7-column grid layout for desktop mapping the screenshot */
+        .profile-dashboard-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            gap: 12px; 
+            margin-bottom: 24px;
+        }
+        @media (min-width: 1400px) {
+            .profile-dashboard-grid { grid-template-columns: repeat(7, 1fr); }
         }
 
-        /* Mobile Mode: Bottom Sheet */
-        @media (max-width: 1023px) {
-            #profileComponent {
-                width: 100%; bottom: 0; left: 0; height: 80vh;
-                border-radius: 20px 20px 0 0;
-                transform: translateY(100%);
-            }
-            #profileComponent.active { transform: translateY(0); }
-            
-            /* Drag Handle for mobile */
-            .drag-handle {
-                width: 40px; height: 4px; background: #ddd; border-radius: 2px;
-                margin: 12px auto; flex-shrink: 0;
-            }
+        .profile-feat-card { 
+            background: white; 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--card-radius); 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden;
+            transition: var(--transition);
         }
-
-        .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding: 0 10px; }
-        .profile-header h2 { font-size: 18px; font-weight: 800; text-transform: uppercase; }
-        .close-profile { font-size: 24px; cursor: pointer; color: var(--text-muted); }
-
-        .profile-scroll-content { overflow-y: auto; flex: 1; padding: 0 10px 20px; }
-
-        /* Dashboard Grid 7 Columns (Desktop) */
-        .dash-grid { 
-            display: grid; gap: 12px; margin-bottom: 24px;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        .profile-feat-card:hover { border-color: var(--blue-accent); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
+        .feat-card-header { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            padding: 12px 16px; 
+            border-bottom: 1px solid var(--border-color);
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-dark);
+            background: #fafafa;
         }
-        @media (min-width: 1200px) { .dash-grid { grid-template-columns: repeat(7, 1fr); } }
+        .feat-card-header i { font-size: 20px; color: var(--blue-accent); }
+        .feat-card-body { padding: 16px; flex: 1; font-size: 12px; color: var(--text-dark); line-height: 1.5; }
+        .feat-card-body p { margin-bottom: 6px; }
+        .feat-card-body strong { font-weight: 700; }
+        .feat-card-body ul { list-style: none; padding: 0; }
+        .feat-card-body ul li { margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .feat-card-body ul li::before { content: '•'; color: var(--text-muted); }
 
-        .dash-card { 
-            border: 1px solid var(--border-color); border-radius: 8px; 
-            padding: 16px; background: #fafafa; text-align: center;
+        .profile-action-center { display: flex; justify-content: center; margin: 24px 0; }
+        .btn-signout { background: white; color: var(--red-accent); border: 1px solid var(--red-accent); padding: 12px 48px; border-radius: var(--card-radius); font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: var(--transition); font-family: 'Quantico', sans-serif;}
+        .btn-signout:hover { background: var(--red-accent); color: white; }
+
+        /* Detailed Recent Orders List */
+        .profile-section { background: white; border-radius: var(--card-radius); border: 1px solid var(--border-color); overflow: hidden; margin-bottom: 24px;}
+        .section-header-bar { background: #f8fafc; padding: 12px 16px; font-size: 13px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px;}
+        .section-header-bar i { color: var(--blue-accent); font-size: 16px; }
+        .section-content { padding: 16px; }
+        
+        .wide-order-row { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; align-items: center; font-size: 13px; }
+        @media(min-width: 768px) {
+            .wide-order-row { grid-template-columns: 2fr 1fr 1fr; gap: 24px; }
         }
-        .dash-card i { font-size: 24px; color: var(--blue-accent); margin-bottom: 10px; display: block;}
-        .dash-card span { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-dark); }
+        .wide-order-row:last-child { border-bottom: none; }
+        .wo-title { font-weight: 700; color: var(--text-dark); display: flex; flex-direction: column; gap: 4px; }
+        .wo-title span { font-weight: 400; color: var(--text-muted); font-size: 11px; }
+        .wo-status { font-weight: 700; display: flex; flex-direction: column; gap: 4px; }
+        .wo-status-lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
 
-        .recent-orders { border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 24px; }
-        .ro-head { background: #f1f5f9; padding: 12px; font-size: 13px; font-weight: 800; border-bottom: 1px solid var(--border-color); text-transform: uppercase;}
-        .order-row { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid #eee; font-size: 13px;}
-        .order-row:last-child { border-bottom: none; }
+        /* Cart View */
+        .cart-wrapper-main { max-width: 800px; margin: 0 auto; width: 100%; padding: 10px; display: flex; flex-direction: column; gap: 12px; min-height: 80vh;}
+        .cart-item { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 12px; display: flex; gap: 12px; align-items: center;}
+        .cart-item-img { width: 80px; height: 80px; background: #f8fafc; border-radius: var(--card-radius); display: flex; justify-content: center; align-items: center;}
+        .cart-item-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .cart-item-info { flex: 1; display: flex; flex-direction: column; }
+        .cart-item-title { font-size: 12px; font-weight: 700; color: var(--text-dark); text-transform: uppercase; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
+        .cart-item-price { font-size: 16px; font-weight: 700; color: var(--blue-accent); }
+        .remove-btn { color: var(--red-accent); cursor: pointer; font-size: 18px; padding: 8px;}
+        .cart-summary { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-top: auto;}
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;}
+        .summary-total { display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); font-size: 20px; font-weight: 800; color: var(--text-dark);}
+        .checkout-btn { background: var(--green-accent); color: white; width: 100%; border: none; padding: 16px; border-radius: var(--card-radius); font-size: 16px; font-weight: 700; margin-top: 16px; cursor: pointer; text-transform: uppercase; transition: background 0.2s;}
+        .checkout-btn:hover { background: #1b5e20; }
 
-        .signout-btn { 
-            width: 100%; padding: 16px; border: 1px solid var(--red-accent); 
-            color: var(--red-accent); background: white; font-weight: 800; 
-            border-radius: 8px; cursor: pointer; text-transform: uppercase;
-            transition: 0.3s;
+        /* Raining Animation Overlay */
+        #successOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(255,255,255,0.95); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        .success-box { text-align: center; z-index: 10; animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .success-box i { font-size: 80px; color: var(--green-accent); margin-bottom: 16px; }
+        .success-box h2 { font-size: 28px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; margin-bottom: 8px;}
+        .success-box p { font-size: 14px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;}
+        @keyframes scaleUp { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes rainFall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+        .rain-drop { position: absolute; font-size: 28px; z-index: 5; animation: rainFall linear forwards; pointer-events: none; }
+
+        /* HUGE FOOTER SETTINGS */
+        .mega-footer { 
+            background: #ffffff; 
+            border-top: 1px solid var(--border-color); 
+            margin-top: auto;
+            position: relative;
         }
-        .signout-btn:hover { background: var(--red-accent); color: white; }
+        .mega-footer::before {
+            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 20 Q60 10 70 20 T50 40 Q40 50 30 40 T50 20" fill="none" stroke="%23f0f0f0" stroke-width="2"/></svg>');
+            background-repeat: repeat; opacity: 0.5; z-index: 0; pointer-events: none;
+        }
+        .mega-footer-content { position: relative; z-index: 1; }
+        
+        .footer-top-bar { 
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; 
+            padding: 16px 24px; border-bottom: 1px solid var(--border-color); gap: 16px; background: white;
+        }
+        .ftb-left { display: flex; align-items: center; gap: 16px; font-size: 13px; font-weight: 800; text-transform: uppercase; }
+        .social-icons { display: flex; gap: 8px; }
+        .social-icon { width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; cursor: pointer; transition: transform 0.2s;}
+        .social-icon:hover { transform: translateY(-2px); }
+        .si-fb { background: #3b5998; } .si-ig { background: #e1306c; } .si-x { background: #000000; } .si-yt { background: #ff0000; } .si-in { background: #0077b5; }
+        
+        .ftb-right { display: flex; align-items: center; gap: 16px; font-size: 13px; font-weight: 800; text-transform: uppercase; flex-wrap: wrap;}
+        .app-btn { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: var(--card-radius); cursor: pointer; background: white;}
+        .app-btn i { font-size: 20px; } .app-btn .texts { display: flex; flex-direction: column; font-size: 9px; line-height: 1.2; text-align: left; } .app-btn .texts strong { font-size: 12px; }
 
-        /* Footer */
-        .footer-main { background: #fff; border-top: 1px solid var(--border-color); padding: 40px 20px; margin-top: auto;}
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto; }
-        .footer-col h4 { font-size: 14px; margin-bottom: 20px; text-transform: uppercase; }
-        .footer-col p, .footer-col li { font-size: 13px; color: var(--text-muted); list-style: none; margin-bottom: 10px; }
+        .footer-main-grid { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 24px; padding: 40px 24px; max-width: 1600px; margin: 0 auto;
+        }
+        .fm-col h4 { font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--text-dark); margin-bottom: 16px; letter-spacing: 0.5px;}
+        .fm-col ul { list-style: none; padding: 0; margin: 0; }
+        .fm-col ul li { margin-bottom: 12px; font-size: 13px; color: var(--text-muted); cursor: pointer; }
+        .fm-col ul li:hover { color: var(--blue-accent); text-decoration: underline; }
+        
+        .fm-address-col { border-left: 2px dashed #e2e8f0; padding-left: 24px; }
+        @media(max-width: 768px) { .fm-address-col { border-left: none; padding-left: 0; border-top: 2px dashed #e2e8f0; padding-top: 24px;} }
+        .address-item { display: flex; gap: 12px; margin-bottom: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+        .address-item i { color: var(--text-dark); font-size: 16px; margin-top: 2px; }
 
+        .footer-bottom-bar { 
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; 
+            padding: 16px 24px; border-top: 1px solid var(--border-color); gap: 16px; background: white; font-size: 12px;
+        }
+        .fbb-payments { display: flex; align-items: center; gap: 12px; font-weight: 700; color: var(--text-dark); flex-wrap: wrap;}
+        .fbb-payments img { height: 24px; object-fit: contain; }
+        .fbb-right { display: flex; align-items: center; gap: 16px; color: var(--text-muted); font-weight: 700;}
+        .fbb-right .rating { display: flex; align-items: center; gap: 4px; color: var(--blue-accent); }
+
+        .whatsapp-float { position: fixed; bottom: 80px; right: 20px; background: #25d366; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 900; cursor: pointer; transition: transform 0.2s;}
+        .whatsapp-float:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -180,170 +441,923 @@
 <div class="app-container">
 
     <div id="homeView" class="view-section active">
+        
         <div class="sticky-header-container">
             <div class="header-master">
-                <div class="header-logo">
+                <div class="header-logo" onclick="switchView('homeView')">
                     <i class="fa-solid fa-tooth"></i>
                     <div class="header-logo-text">
                         <span class="main">ORACO DENTAL</span>
                         <span class="sub">INNOVATIONS</span>
                     </div>
                 </div>
+                <div class="location-block">
+                    <i class="fa-solid fa-location-dot location-icon"></i>
+                    <div class="location-text">
+                        <span class="label">DELIVERING TO</span>
+                        <span class="pincode">ENTER PINCODE <i class="fa-solid fa-caret-down"></i></span>
+                    </div>
+                </div>
                 
                 <div class="search-container">
                     <div class="search-input-box">
                         <i class="fa-solid fa-tooth" style="color: var(--blue-accent);"></i>
-                        <input type="text" id="mainSearchInput" placeholder="SEARCH PRODUCTS...">
+                        <input type="text" id="mainSearchInput" placeholder="SEARCH ">
+                        <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted); cursor: pointer; font-size: 18px;"></i>
+                    </div>
+                    <div class="cart-wrapper" id="mainCartIcon" onclick="switchView('cartView')" style="display: none;">
+                        <i class="fa-solid fa-cart-shopping" style="font-size: 20px; color: var(--text-dark);"></i>
+                        <div class="cart-badge" id="mainCartBadge">0</div>
                     </div>
                 </div>
 
                 <div class="header-actions">
-                    <div class="auth-trigger" onclick="handleAuthClick()">
-                        <i class="fa-regular fa-circle-user"></i> <span id="topBarAuthText">LOGIN</span>
+                    <div class="auth-trigger" id="topBarAuthBtn" onclick="handleAuthClick()">
+                        <i class="fa-regular fa-circle-user" style="font-size: 18px;"></i> <span id="topBarAuthText">LOGIN</span>
                     </div>
                 </div>
             </div>
 
-            <div class="nav-pills">
-                <div class="pill active">CATEGORY</div>
+            <div class="nav-pills no-scrollbar">
+                <div class="pill" onclick="toggleMegamenu(event)" id="catDropdownBtn"><i class="fa-solid fa-border-all" style="font-size: 12px;"></i> CATEGORY</div>
                 <div class="pill">FREEBIES</div>
                 <div class="pill">OFFERS</div>
-                <div class="pill">CONTACT</div>
+                <div class="pill">EVENTS</div>
+                <div class="pill">CONTACT US</div>
+            </div>
+
+            <div class="megamenu-overlay" id="megamenuOverlay" onclick="closeMegamenu()"></div>
+            <div class="megamenu" id="megamenu">
+                <div class="mm-search">
+                    <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+                    <input type="text" placeholder="SEARCH CATEGORY...">
+                </div>
+                <div class="mm-body">
+                    <div class="mm-sidebar">
+                        <div class="mm-sidebar-title">CATEGORY</div>
+                        <ul class="mm-cat-list" id="mmCatList"></ul>
+                    </div>
+                    <div class="mm-content">
+                        <div class="mm-content-header" id="mmContentTitle">CATEGORY TITLE <span>0</span></div>
+                        <div class="mm-grid" id="mmContentGrid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-banner">
+            <div style="background: #e2e8f0; width: 100%; height: 100%;"></div>
+            <div class="hero-content">
+                <p class="hero-brand">ENDOKING</p>
+                <h2>ECO PLUS COMPOSITE<br>LED LIGHT<br>CURE <span>UNIT</span></h2>
+                <p class="hero-desc">3 MODES. 5 SECONDS.<br>EVERY COMPOSITE CURED.</p>
+                <div class="hero-btn">SHOP NOW <span>₹ 1990/-</span></div>
             </div>
         </div>
 
         <div class="section-header">
-            <h3>TRENDING PRODUCTS <i class="fa-solid fa-bolt"></i></h3>
+            <h3>TRENDING PRODUCTS <i class="fa-solid fa-arrow-trend-up"></i></h3>
         </div>
 
-        <div id="productGrid" class="product-grid">
-            </div>
+        <div id="skeletonContainer" class="skel-grid"></div>
+        <div id="productGrid" class="product-grid" style="display: none;"></div>
+
     </div>
 
-    <div id="profileOverlay" onclick="closeProfile()"></div>
-    <div id="profileComponent">
-        <div class="drag-handle"></div>
-        <div class="profile-header">
-            <h2>Profile Dashboard</h2>
-            <i class="fa-solid fa-xmark close-profile" onclick="closeProfile()"></i>
+
+    <div id="productView" class="view-section">
+        <div class="pd-header">
+            <i class="fa-solid fa-chevron-left pd-header-actions" onclick="switchView('homeView')"></i>
+            <i class="fa-solid fa-tooth" style="color: var(--blue-accent); font-size: 20px;"></i>
+            <div class="pd-header-actions">
+                <i class="fa-regular fa-heart"></i>
+                <div class="cart-wrapper" onclick="switchView('cartView')">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <div class="cart-badge" id="pdCartBadge">0</div>
+                </div>
+            </div>
         </div>
+
+        <div class="pd-wrapper">
+            <div class="pd-hero">
+                <img src="" alt="Product Image" id="pd-hero-img">
+            </div>
+
+            <div class="pd-info-block">
+                <h1 class="pd-title" id="pd-title" style="text-transform: uppercase;">PRODUCT TITLE</h1>
+                <p class="pd-subtitle">High-quality dental product description goes here.</p>
+                
+                <div class="pd-pricing-row">
+                    <div class="pd-price-big" id="pd-price">₹0</div>
+                    <div class="pd-mrp-strike" id="pd-mrp">₹0</div>
+                    <div class="coin-reward"><span class="coin-icon">D</span> <span id="pd-coins">0</span></div>
+                    <div class="pd-discount-tag" id="pd-discount">↓ 0% OFF</div>
+                </div>
+
+                <div class="pd-delivery-strip">
+                    <div><i class="fa-solid fa-truck"></i> APR 12 <i class="fa-regular fa-circle-question" style="color:#ccc;"></i></div>
+                    <div><i class="fa-solid fa-rotate-left"></i> 10-DAYS <i class="fa-solid fa-circle-check" style="color:var(--green-accent);"></i></div>
+                    <div><i class="fa-solid fa-xmark" style="color:var(--red-accent);"></i> COD <i class="fa-regular fa-circle-question" style="color:#ccc;"></i></div>
+                </div>
+
+                <div class="pd-freebie-box">
+                    <div class="freebie-icon"><i class="fa-solid fa-lock"></i></div>
+                    <div class="freebie-text">
+                        ADD 1 MORE QUANTITY AND GET 3 ENDO EXCELLENCE NANO GOLD ROTARY FILES -21MM ASSORTED SX-F3 (PACK OF 6) - <span>FREE</span> <i class="fa-regular fa-circle-question" style="color:#999; font-size: 10px;"></i>
+                    </div>
+                </div>
+
+                <div class="pd-action-btns">
+                    <button class="pd-doc-btn"><i class="fa-solid fa-arrow-down"></i> BROCHURE</button>
+                    <button class="pd-doc-btn"><i class="fa-solid fa-arrow-down"></i> CATALOGUE</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pd-bottom-bar">
+            <div class="bottom-price-info">
+                <div class="bottom-price" id="bottom-price">₹0 <span class="bottom-mrp" id="bottom-mrp-text">₹0</span></div>
+                <div style="display:flex; gap:8px; align-items:center; margin-top: 4px;">
+                    <span class="bottom-tag-off" id="bottom-discount">↓ 0% OFF</span>
+                    <span class="coin-reward" style="margin:0;"><span class="coin-icon">D</span> <span id="bottom-coins">0</span></span>
+                </div>
+            </div>
+            <button class="bottom-btn" id="pdAddBtn">ADD TO CART</button>
+        </div>
+    </div>
+
+
+    <div id="cartView" class="view-section">
+        <div class="profile-header-bar">
+            <i class="fa-solid fa-chevron-left" style="cursor: pointer;" onclick="switchView('homeView')"></i>
+            <span>MY CART</span>
+        </div>
+        <div class="cart-wrapper-main">
+            <div id="cartItemsList">
+                </div>
+            <div class="empty-state" id="emptyCartState" style="display: none;">
+                <i class="fa-solid fa-cart-shopping" style="font-size: 40px; color:#e0e0e0; margin-bottom: 16px;"></i><br>
+                YOUR CART IS EMPTY
+            </div>
+            
+            <div class="cart-summary" id="cartSummaryBlock">
+                <div class="summary-row"><span>SUBTOTAL</span> <span id="cartSubtotal">₹0</span></div>
+                <div class="summary-row"><span>SHIPPING</span> <span style="color:var(--green-accent);">FREE</span></div>
+                <div class="summary-total"><span>TOTAL</span> <span id="cartTotal">₹0</span></div>
+                <button class="checkout-btn" onclick="placeOrder()">PLACE ORDER NOW</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="authView" class="view-section">
+        <div class="auth-view-layout">
+            <div class="mobile-auth-close" onclick="switchView('homeView')"><i class="fa-solid fa-xmark"></i></div>
+
+            <div class="auth-mobile-slider-wrapper">
+                <div class="auth-slider-track">
+                    <img src="https://placehold.co/400x300/fce7f3/db2777?text=Consumables" alt="1">
+                    <img src="https://placehold.co/400x300/fef3c7/d97706?text=Instruments" alt="2">
+                    <img src="https://placehold.co/400x300/dcfce7/16a34a?text=Materials" alt="3">
+                    <img src="https://placehold.co/400x300/e0f2fe/0284c7?text=Equipments" alt="4">
+                </div>
+                <div class="slider-fade-bottom"></div>
+            </div>
+
+            <div class="auth-desktop-promo">
+                <h1>JOIN 2 LAKH+ INDIAN DENTISTS WHO TRUST ORACO DENTAL INNOVATIONS TO GROW THEIR BUSINESS</h1>
+                <div class="auth-perks">
+                    <span><i class="fa-solid fa-circle-check"></i> EASY RETURNS</span>
+                    <span><i class="fa-solid fa-circle-check"></i> REWARDS ON EVERY PURCHASE</span>
+                    <span><i class="fa-solid fa-circle-check"></i> BEST PRICE GUARANTEED</span>
+                </div>
+            </div>
+
+            <div class="auth-card">
+                <button class="auth-close-desktop" onclick="switchView('homeView')"><i class="fa-solid fa-xmark"></i></button>
+                
+                <div class="auth-logo">
+                    <i class="fa-solid fa-tooth"></i>
+                    <div style="display:flex; flex-direction:column; line-height: 1; align-items: center;">
+                        <span class="main">ORACO DENTAL</span>
+                        <span class="sub">INNOVATIONS</span>
+                    </div>
+                </div>
+
+                <h2 class="auth-title">LOG IN OR SIGN UP</h2>
+                <p class="auth-subtitle">Use <strong>demo@xrvlabs.com</strong> and <strong>demo123</strong> to login</p>
+
+                <form id="authForm" onsubmit="submitAuth(event)">
+                    <div class="auth-tabs">
+                        <div class="auth-tab active" id="tabLogin" onclick="toggleAuthMode('login')">LOGIN</div>
+                        <div class="auth-tab" id="tabSignup" onclick="toggleAuthMode('signup')">SIGN UP</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>EMAIL ADDRESS</label>
+                        <input type="email" id="authEmail" class="form-input" placeholder="demo@xrvlabs.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>PASSWORD</label>
+                        <input type="password" id="authPassword" class="form-input" placeholder="demo123" required>
+                    </div>
+
+                    <p id="authErrorMsg" style="color: var(--red-accent); font-size: 12px; font-weight: 700; display:none; margin-bottom: 10px; text-transform: uppercase;">INVALID CREDENTIALS</p>
+
+                    <button type="submit" class="auth-submit-btn" id="authSubmitBtn">LOGIN SECURELY</button>
+
+                    <div class="auth-divider"><span>OR</span></div>
+
+                    <button type="button" class="auth-google-btn">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="G"> CONTINUE WITH GOOGLE
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="profileView" class="view-section">
         
-        <div class="profile-scroll-content">
-            <div class="dash-grid">
-                <div class="dash-card"><i class="fa-solid fa-id-card"></i><span>Account Info</span></div>
-                <div class="dash-card"><i class="fa-solid fa-box"></i><span>Orders</span></div>
-                <div class="dash-card"><i class="fa-solid fa-heart"></i><span>Wishlist</span></div>
-                <div class="dash-card"><i class="fa-solid fa-map-location-dot"></i><span>Addresses</span></div>
-                <div class="dash-card"><i class="fa-solid fa-credit-card"></i><span>Payments</span></div>
-                <div class="dash-card"><i class="fa-solid fa-coins"></i><span>Rewards</span></div>
-                <div class="dash-card"><i class="fa-solid fa-user-shield"></i><span>Security</span></div>
-            </div>
-
-            <div class="recent-orders">
-                <div class="ro-head"><i class="fa-solid fa-clock-rotate-left"></i> Recent Orders</div>
-                <div class="order-row">
-                    <div><strong>#ORD-9921</strong><br><small>23 June 2026</small></div>
-                    <div style="text-align:right; color:var(--green-accent);"><strong>Delivered</strong><br>₹4,500</div>
-                </div>
-                <div class="order-row">
-                    <div><strong>#ORD-8812</strong><br><small>10 June 2026</small></div>
-                    <div style="text-align:right; color:var(--orange-accent);"><strong>Processing</strong><br>₹1,200</div>
+        <div class="sticky-header-container">
+            <div class="profile-header-bar">
+                <i class="fa-solid fa-chevron-left" style="cursor: pointer;" onclick="switchView('homeView')"></i>
+                <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+                    <span>YOUR ACCOUNT</span>
+                    <div style="display:flex; align-items:center; gap:12px; color:var(--blue-accent);">
+                        <i class="fa-regular fa-circle-user" style="font-size:24px;"></i>
+                        <div style="display:flex; flex-direction:column; line-height:1.2;">
+                            <span style="font-size:12px; color:var(--text-dark);">Welcome,</span>
+                            <span id="profileName" style="font-size:14px; font-weight:800;">Dr. Demo User</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <button class="signout-btn" onclick="logoutUser()">Sign Out</button>
+        <div class="profile-wrapper-wide">
+            
+            <div class="section-header" style="padding: 0;">
+                <h3 style="background:transparent; padding: 16px 0;">PROFILE DASHBOARD</h3>
+            </div>
+
+            <div class="profile-dashboard-grid">
+                
+                <div class="profile-feat-card">
+                    <div class="feat-card-header"><i class="fa-solid fa-users-gear"></i> ACCOUNT DETAILS</div>
+                    <div class="feat-card-body">
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                            <i class="fa-solid fa-tooth" style="font-size:24px; color:#ccc;"></i>
+                            <div>
+                                <strong style="font-size:14px; display:block;" id="dashName">Dr. Demo User</strong>
+                                <span style="color:var(--text-muted);">Clinic Info</span>
+                            </div>
+                        </div>
+                        <p>Primary Address, New Delhi,<br>India, 110074.</p>
+                    </div>
+                </div>
+
+                <div class="profile-feat-card" onclick="document.getElementById('recentOrdersBlock').scrollIntoView({behavior: 'smooth'})" style="cursor:pointer;">
+                    <div class="feat-card-header"><i class="fa-solid fa-box-open"></i> MY ORDERS</div>
+                    <div class="feat-card-body">
+                        <ul>
+                            <li>Order #12345 &nbsp;&nbsp;<span style="color:var(--text-muted);">23 June</span></li>
+                            <li>Order #12344 &nbsp;&nbsp;<span style="color:var(--text-muted);">05 June</span></li>
+                        </ul>
+                        <div style="margin-top:auto; padding-top:12px; border-top:1px dashed #eee; display:flex; justify-content:space-between;">
+                            <strong>Total Counts</strong>
+                            <strong>27 Counts</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-feat-card">
+                    <div class="feat-card-header"><i class="fa-solid fa-heart"></i> WISHLISTS & PLANS</div>
+                    <div class="feat-card-body">
+                        <ul>
+                            <li>WishLists</li>
+                            <li>Wishlists & Plans</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="profile-feat-card">
+                    <div class="feat-card-header"><i class="fa-solid fa-location-dot"></i> SHIPPING ADDRESSES</div>
+                    <div class="feat-card-body">
+                        <strong>Manage Addresses</strong>
+                        <p style="margin-top:6px;"><strong>Clinic Building</strong><br>Primary Address, New Delhi,<br>India, 110074.</p>
+                    </div>
+                </div>
+
+                <div class="profile-feat-card">
+                    <div class="feat-card-header"><i class="fa-regular fa-credit-card"></i> PAYMENT METHODS</div>
+                    <div class="feat-card-body">
+                        <strong>Manage Saved Cards</strong>
+                    </div>
+                </div>
+
+                <div class="profile-feat-card">
+                    <div class="feat-card-header"><i class="fa-solid fa-coins"></i> DENTALKART REWARDS</div>
+                    <div class="feat-card-body">
+                        <p>Current Tier: <strong style="color:#d4af37;">Gold</strong></p>
+                        <p>Points balance: <strong>1,500</strong></p>
+                        <p style="text-decoration:underline; cursor:pointer; margin-top:8px;">Rewards History</p>
+                    </div>
+                </div>
+
+                <div class="profile-feat-card">
+                    <div class="feat-card-header"><i class="fa-solid fa-shield-halved"></i> ACCOUNT SECURITY</div>
+                    <div class="feat-card-body">
+                        <p><strong>Manage Password</strong></p>
+                        <p>2FA Status: No</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="profile-section" id="recentOrdersBlock">
+                <div class="section-header-bar"><i class="fa-solid fa-box"></i> RECENT ORDERS</div>
+                <div class="section-content" id="orderHistoryList">
+                    
+                    <div class="wide-order-row">
+                        <div class="wo-title">
+                            Order #12345 Waldent Handpiece <span>[Date]</span>
+                        </div>
+                        <div class="wo-status">
+                            <span class="wo-status-lbl">Status Overview</span>
+                            Working Completed
+                        </div>
+                        <div class="wo-status" style="text-align:right;">
+                            <span class="wo-status-lbl">Status Overview</span>
+                            Delivery: 95% Completed
+                        </div>
+                    </div>
+
+                    <div class="wide-order-row">
+                        <div class="wo-title">
+                            Order #12344 3M Composite <span>[Date]</span>
+                        </div>
+                        <div class="wo-status">
+                            <span class="wo-status-lbl">Status Overview</span>
+                            Working Completed
+                        </div>
+                        <div class="wo-status" style="text-align:right;">
+                            <span class="wo-status-lbl">Status Overview</span>
+                            Delivery: 95% Completed
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="profile-action-center">
+                <button class="btn-signout" onclick="logoutUser()">SIGN OUT</button>
+            </div>
+            
         </div>
     </div>
+    
+    <footer class="mega-footer">
+        <div class="mega-footer-content">
+            
+            <div class="footer-top-bar">
+                <div class="ftb-left">
+                    <span>STAY CONNECTED</span>
+                    <div class="social-icons">
+                        <div class="social-icon si-fb"><i class="fa-brands fa-facebook-f"></i></div>
+                        <div class="social-icon si-ig"><i class="fa-brands fa-instagram"></i></div>
+                        <div class="social-icon si-x"><i class="fa-brands fa-x-twitter"></i></div>
+                        <div class="social-icon si-yt"><i class="fa-brands fa-youtube"></i></div>
+                        <div class="social-icon si-in"><i class="fa-brands fa-linkedin-in"></i></div>
+                    </div>
+                    <span>240K+ <span style="font-weight:400; text-transform:none;">Followers</span></span>
+                </div>
+                <div class="ftb-right">
+                    <span><i class="fa-solid fa-mobile-screen-button"></i> EXPERIENCE THE MOBILE APP</span>
+                    <div class="app-btn">
+                        <i class="fa-brands fa-google-play" style="color:#0f9d58;"></i>
+                        <div class="texts"><span>GET IT ON</span><strong>GOOGLE PLAY</strong></div>
+                    </div>
+                    <div class="app-btn">
+                        <i class="fa-brands fa-apple"></i>
+                        <div class="texts"><span>DOWNLOAD ON THE</span><strong>APPLE STORE</strong></div>
+                    </div>
+                    <span style="display:flex; align-items:center; gap:8px;">
+                        <img src="https://placehold.co/40x40/ccc/fff?text=U" style="border-radius:50%; width:30px; height:30px;">
+                        <span style="font-weight:400; text-transform:none;">500K+ Users</span>
+                    </span>
+                </div>
+            </div>
 
-    <footer class="footer-main">
-        <div class="footer-grid">
-            <div class="footer-col">
-                <h4>About Us</h4>
-                <p>Oraco Dental is the leading innovation hub for professional dental supplies in India. Serving 2 Lakh+ Dentists.</p>
+            <div class="footer-main-grid">
+                <div class="fm-col">
+                    <h4>ABOUT</h4>
+                    <ul>
+                        <li>Contact Us</li>
+                        <li>About Us</li>
+                        <li>Careers</li>
+                    </ul>
+                    <p style="margin-top:24px; font-size:12px; color:var(--text-dark);">
+                        <strong>Our Warehouses:</strong> Gurugram, Delhi, Chennai.
+                    </p>
+                </div>
+                <div class="fm-col">
+                    <h4>CONTACT US</h4>
+                    <ul>
+                        <li>Investor Relations</li>
+                        <li>Dealer Price Bulk Inquiry</li>
+                        <li>Waldent Dealership</li>
+                        <li>Sell on Dentalkart</li>
+                    </ul>
+                </div>
+                <div class="fm-col">
+                    <h4>HELP</h4>
+                    <ul>
+                        <li>Orders</li>
+                        <li>Refunds</li>
+                        <li>Payments</li>
+                        <li>Rewards</li>
+                    </ul>
+                </div>
+                <div class="fm-col">
+                    <h4>POLICY</h4>
+                    <ul>
+                        <li>Return Policy</li>
+                        <li>Terms of Use</li>
+                        <li>Privacy</li>
+                        <li>Sitemap</li>
+                    </ul>
+                </div>
+                <div class="fm-col fm-address-col">
+                    <h4>REGISTERED OFFICE ADDRESS</h4>
+                    <div class="address-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>VASA DENTICITY LIMITED, Chattarpur,<br>New Delhi, India, 110074.</span>
+                    </div>
+                    <div class="address-item">
+                        <i class="fa-solid fa-phone"></i>
+                        <span>+91-728-9999-456</span>
+                    </div>
+                    <div class="address-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>support@dentalkart.com</span>
+                    </div>
+                    <div class="address-item">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span>Mon-Sun (9:00 AM - 9:00 PM)</span>
+                    </div>
+                    <div style="margin-top:24px; font-size:11px; color:var(--text-muted); text-align:right;">
+                        2016-2026, VASA DENTICITY LIMITED<br>
+                        Crafted with <i class="fa-solid fa-heart" style="color:var(--red-accent);"></i> in India
+                    </div>
+                </div>
             </div>
-            <div class="footer-col">
-                <h4>Help Center</h4>
-                <ul>
-                    <li>Order Tracking</li>
-                    <li>Refund Policy</li>
-                    <li>Payment Methods</li>
-                </ul>
+
+            <div class="footer-bottom-bar">
+                <div class="fbb-payments">
+                    Our Payment Partners
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="GPay">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/RuPay.svg" alt="RuPay">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/PhonePe_Logo.svg/1200px-PhonePe_Logo.svg.png" style="height:18px;" alt="PhonePe">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="MasterCard">
+                </div>
+                <div class="fbb-right">
+                    <div class="rating">
+                        4.5 <i class="fa-regular fa-star"></i> Average online rating
+                    </div>
+                </div>
             </div>
-            <div class="footer-col">
-                <h4>Contact</h4>
-                <p><i class="fa-solid fa-envelope"></i> support@oraco.com</p>
-                <p><i class="fa-solid fa-phone"></i> +91 728-999-456</p>
-            </div>
+
         </div>
     </footer>
+    
+    <div class="whatsapp-float"><i class="fa-brands fa-whatsapp"></i></div>
 
 </div>
 
+<div id="successOverlay">
+    <div class="success-box">
+        <i class="fa-solid fa-circle-check"></i>
+        <h2>ORDER PLACED!</h2>
+        <p>YOUR ITEMS ARE ON THE WAY</p>
+    </div>
+</div>
+
 <script>
-    let currentUser = null;
-    const mockProducts = [
-        { id: 1, title: 'WOODPECKER RVG SENSOR SIZE 1.5', price: '55,000', img: 'https://placehold.co/400x400/eef2ff/0284c7?text=RVG' },
-        { id: 2, title: 'WALDENT RCT ECONOMY PACK', price: '360', img: 'https://placehold.co/400x400/eef2ff/0284c7?text=Files' },
-        { id: 3, title: 'LED LIGHT CURE UNIT', price: '1,990', img: 'https://placehold.co/400x400/eef2ff/0284c7?text=LED' },
-        { id: 4, title: 'PROSTHETIC DRIVER KIT', price: '3,490', img: 'https://placehold.co/400x400/eef2ff/0284c7?text=Kit' }
+    // --- Data ---
+    const categoriesData = [
+        {
+            id: 'cat_brands', title: 'DENTAL BRANDS', icon: 'fa-tag',
+            items: [
+                { name: 'WALDENT', img: 'https://placehold.co/200x200/f8fafc/0284c7?text=Waldent' },
+                { name: '3M ESPE', img: 'https://placehold.co/200x200/f8fafc/0284c7?text=3M+ESPE' },
+                { name: 'DENTSPLY', img: 'https://placehold.co/200x200/f8fafc/0284c7?text=Dentsply' },
+                { name: 'GC', img: 'https://placehold.co/200x200/f8fafc/0284c7?text=GC' }
+            ]
+        },
+        {
+            id: 'cat_endo', title: 'ENDODONTICS', icon: 'fa-syringe',
+            items: [
+                { name: 'ROTARY FILES', img: 'https://placehold.co/200x200/f8fafc/0284c7?text=Files' },
+                { name: 'APEX LOCATORS', img: 'https://placehold.co/200x200/f8fafc/0284c7?text=Apex' },
+                { name: 'ENDO MOTORS', img: 'https://placehold.co/200x200/f8fafc/0284c7?text=Motor' }
+            ]
+        }
     ];
 
-    function renderProducts() {
-        document.getElementById('productGrid').innerHTML = mockProducts.map(p => `
-            <div class="product-card">
-                <img src="${p.img}">
-                <div style="padding:10px 0;">
-                    <p style="font-size:12px; font-weight:800; height:34px; overflow:hidden;">${p.title}</p>
-                    <p style="color:var(--blue-accent); font-weight:800; margin-top:5px;">₹${p.price}</p>
-                </div>
+    const mockProducts = [
+        { id: 1, title: 'WOODPECKER RTA INTELLI-SENSOR RVG BY WALDENT SIZE - 1.5', img: 'https://placehold.co/400x400/e0f2fe/0284c7?text=RVG+Sensor', priceNum: 55000, price: '55,000', mrp: '210,000', discount: '73.81', coins: 2000, freebie: true },
+        { id: 2, title: 'DENTALTECH UNIVERSAL PROSTHETIC DRIVER KIT', img: 'https://placehold.co/400x400/e0f2fe/0284c7?text=Driver+Kit', priceNum: 3490, price: '3,490', mrp: '13,990', discount: '75.05', coins: 170, freebie: false },
+        { id: 3, title: 'WALDENT RCTCAL ECONOMY PACK (PACK OF 4)', img: 'https://placehold.co/400x400/e0f2fe/0284c7?text=RCTcal', priceNum: 360, price: '360', mrp: '1,100', discount: '67.27', coins: 20, freebie: false },
+        { id: 4, title: 'ARMA DENTAL TEMPORARY CROWN & BRIDGE 3D PRINTING RESIN', img: 'https://placehold.co/400x400/e0f2fe/0284c7?text=3D+Resin', priceNum: 15000, price: '15,000', mrp: '18,000', discount: '16.66', coins: 500, freebie: false }
+    ];
+
+    // --- State ---
+    let currentUser = null; 
+    let cart = [];
+    let orderHistory = [];
+    let currentSelectedProduct = null;
+
+    const views = {
+        homeView: document.getElementById('homeView'),
+        productView: document.getElementById('productView'),
+        authView: document.getElementById('authView'),
+        profileView: document.getElementById('profileView'),
+        cartView: document.getElementById('cartView')
+    };
+
+    // --- View Management ---
+    function switchView(targetViewId) {
+        closeMegamenu(); 
+        
+        if (!currentUser && (targetViewId === 'cartView' || targetViewId === 'profileView')) {
+            targetViewId = 'authView';
+        }
+
+        Object.values(views).forEach(view => { if(view) view.classList.remove('active'); });
+        if(views[targetViewId]) views[targetViewId].classList.add('active');
+        
+        document.getElementById('homeFab') ? document.getElementById('homeFab').style.display = (targetViewId === 'homeView') ? 'flex' : 'none' : null;
+        window.scrollTo(0, 0);
+
+        if(targetViewId === 'cartView') renderCart();
+        if(targetViewId === 'profileView') renderProfileOrders();
+    }
+
+    // --- Mega Menu ---
+    function renderCategories() {
+        const catList = document.getElementById('mmCatList');
+        catList.innerHTML = categoriesData.map((cat, index) => `
+            <li class="${index === 0 ? 'active' : ''}" 
+                onmouseenter="if(window.innerWidth >= 1024) handleCatInteraction('${cat.id}', this)" 
+                onclick="handleCatInteraction('${cat.id}', this)">
+                <i class="fa-solid ${cat.icon} icon"></i> ${cat.title} 
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </li>
+        `).join('');
+        renderSubcategories(categoriesData[0]);
+    }
+
+    function handleCatInteraction(catId, element) {
+        document.querySelectorAll('.mm-cat-list li').forEach(li => li.classList.remove('active'));
+        element.classList.add('active');
+        const cat = categoriesData.find(c => c.id === catId);
+        if(cat) renderSubcategories(cat);
+    }
+
+    function renderSubcategories(cat) {
+        document.getElementById('mmContentTitle').innerHTML = `${cat.title} <span>${cat.items.length}</span>`;
+        document.getElementById('mmContentGrid').innerHTML = cat.items.map(item => `
+            <div class="subcat-card">
+                <div class="subcat-img"><img src="${item.img}" alt="${item.name}"></div>
+                <div class="subcat-title">${item.name}</div>
             </div>
         `).join('');
     }
 
-    // AUTH & MODAL LOGIC
-    function handleAuthClick() {
-        if (!currentUser) {
-            // Simulated Login
-            currentUser = { name: "Dr. Demo" };
-            updateUI();
-            alert("Logged in as Dr. Demo");
+    function toggleMegamenu(e) {
+        if(e) e.stopPropagation();
+        const megamenu = document.getElementById('megamenu');
+        if (megamenu.classList.contains('active')) {
+            closeMegamenu();
         } else {
-            openProfile();
+            megamenu.classList.add('active');
+            document.getElementById('catDropdownBtn').classList.add('active');
+            if (window.innerWidth >= 1024) {
+                document.getElementById('megamenuOverlay').classList.add('active');
+                document.body.classList.add('no-scroll'); 
+            }
         }
     }
 
-    function openProfile() {
-        document.getElementById('profileOverlay').style.display = 'block';
-        setTimeout(() => {
-            document.getElementById('profileOverlay').style.opacity = '1';
-            document.getElementById('profileComponent').classList.add('active');
-            document.body.classList.add('no-scroll');
-        }, 10);
+    function closeMegamenu() {
+        document.getElementById('megamenu').classList.remove('active');
+        document.getElementById('catDropdownBtn').classList.remove('active');
+        document.getElementById('megamenuOverlay').classList.remove('active');
+        document.body.classList.remove('no-scroll'); 
     }
 
-    function closeProfile() {
-        document.getElementById('profileComponent').classList.remove('active');
-        document.getElementById('profileOverlay').style.opacity = '0';
+    // --- Products ---
+    function renderSkeletons() {
+        let skelHTML = '';
+        for(let i=0; i<4; i++) skelHTML += `<div class="skel-card"><div class="skeleton skel-img"></div><div class="skeleton skel-text-1"></div><div class="skeleton skel-text-2"></div><div class="skeleton skel-price"></div><div class="skeleton skel-btn"></div></div>`;
+        document.getElementById('skeletonContainer').innerHTML = skelHTML;
+    }
+
+    function renderProducts() {
+        let prodHTML = '';
+        mockProducts.forEach(prod => {
+            let freebieTag = prod.freebie ? `<div class="freebies-tag"><i class="fa-solid fa-gift"></i> FREEBIES</div>` : '';
+            prodHTML += `
+                <div class="product-card" onclick="openProduct(${prod.id})">
+                    <div class="product-image-container">
+                        <i class="fa-regular fa-heart wishlist-btn" onclick="event.stopPropagation();"></i>
+                        ${freebieTag}
+                        <img src="${prod.img}" alt="${prod.title}" loading="lazy">
+                        <div class="add-btn" onclick="event.stopPropagation(); addToCart(${prod.id})">ADD</div>
+                    </div>
+                    <div class="product-details">
+                        <div class="product-title">${prod.title}</div>
+                        <div class="product-price">
+                            <span class="current-price">₹${prod.price}</span>
+                            <span class="mrp-price">₹${prod.mrp}</span>
+                        </div>
+                        <div class="coin-reward"><span class="coin-icon">D</span> ${prod.coins}</div>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById('productGrid').innerHTML = prodHTML;
+    }
+
+    function openProduct(id) {
+        currentSelectedProduct = mockProducts.find(p => p.id === id);
+        if(!currentSelectedProduct) return;
+        
+        document.getElementById('pd-hero-img').src = currentSelectedProduct.img;
+        document.getElementById('pd-title').innerText = currentSelectedProduct.title;
+        document.getElementById('pd-price').innerText = `₹${currentSelectedProduct.price}`;
+        document.getElementById('pd-mrp').innerText = `₹${currentSelectedProduct.mrp}`;
+        document.getElementById('pd-coins').innerText = currentSelectedProduct.coins;
+        document.getElementById('pd-discount').innerText = `↓ ${currentSelectedProduct.discount}% OFF`;
+        
+        document.getElementById('bottom-price').innerHTML = `₹${currentSelectedProduct.price} <span class="bottom-mrp">₹${currentSelectedProduct.mrp}</span>`;
+        document.getElementById('bottom-discount').innerText = `↓ ${currentSelectedProduct.discount}% OFF`;
+        document.getElementById('bottom-coins').innerText = currentSelectedProduct.coins;
+
+        document.getElementById('pdAddBtn').onclick = () => addToCart(id);
+
+        switchView('productView');
+    }
+
+    // --- Cart & Orders Logic ---
+    function addToCart(productId) {
+        if (!currentUser) {
+            switchView('authView');
+            return;
+        }
+        const product = mockProducts.find(p => p.id === productId);
+        if(product) {
+            cart.push(product);
+            updateCartBadges();
+            alert(`${product.title} added to cart!`);
+        }
+    }
+
+    function updateCartBadges() {
+        const count = cart.length;
+        document.getElementById('mainCartBadge').innerText = count;
+        document.getElementById('pdCartBadge').innerText = count;
+    }
+
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCartBadges();
+        renderCart();
+    }
+
+    function renderCart() {
+        const listContainer = document.getElementById('cartItemsList');
+        const emptyState = document.getElementById('emptyCartState');
+        const summaryBlock = document.getElementById('cartSummaryBlock');
+
+        if(cart.length === 0) {
+            listContainer.innerHTML = '';
+            emptyState.style.display = 'block';
+            summaryBlock.style.display = 'none';
+            return;
+        }
+
+        emptyState.style.display = 'none';
+        summaryBlock.style.display = 'block';
+
+        let html = '';
+        let total = 0;
+        cart.forEach((item, index) => {
+            total += item.priceNum;
+            html += `
+                <div class="cart-item">
+                    <div class="cart-item-img"><img src="${item.img}"></div>
+                    <div class="cart-item-info">
+                        <div class="cart-item-title">${item.title}</div>
+                        <div class="cart-item-price">₹${item.price}</div>
+                    </div>
+                    <i class="fa-solid fa-trash remove-btn" onclick="removeFromCart(${index})"></i>
+                </div>
+            `;
+        });
+        listContainer.innerHTML = html;
+        document.getElementById('cartSubtotal').innerText = `₹${total.toLocaleString()}`;
+        document.getElementById('cartTotal').innerText = `₹${total.toLocaleString()}`;
+    }
+
+    function placeOrder() {
+        if(cart.length === 0) return;
+        let total = cart.reduce((sum, item) => sum + item.priceNum, 0);
+        
+        orderHistory.unshift({
+            id: 'ORD' + Math.floor(Math.random() * 1000000),
+            date: new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}),
+            items: [...cart],
+            total: total
+        });
+
+        cart = [];
+        updateCartBadges();
+        triggerRain();
+    }
+
+    function renderProfileOrders() {
+        const container = document.getElementById('orderHistoryList');
+        if(orderHistory.length === 0) {
+            // Keep the static placeholders shown in screenshot if no real orders, 
+            // but normally we'd show empty state or inject the new orders here.
+            return;
+        }
+
+        let html = '';
+        orderHistory.forEach(order => {
+            html += `
+                <div class="wide-order-row">
+                    <div class="wo-title">
+                        Order #${order.id} <span>${order.date}</span>
+                    </div>
+                    <div class="wo-status">
+                        <span class="wo-status-lbl">Items</span>
+                        ${order.items.length} ITEM(S) - ₹${order.total.toLocaleString()}
+                    </div>
+                    <div class="wo-status" style="text-align:right;">
+                        <span class="wo-status-lbl">Status Overview</span>
+                        Processing...
+                    </div>
+                </div>
+            `;
+        });
+        
+        // Append to existing placeholders so it looks full for the demo
+        const existing = container.innerHTML;
+        container.innerHTML = html + existing;
+    }
+
+    // --- Animation ---
+    function triggerRain() {
+        const overlay = document.getElementById('successOverlay');
+        overlay.style.display = 'flex';
+        
+        const symbols = ['🎉', '📦', '💙', '🦷'];
+        for(let i=0; i<60; i++) {
+            let drop = document.createElement('div');
+            drop.className = 'rain-drop';
+            drop.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+            drop.style.left = Math.random() * 100 + 'vw';
+            drop.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+            drop.style.animationDelay = (Math.random() * 0.5) + 's';
+            overlay.appendChild(drop);
+            setTimeout(() => drop.remove(), 4000);
+        }
+
         setTimeout(() => {
-            document.getElementById('profileOverlay').style.display = 'none';
-            document.body.classList.remove('no-scroll');
-        }, 400);
+            overlay.style.display = 'none';
+            switchView('profileView'); 
+        }, 3500);
+    }
+
+    // --- Search ---
+    function typeWriterEffect() {
+        const searchInput = document.getElementById('mainSearchInput');
+        if (!searchInput) return;
+        const searchPrefix = "SEARCH ";
+        const searchTerms = ["COMPOSITES...", "RVG SENSORS...", "ENDOMOTORS...", "DENTAL CHAIRS..."];
+        let termIndex = 0; let charIndex = 0; let isDeleting = false;
+
+        function type() {
+            const currentTerm = searchTerms[termIndex];
+            if (isDeleting) {
+                searchInput.setAttribute('placeholder', searchPrefix + currentTerm.substring(0, charIndex));
+                charIndex--;
+                if (charIndex < 0) { isDeleting = false; termIndex = (termIndex + 1) % searchTerms.length; setTimeout(type, 100); } 
+                else { setTimeout(type, 15); }
+            } else {
+                searchInput.setAttribute('placeholder', searchPrefix + currentTerm.substring(0, charIndex));
+                charIndex++;
+                if (charIndex > currentTerm.length) { isDeleting = true; setTimeout(type, 1200); } 
+                else { setTimeout(type, 35); }
+            }
+        }
+        type();
+    }
+
+    // --- Auth Logic ---
+    function handleAuthClick() {
+        if (currentUser) {
+            switchView('profileView');
+        } else {
+            switchView('authView');
+            toggleAuthMode('login');
+        }
+    }
+
+    function toggleAuthMode(mode) {
+        document.getElementById('authErrorMsg').style.display = 'none';
+        if (mode === 'login') {
+            document.getElementById('tabLogin').classList.add('active');
+            document.getElementById('tabSignup').classList.remove('active');
+            document.getElementById('authSubmitBtn').innerText = 'LOGIN SECURELY';
+        } else {
+            document.getElementById('tabSignup').classList.add('active');
+            document.getElementById('tabLogin').classList.remove('active');
+            document.getElementById('authSubmitBtn').innerText = 'CREATE ACCOUNT';
+        }
+    }
+
+    function submitAuth(e) {
+        e.preventDefault();
+        const isSignup = document.getElementById('tabSignup').classList.contains('active');
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        const errorMsg = document.getElementById('authErrorMsg');
+
+        // Dummy Login Validation
+        if (!isSignup) {
+            if(email === 'demo@xrvlabs.com' && password === 'demo123') {
+                currentUser = { name: "Dr. Demo User", email: email, initial: "D" };
+                errorMsg.style.display = 'none';
+                updateUIForAuth();
+                switchView('homeView');
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        } else {
+            let name = "Dr. " + email.split('@')[0];
+            currentUser = { name: name, email: email, initial: name.charAt(4).toUpperCase() || 'U' };
+            errorMsg.style.display = 'none';
+            updateUIForAuth();
+            switchView('homeView');
+        }
     }
 
     function logoutUser() {
         currentUser = null;
-        updateUI();
-        closeProfile();
+        cart = []; 
+        orderHistory = []; 
+        updateCartBadges();
+        updateUIForAuth();
+        switchView('homeView');
     }
 
-    function updateUI() {
-        document.getElementById('topBarAuthText').innerText = currentUser ? "MY PROFILE" : "LOGIN";
+    function updateUIForAuth() {
+        const mainCartIcon = document.getElementById('mainCartIcon');
+
+        if (currentUser) {
+            document.getElementById('topBarAuthText').innerText = "HI, " + currentUser.name.split(' ')[0].toUpperCase();
+            
+            document.getElementById('profileName').innerText = currentUser.name;
+            document.getElementById('dashName').innerText = currentUser.name;
+            document.getElementById('authForm').reset();
+            
+            mainCartIcon.style.display = 'block';
+        } else {
+            document.getElementById('topBarAuthText').innerText = "LOGIN";
+            mainCartIcon.style.display = 'none';
+        }
     }
 
-    window.onload = () => {
+    // --- Initialization ---
+    document.addEventListener('DOMContentLoaded', () => {
+        renderCategories(); 
+        renderSkeletons();
         renderProducts();
-    };
-</script>
+        typeWriterEffect(); 
+        updateUIForAuth();
 
+        setTimeout(() => {
+            document.getElementById('skeletonContainer').style.display = 'none';
+            document.getElementById('productGrid').style.display = 'grid';
+        }, 1500);
+    });
+
+</script>
 </body>
 </html>
