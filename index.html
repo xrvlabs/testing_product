@@ -78,9 +78,9 @@
         .tab-skel-row { height: 60px; margin-bottom: 12px; border-radius: 8px; width: 100%; }
         .tab-skel-box { height: 120px; margin-bottom: 16px; border-radius: 8px; width: 100%; }
 
-        /* Header */
-        .sticky-header-container { position: sticky; top: 0; z-index: 500; background: white; }
-        .header-master { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 10px; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        /* GLOBAL HEADER STYLES */
+        .sticky-header-container { position: sticky; top: 0; z-index: 500; background: white; border-bottom: 1px solid var(--border-color);}
+        .header-master { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-bottom: 1px solid var(--border-color);}
         .header-logo { display: none; align-items: center; gap: 6px; cursor: pointer; line-height: 1; }
         .header-logo i { color: var(--blue-accent); font-size: 28px; }
         .header-logo-text { display: flex; flex-direction: column; }
@@ -103,7 +103,7 @@
         .cart-wrapper { position: relative; cursor: pointer; }
         .cart-badge { position: absolute; top: -8px; right: -8px; background: var(--red-accent); color: white; font-size: 10px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-        .nav-pills { display: flex; gap: 10px; padding: 12px 10px; overflow-x: auto; background: white; white-space: nowrap; border-bottom: 1px solid var(--border-color); }
+        .nav-pills { display: flex; gap: 10px; padding: 12px 10px; overflow-x: auto; background: white; white-space: nowrap; }
         .pill { padding: 8px 16px; border: 1px solid var(--border-color); border-radius: var(--card-radius); font-size: 13px; font-weight: 700; color: var(--text-dark); cursor: pointer; text-transform: uppercase; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
         .pill:hover, .pill.active { background: var(--blue-light); color: var(--blue-dark); border-color: var(--blue-accent); }
 
@@ -221,24 +221,34 @@
         .coin-icon { background: #fef3c7; border-radius: 50%; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; color: #d97706; font-weight: 700;}
 
         /* -------------------------------------------
-           NEW PRODUCT DETAIL UI (MATCHING SCREENSHOTS) 
+           CLEAN & ALIGNED PRODUCT DETAIL UI 
            ------------------------------------------- */
         
-        .pd-header-mobile { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; position: sticky; top: 0; background: white; z-index: 100; border-bottom: 1px solid var(--border-color); }
-        @media (min-width: 1024px) { .pd-header-mobile { display: none; } }
-        .pd-header-actions { display: flex; gap: 16px; font-size: 20px; color: var(--text-dark); cursor: pointer; }
-        
         .pd-wrapper {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
             padding: 16px 10px;
             max-width: 1400px;
             margin: 0 auto;
             width: 100%;
         }
+
+        .pd-back-btn {
+            display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800;
+            color: var(--text-muted); cursor: pointer; padding: 4px 0; width: fit-content;
+            text-transform: uppercase; transition: color 0.2s; letter-spacing: 0.5px;
+        }
+        .pd-back-btn:hover { color: var(--blue-accent); }
+
+        .pd-grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            align-items: start; /* Ensures both left and right stick to the top */
+        }
         @media (min-width: 1024px) {
-            .pd-wrapper { grid-template-columns: 480px 1fr; align-items: start; padding: 24px 20px; }
+            .pd-grid-layout { grid-template-columns: 480px 1fr; }
         }
 
         /* Left Column (Sticky Image) */
@@ -246,7 +256,8 @@
             display: flex; flex-direction: column; gap: 16px;
         }
         @media (min-width: 1024px) {
-            .pd-image-col { position: sticky; top: 90px; align-self: start; height: fit-content;}
+            /* Keeps the image on screen when scrolling the details */
+            .pd-image-col { position: sticky; top: 140px; align-self: start; }
         }
         
         .pd-main-img-box {
@@ -267,31 +278,26 @@
 
         /* Right Column (Scrollable Content) */
         .pd-content-col { display: flex; flex-direction: column; gap: 20px; }
-        
-        .pd-breadcrumbs { font-size: 12px; color: var(--text-muted); display: flex; gap: 6px; align-items: center; }
-        .pd-breadcrumbs span { cursor: pointer; transition: color 0.2s; }
-        .pd-breadcrumbs span:hover { color: var(--blue-accent); }
-        .pd-breadcrumbs .current { color: var(--red-accent); font-weight: 700; }
 
         .pd-title-box { background: white; padding: 24px; border-radius: var(--card-radius); border: 1px solid var(--border-color); }
         .pd-title-box h1 { font-size: 22px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px; line-height: 1.3;}
         .pd-title-box p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
         
-        .pd-brand-strip { display: flex; align-items: center; gap: 16px; padding: 16px; background: white; border-radius: var(--card-radius); border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s;}
+        .pd-brand-strip { display: flex; align-items: center; gap: 16px; margin-top: 20px; padding: 16px; background: #f8fafc; border-radius: var(--card-radius); border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s;}
         .pd-brand-strip:hover { border-color: var(--blue-accent); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .pd-brand-strip img { width: 48px; height: 48px; object-fit: contain; background: #f8fafc; border-radius: 4px; padding: 4px; border: 1px solid #e2e8f0; }
+        .pd-brand-strip img { width: 48px; height: 48px; object-fit: contain; background: white; border-radius: 4px; padding: 4px; border: 1px solid #e2e8f0; }
         .pd-brand-strip div { display: flex; flex-direction: column; gap: 4px;}
         .pd-brand-strip div strong { font-size: 16px; color: var(--text-dark); font-weight: 800;}
         .pd-brand-strip div span { font-size: 12px; color: var(--blue-dark); font-weight: 700; display: flex; align-items: center; gap: 4px;}
 
-        /* Variant Cards Match */
+        /* Clean Variant Cards */
         .pd-variants-area { display: flex; flex-direction: column; gap: 16px; }
         .pd-variant-card { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 20px; display: flex; flex-direction: column; gap: 16px; position: relative; transition: box-shadow 0.2s;}
         @media (min-width: 768px) { .pd-variant-card { flex-direction: row; align-items: stretch; } }
         .pd-variant-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); border-color: #cbd5e1; }
         
         .pd-vc-img { width: 100px; height: 100px; object-fit: contain; background: white; border-radius: 4px; border: 1px solid #e2e8f0; flex-shrink: 0; align-self: center;}
-        .pd-vc-details { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .pd-vc-details { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
         .pd-vc-title { font-size: 16px; font-weight: 800; color: var(--text-dark); }
         .pd-vc-pricing { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 4px;}
         .pd-vc-price { font-size: 24px; font-weight: 800; color: var(--text-dark); }
@@ -299,19 +305,14 @@
         .pd-vc-coins { font-size: 12px; color: #d97706; font-weight: 700; display: flex; align-items: center; gap: 4px; }
         .pd-vc-discount { font-size: 12px; color: var(--blue-dark); background: var(--blue-light); padding: 4px 8px; border-radius: 4px; font-weight: 700; }
         
-        .pd-vc-bulk { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap;}
-        .pd-bulk-tag { font-size: 11px; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 4px; color: var(--text-dark); font-weight: 700; background: #f8fafc;}
-        .pd-bulk-tag span { color: var(--green-accent); }
-        
         .pd-vc-delivery { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--text-muted); margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 12px; flex-wrap: wrap;}
         .pd-vc-delivery span { display: flex; align-items: center; gap: 6px; font-weight: 700; }
         .pd-vc-delivery i { color: var(--blue-dark); font-size: 14px;}
         .pd-vc-delivery .green { color: var(--green-accent); }
 
-        .pd-vc-action { display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; gap: 8px; min-width: 120px;}
+        .pd-vc-action { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 8px; min-width: 120px;}
         @media (max-width: 767px) { .pd-vc-action { flex-direction: row; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px;} }
-        .pd-vc-stock { font-size: 11px; color: var(--red-accent); font-weight: 700; }
-        .pd-vc-add-btn { background: #336688; color: white; border: none; padding: 10px 32px; border-radius: var(--card-radius); font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s;}
+        .pd-vc-add-btn { background: #336688; color: white; border: none; padding: 12px 32px; border-radius: var(--card-radius); font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 100%;}
         .pd-vc-add-btn:hover { background: #1a4d6a; }
 
         /* Tabs System matching Screenshot */
@@ -427,14 +428,14 @@
             will-change: transform, opacity;
         }
 
-        /* Desktop Mode: Dialog - NOW STATIC SIZE */
+        /* Desktop Mode: Dialog */
         @media (min-width: 1024px) {
             #profileComponent {
-                width: 900px; height: 600px; /* Static Width and Height */
+                width: 900px; height: 600px;
                 top: 50%; left: 50%; transform: translate(-50%, -40%) scale(0.95);
                 border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
                 padding: 24px; opacity: 0; pointer-events: none;
-                overflow: hidden; /* Ensures scrollable content stays inside bounds */
+                overflow: hidden;
             }
             #profileComponent.active {
                 transform: translate(-50%, -50%) scale(1);
@@ -443,11 +444,11 @@
             .drag-handle { display: none; }
         }
 
-        /* Mobile Mode: Bottom Sheet FIX */
+        /* Mobile Mode: Bottom Sheet */
         @media (max-width: 1023px) {
             #profileComponent {
                 width: 100%; bottom: 0; left: 0; 
-                height: 85dvh; /* Rigid constraint ensures full popup on mobile */
+                height: 85dvh;
                 border-radius: 20px 20px 0 0;
                 transform: translateY(100%);
                 padding-bottom: env(safe-area-inset-bottom);
@@ -538,25 +539,10 @@
             overflow: hidden;
             white-space: nowrap;
         }
-        .social-icon i {
-            min-width: 32px;
-            text-align: center;
-            display: inline-block;
-        }
-        .social-text {
-            font-size: 12px;
-            font-weight: 700;
-            opacity: 0;
-            padding-right: 12px;
-            transition: opacity 0.3s ease;
-        }
-        .social-icon.expanded {
-            max-width: 140px; 
-        }
-        .social-icon.expanded .social-text {
-            opacity: 1;
-        }
-
+        .social-icon i { min-width: 32px; text-align: center; display: inline-block; }
+        .social-text { font-size: 12px; font-weight: 700; opacity: 0; padding-right: 12px; transition: opacity 0.3s ease; }
+        .social-icon.expanded { max-width: 140px; }
+        .social-icon.expanded .social-text { opacity: 1; }
         .si-fb { background: #3b5998; } .si-ig { background: #e1306c; } .si-x { background: #000000; } .si-yt { background: #ff0000; } .si-in { background: #0077b5; }
         
         .ftb-right { display: flex; align-items: center; gap: 16px; font-size: 13px; font-weight: 800; text-transform: uppercase; flex-wrap: wrap;}
@@ -568,40 +554,15 @@
             gap: 24px; padding: 40px 24px; max-width: 1600px; margin: 0 auto;
         }
         
-        /* Centered Copyright styling */
-        .copyright-text {
-            margin-top: 24px;
-            font-size: 11px;
-            color: var(--text-muted);
-            text-align: right;
-        }
+        .copyright-text { margin-top: 24px; font-size: 11px; color: var(--text-muted); text-align: right; }
         
-        /* Trust Badge replacing payments */
-        .fbb-trust {
-            font-weight: 700;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-        }
-        .fbb-trust i { color: var(--green-accent); font-size: 16px; }
-
-        /* Hide Specific Footer Sections & Adjust Top Bar on Mobile/Tablet */
         @media(max-width: 1023px) {
             .hide-on-mobile-tablet { display: none !important; }
             .fm-address-col { border-left: none !important; padding-left: 0 !important; border-top: none !important; padding-top: 0 !important;}
-            
-            /* Center copyright specifically on mobile */
             .copyright-text { text-align: center; width: 100%; margin-top: 30px; }
-            
             .footer-bottom-bar { flex-direction: column; gap: 12px; justify-content: center;}
-
-            /* Footer Top Bar Adjustments for Mobile */
             .footer-top-bar { flex-direction: column; padding: 16px 10px; gap: 16px;}
             .ftb-left { width: 100%; justify-content: center; }
-            
-            /* Put app buttons in a single row taking equal width */
             .ftb-right { width: 100%; flex-direction: row; justify-content: center; gap: 10px; }
             .app-btn { flex: 1; justify-content: center; padding: 8px 4px; gap: 6px; }
             .app-btn i { font-size: 22px; }
@@ -618,84 +579,77 @@
         .address-item { display: flex; gap: 12px; margin-bottom: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
         .address-item i { color: var(--text-dark); font-size: 16px; margin-top: 2px; }
 
-        .footer-bottom-bar { 
-            display: flex; flex-wrap: wrap; justify-content: center; align-items: center; 
-            padding: 16px 24px; border-top: 1px solid var(--border-color); gap: 40px; background: white; font-size: 12px;
-        }
-        .fbb-right { display: flex; align-items: center; gap: 16px; color: var(--text-muted); font-weight: 700;}
-        .fbb-right .rating { display: flex; align-items: center; gap: 4px; color: var(--blue-accent); }
-
     </style>
 </head>
 <body>
 
 <div class="app-container">
 
-    <div id="homeView" class="view-section active">
-        
-        <div class="sticky-header-container">
-            <div class="header-master">
-                <div class="header-logo" onclick="switchView('homeView')">
-                    <i class="fa-solid fa-tooth"></i>
-                    <div class="header-logo-text">
-                        <span class="main">ORACO DENTAL</span>
-                        <span class="sub">INNOVATIONS</span>
-                    </div>
+    <div class="sticky-header-container" id="globalHeader">
+        <div class="header-master">
+            <div class="header-logo" onclick="switchView('homeView')">
+                <i class="fa-solid fa-tooth"></i>
+                <div class="header-logo-text">
+                    <span class="main">ORACO DENTAL</span>
+                    <span class="sub">INNOVATIONS</span>
                 </div>
-                <div class="location-block">
-                    <i class="fa-solid fa-location-dot location-icon"></i>
-                    <div class="location-text">
-                        <span class="label">DELIVERING TO</span>
-                        <span class="pincode">ENTER PINCODE <i class="fa-solid fa-caret-down"></i></span>
-                    </div>
+            </div>
+            <div class="location-block">
+                <i class="fa-solid fa-location-dot location-icon"></i>
+                <div class="location-text">
+                    <span class="label">DELIVERING TO</span>
+                    <span class="pincode">ENTER PINCODE <i class="fa-solid fa-caret-down"></i></span>
                 </div>
-                
-                <div class="search-container">
-                    <div class="search-input-box">
-                        <i class="fa-solid fa-tooth" style="color: var(--blue-accent);"></i>
-                        <input type="text" id="mainSearchInput" placeholder="SEARCH ">
-                        <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted); cursor: pointer; font-size: 18px;"></i>
-                    </div>
-                    <div class="cart-wrapper" id="mainCartIcon" onclick="switchView('cartView')" style="display: none;">
-                        <i class="fa-solid fa-cart-shopping" style="font-size: 20px; color: var(--text-dark);"></i>
-                        <div class="cart-badge" id="mainCartBadge">0</div>
-                    </div>
+            </div>
+            
+            <div class="search-container">
+                <div class="search-input-box">
+                    <i class="fa-solid fa-tooth" style="color: var(--blue-accent);"></i>
+                    <input type="text" id="mainSearchInput" placeholder="SEARCH ">
+                    <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted); cursor: pointer; font-size: 18px;"></i>
                 </div>
-
-                <div class="header-actions">
-                    <div class="auth-trigger" id="topBarAuthBtn" onclick="handleAuthClick()">
-                        <i class="fa-regular fa-circle-user" style="font-size: 18px;"></i> <span id="topBarAuthText">LOGIN</span>
-                    </div>
+                <div class="cart-wrapper" id="mainCartIcon" onclick="switchView('cartView')" style="display: none;">
+                    <i class="fa-solid fa-cart-shopping" style="font-size: 20px; color: var(--text-dark);"></i>
+                    <div class="cart-badge" id="mainCartBadge">0</div>
                 </div>
             </div>
 
-            <div class="nav-pills no-scrollbar">
-                <div class="pill" onclick="toggleMegamenu(event)" id="catDropdownBtn"><i class="fa-solid fa-border-all" style="font-size: 12px;"></i> CATEGORY</div>
-                <div class="pill">FREEBIES</div>
-                <div class="pill">OFFERS</div>
-                <div class="pill">EVENTS</div>
-                <div class="pill">CONTACT US</div>
-            </div>
-
-            <div class="megamenu-overlay" id="megamenuOverlay" onclick="closeMegamenu()"></div>
-            <div class="megamenu" id="megamenu">
-                <div class="mm-search">
-                    <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                    <input type="text" placeholder="SEARCH CATEGORY...">
-                </div>
-                <div class="mm-body">
-                    <div class="mm-sidebar">
-                        <div class="mm-sidebar-title">CATEGORY</div>
-                        <ul class="mm-cat-list" id="mmCatList"></ul>
-                    </div>
-                    <div class="mm-content">
-                        <div class="mm-content-header" id="mmContentTitle">CATEGORY TITLE <span>0</span></div>
-                        <div class="mm-grid" id="mmContentGrid"></div>
-                    </div>
+            <div class="header-actions">
+                <div class="auth-trigger" id="topBarAuthBtn" onclick="handleAuthClick()">
+                    <i class="fa-regular fa-circle-user" style="font-size: 18px;"></i> <span id="topBarAuthText">LOGIN</span>
                 </div>
             </div>
         </div>
 
+        <div class="nav-pills no-scrollbar">
+            <div class="pill" onclick="toggleMegamenu(event)" id="catDropdownBtn"><i class="fa-solid fa-border-all" style="font-size: 12px;"></i> CATEGORY</div>
+            <div class="pill">FREEBIES</div>
+            <div class="pill">OFFERS</div>
+            <div class="pill">EVENTS</div>
+            <div class="pill">CONTACT US</div>
+        </div>
+
+        <div class="megamenu-overlay" id="megamenuOverlay" onclick="closeMegamenu()"></div>
+        <div class="megamenu" id="megamenu">
+            <div class="mm-search">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+                <input type="text" placeholder="SEARCH CATEGORY...">
+            </div>
+            <div class="mm-body">
+                <div class="mm-sidebar">
+                    <div class="mm-sidebar-title">CATEGORY</div>
+                    <ul class="mm-cat-list" id="mmCatList"></ul>
+                </div>
+                <div class="mm-content">
+                    <div class="mm-content-header" id="mmContentTitle">CATEGORY TITLE <span>0</span></div>
+                    <div class="mm-grid" id="mmContentGrid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="homeView" class="view-section active">
         <div class="hero-wrapper-full">
             <div class="hero-slider contained">
                 <div class="hero-slide">
@@ -706,167 +660,138 @@
 
         <div id="skeletonContainer" class="skel-grid"></div>
         <div id="productGrid" class="product-grid" style="display: none;"></div>
-
     </div>
+
 
     <div id="productView" class="view-section">
         
-        <div class="pd-header-mobile">
-            <i class="fa-solid fa-chevron-left pd-header-actions" onclick="switchView('homeView')"></i>
-            <i class="fa-solid fa-tooth" style="color: var(--blue-accent); font-size: 20px;"></i>
-            <div class="pd-header-actions">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <i class="fa-regular fa-heart"></i>
-                <div class="cart-wrapper" onclick="switchView('cartView')">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <div class="cart-badge" id="pdCartBadge">0</div>
-                </div>
-            </div>
-        </div>
-
         <div class="pd-wrapper">
             
-            <div class="pd-image-col">
-                <div class="pd-main-img-box">
-                    <i class="fa-regular fa-heart wishlist-btn-large"></i>
-                    <img src="pro_1.jpg" alt="Product Image" id="pd-hero-img" class="pd-main-img">
-                </div>
-                <div class="pd-thumb-list">
-                    <img src="pro_1.jpg" class="pd-thumb active" onclick="changeImage(this)">
-                    <img src="pro_2.jpg" class="pd-thumb" onclick="changeImage(this)">
-                    <img src="pro_1.jpg" class="pd-thumb" onclick="changeImage(this)">
-                    <img src="pro_2.jpg" class="pd-thumb" onclick="changeImage(this)">
-                    <img src="pro_1.jpg" class="pd-thumb" onclick="changeImage(this)">
-                </div>
+            <div class="pd-back-btn" onclick="switchView('homeView')">
+                <i class="fa-solid fa-arrow-left"></i> BACK TO HOME
             </div>
 
-            <div class="pd-content-col">
+            <div class="pd-grid-layout">
                 
-                <div class="pd-breadcrumbs">
-                    <i class="fa-solid fa-house" style="font-size: 10px;"></i>
-                    <i class="fa-solid fa-chevron-right" style="font-size: 8px;"></i>
-                    <span>Brands</span>
-                    <i class="fa-solid fa-chevron-right" style="font-size: 8px;"></i>
-                    <span>Labodent</span>
-                    <i class="fa-solid fa-chevron-right" style="font-size: 8px;"></i>
-                    <span class="current">Under 999</span>
+                <div class="pd-image-col">
+                    <div class="pd-main-img-box">
+                        <i class="fa-regular fa-heart wishlist-btn-large"></i>
+                        <img src="pro_1.jpg" alt="Product Image" id="pd-hero-img" class="pd-main-img">
+                    </div>
+                    <div class="pd-thumb-list">
+                        <img src="pro_1.jpg" class="pd-thumb active" onclick="changeImage(this)">
+                        <img src="pro_2.jpg" class="pd-thumb" onclick="changeImage(this)">
+                        <img src="pro_1.jpg" class="pd-thumb" onclick="changeImage(this)">
+                    </div>
                 </div>
 
-                <div class="pd-title-box">
-                    <h1 id="pd-title">Labodent DentWERK HD Model Resin</h1>
-                    <p id="pd-subtitle">High precision dental 3D printing resin with low shrinkage for accurate model fabrication</p>
+                <div class="pd-content-col">
                     
-                    <div class="pd-brand-strip">
-                        <img src="pro_1.jpg" alt="Labodent Logo">
-                        <div>
-                            <strong>Labodent</strong>
-                            <span>View More Products From Labodent <i class="fa-solid fa-chevron-right"></i></span>
+                    <div class="pd-title-box">
+                        <h1 id="pd-title">Labodent DentWERK HD Model Resin</h1>
+                        <p id="pd-subtitle">High precision dental 3D printing resin with low shrinkage for accurate model fabrication</p>
+                        
+                        <div class="pd-brand-strip">
+                            <img src="pro_1.jpg" alt="Labodent Logo">
+                            <div>
+                                <strong>Labodent</strong>
+                                <span>View More Products From Labodent <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i></span>
+                            </div>
                         </div>
                     </div>
+
+                    <div class="pd-variants-area" id="pd-variants-container">
+                        
+                        <div class="pd-variant-card">
+                            <img src="pro_1.jpg" class="pd-vc-img" alt="Grey Resin">
+                            <div class="pd-vc-details">
+                                <div class="pd-vc-title">Labodent DentWERK HD Model Resin - Grey 1Kg</div>
+                                
+                                <div class="pd-vc-pricing">
+                                    <span class="pd-vc-price">₹1,499</span>
+                                    <span class="pd-vc-mrp">₹6,500</span>
+                                    <span class="pd-vc-coins"><span class="coin-icon">D</span> 75</span>
+                                    <span class="pd-vc-discount">↓ 76.94% OFF</span>
+                                </div>
+
+                                <div class="pd-vc-delivery">
+                                    <span><i class="fa-solid fa-truck"></i> Arrives By Apr 18, 2026</span>
+                                    <span><i class="fa-solid fa-rotate-left"></i> 10-Days Returnable</span>
+                                    <span><i class="fa-solid fa-circle-check green"></i> COD</span>
+                                </div>
+                            </div>
+
+                            <div class="pd-vc-action">
+                                <button class="pd-vc-add-btn" onclick="addToCart(1)">ADD</button>
+                            </div>
+                        </div>
+
+                        <div class="pd-variant-card">
+                            <img src="pro_2.jpg" class="pd-vc-img" alt="Almond Resin">
+                            <div class="pd-vc-details">
+                                <div class="pd-vc-title">Labodent DentWERK HD Model Resin - Almond 1Kg</div>
+                                
+                                <div class="pd-vc-pricing">
+                                    <span class="pd-vc-price">₹1,499</span>
+                                    <span class="pd-vc-mrp">₹6,500</span>
+                                    <span class="pd-vc-coins"><span class="coin-icon">D</span> 75</span>
+                                    <span class="pd-vc-discount">↓ 76.94% OFF</span>
+                                </div>
+
+                                <div class="pd-vc-delivery">
+                                    <span><i class="fa-solid fa-truck"></i> Arrives By Apr 19, 2026</span>
+                                    <span><i class="fa-solid fa-rotate-left"></i> 10-Days Returnable</span>
+                                    <span><i class="fa-solid fa-circle-check green"></i> COD</span>
+                                </div>
+                            </div>
+
+                            <div class="pd-vc-action">
+                                <button class="pd-vc-add-btn" onclick="addToCart(2)">ADD</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="pd-tabs-container">
+                        <div class="pd-tabs-header">
+                            <div class="pd-tab active" onclick="switchTab(this, 'tab-features')"><i class="fa-solid fa-list-ul"></i> Features</div>
+                            <div class="pd-tab" onclick="switchTab(this, 'tab-desc')"><i class="fa-regular fa-file-lines"></i> Description</div>
+                            <div class="pd-tab" onclick="switchTab(this, 'tab-specs')"><i class="fa-solid fa-gear"></i> Key Specifications</div>
+                            <div class="pd-tab" onclick="switchTab(this, 'tab-pack')"><i class="fa-solid fa-box-open"></i> Packaging</div>
+                            <div class="pd-tab" onclick="switchTab(this, 'tab-dir')"><i class="fa-solid fa-arrow-turn-up"></i> Direction To Use</div>
+                        </div>
+
+                        <div class="pd-tab-content" id="tab-features">
+                            <ul>
+                                <li>High precision resin for accurate dental model printing</li>
+                                <li>Low shrinkage ensures dimensional stability</li>
+                                <li>Compatible with LCD DLP and SLA 3D printers</li>
+                                <li>Operates within 365 to 405 nm wavelength range</li>
+                                <li>IPA washable for easy post processing</li>
+                                <li>Smooth surface finish with fine detail reproduction</li>
+                                <li>Available in Grey and Almond shades</li>
+                                <li>Suitable for digital dental workflows</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="pd-tab-content" id="tab-desc" style="display: none;">
+                            <strong>DentWerk 3D Model 4 Resin</strong> is a high-performance photopolymer resin specifically developed for dental model fabrication using advanced 3D printing technologies. Designed to deliver exceptional accuracy and detail, it ensures precise reproduction of dental structures, making it ideal for study models, diagnostic setups, and treatment planning. 
+                            <br><br>
+                            Compatible with LCD, DLP, and SLA 3D printers operating within a wavelength range of 365-405 nm, this resin offers versatility across multiple digital workflows.
+                        </div>
+
+                        <div class="pd-tab-content" id="tab-specs" style="display: none;">
+                            <p>Key technical specifications and material data will be listed here.</p>
+                        </div>
+                        <div class="pd-tab-content" id="tab-pack" style="display: none;">
+                            <p>Packaging details and included items.</p>
+                        </div>
+                        <div class="pd-tab-content" id="tab-dir" style="display: none;">
+                            <p>Directions for safe usage and storage.</p>
+                        </div>
+                    </div>
+
                 </div>
-
-                <div class="pd-variants-area" id="pd-variants-container">
-                    
-                    <div class="pd-variant-card">
-                        <img src="pro_1.jpg" class="pd-vc-img" alt="Grey Resin">
-                        <div class="pd-vc-details">
-                            <div class="pd-vc-title">Labodent DentWERK HD Model Resin - Grey 1Kg</div>
-                            
-                            <div class="pd-vc-pricing">
-                                <span class="pd-vc-price">₹1,499</span>
-                                <span class="pd-vc-mrp">₹6,500</span>
-                                <span class="pd-vc-coins"><span class="coin-icon">D</span> 75</span>
-                                <span class="pd-vc-discount">↓ 76.94% OFF</span>
-                            </div>
-
-                            <div class="pd-vc-bulk">
-                                <div class="pd-bulk-tag">Extra <span>78% off</span><br>Buy 4+ for <strong>₹1,400 each</strong></div>
-                                <div class="pd-bulk-tag">Extra <span>80% off</span><br>Buy 8+ for <strong>₹1,300 each</strong></div>
-                            </div>
-
-                            <div class="pd-vc-delivery">
-                                <span><i class="fa-solid fa-truck"></i> Arrives By Apr 18, 2026</span>
-                                <span><i class="fa-solid fa-rotate-left"></i> 10-Days Returnable</span>
-                                <span><i class="fa-solid fa-circle-check green"></i> COD</span>
-                            </div>
-                        </div>
-
-                        <div class="pd-vc-action">
-                            <span class="pd-vc-stock">Only 3 Left</span>
-                            <button class="pd-vc-add-btn" onclick="addToCart(1)">ADD</button>
-                        </div>
-                    </div>
-
-                    <div class="pd-variant-card">
-                        <img src="pro_2.jpg" class="pd-vc-img" alt="Almond Resin">
-                        <div class="pd-vc-details">
-                            <div class="pd-vc-title">Labodent DentWERK HD Model Resin - Almond 1Kg</div>
-                            
-                            <div class="pd-vc-pricing">
-                                <span class="pd-vc-price">₹1,499</span>
-                                <span class="pd-vc-mrp">₹6,500</span>
-                                <span class="pd-vc-coins"><span class="coin-icon">D</span> 75</span>
-                                <span class="pd-vc-discount">↓ 76.94% OFF</span>
-                            </div>
-
-                            <div class="pd-vc-bulk">
-                                <div class="pd-bulk-tag">Extra <span>78% off</span><br>Buy 4+ for <strong>₹1,400 each</strong></div>
-                                <div class="pd-bulk-tag">Extra <span>80% off</span><br>Buy 8+ for <strong>₹1,300 each</strong></div>
-                            </div>
-
-                            <div class="pd-vc-delivery">
-                                <span><i class="fa-solid fa-truck"></i> Arrives By Apr 19, 2026</span>
-                                <span><i class="fa-solid fa-rotate-left"></i> 10-Days Returnable</span>
-                                <span><i class="fa-solid fa-circle-check green"></i> COD</span>
-                            </div>
-                        </div>
-
-                        <div class="pd-vc-action">
-                            <button class="pd-vc-add-btn" onclick="addToCart(2)">ADD</button>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="pd-tabs-container">
-                    <div class="pd-tabs-header">
-                        <div class="pd-tab active" onclick="switchTab(this, 'tab-features')"><i class="fa-solid fa-list-ul"></i> Features</div>
-                        <div class="pd-tab" onclick="switchTab(this, 'tab-desc')"><i class="fa-regular fa-file-lines"></i> Description</div>
-                        <div class="pd-tab" onclick="switchTab(this, 'tab-specs')"><i class="fa-solid fa-gear"></i> Key Specifications</div>
-                        <div class="pd-tab" onclick="switchTab(this, 'tab-pack')"><i class="fa-solid fa-box-open"></i> Packaging</div>
-                        <div class="pd-tab" onclick="switchTab(this, 'tab-dir')"><i class="fa-solid fa-arrow-turn-up"></i> Direction To Use</div>
-                    </div>
-
-                    <div class="pd-tab-content" id="tab-features">
-                        <ul>
-                            <li>High precision resin for accurate dental model printing</li>
-                            <li>Low shrinkage ensures dimensional stability</li>
-                            <li>Compatible with LCD DLP and SLA 3D printers</li>
-                            <li>Operates within 365 to 405 nm wavelength range</li>
-                            <li>IPA washable for easy post processing</li>
-                            <li>Smooth surface finish with fine detail reproduction</li>
-                            <li>Available in Grey and Almond shades</li>
-                            <li>Suitable for digital dental workflows</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="pd-tab-content" id="tab-desc" style="display: none;">
-                        <strong>DentWerk 3D Model 4 Resin</strong> is a high-performance photopolymer resin specifically developed for dental model fabrication using advanced 3D printing technologies. Designed to deliver exceptional accuracy and detail, it ensures precise reproduction of dental structures, making it ideal for study models, diagnostic setups, and treatment planning. 
-                        <br><br>
-                        Compatible with LCD, DLP, and SLA 3D printers operating within a wavelength range of 365-405 nm, this resin offers versatility across multiple digital workflows.
-                    </div>
-
-                    <div class="pd-tab-content" id="tab-specs" style="display: none;">
-                        <p>Key technical specifications and material data will be listed here.</p>
-                    </div>
-                    <div class="pd-tab-content" id="tab-pack" style="display: none;">
-                        <p>Packaging details and included items.</p>
-                    </div>
-                    <div class="pd-tab-content" id="tab-dir" style="display: none;">
-                        <p>Directions for safe usage and storage.</p>
-                    </div>
-                </div>
-
             </div>
         </div>
 
@@ -884,17 +809,18 @@
         <div class="talk-agent-btn">Talk to Agent</div>
     </div>
 
+
     <div id="cartView" class="view-section">
-        <div class="profile-header-bar" style="display: flex; align-items: center; padding: 16px 10px; background: white; border-bottom: 1px solid var(--border-color); font-size: 16px; font-weight: 700; gap: 16px; text-transform: uppercase;">
-            <i class="fa-solid fa-chevron-left" style="cursor: pointer;" onclick="switchView('homeView')"></i>
+        <div style="display: flex; align-items: center; padding: 16px 10px; background: white; border-bottom: 1px solid var(--border-color); font-size: 16px; font-weight: 700; gap: 16px; text-transform: uppercase;">
+            <i class="fa-solid fa-arrow-left" style="cursor: pointer;" onclick="switchView('homeView')"></i>
             <span>MY CART</span>
         </div>
         <div class="cart-wrapper-main">
             <div id="cartItemsList">
                 </div>
             <div class="empty-state" id="emptyCartState" style="display: none;">
-                <i class="fa-solid fa-cart-shopping" style="font-size: 40px; color:#e0e0e0; margin-bottom: 16px;"></i><br>
-                YOUR CART IS EMPTY
+                <i class="fa-solid fa-cart-shopping" style="font-size: 40px; color:#e0e0e0; margin-bottom: 16px; display: block; text-align: center;"></i>
+                <div style="text-align: center; font-weight: 700; color: var(--text-muted);">YOUR CART IS EMPTY</div>
             </div>
             
             <div class="cart-summary" id="cartSummaryBlock">
@@ -946,7 +872,7 @@
                 </div>
 
                 <h2 class="auth-title">LOG IN OR SIGN UP</h2>
-                <p class="auth-subtitle">Use <strong>demo@xrvlabs.com</strong> and <strong>demo123</strong> to login</p>
+                <p class="auth-subtitle">Use <strong>demo@gridlabs.com</strong> and <strong>demo123</strong> to login</p>
 
                 <form id="authForm" onsubmit="submitAuth(event)">
                     <div class="auth-tabs">
@@ -956,7 +882,7 @@
 
                     <div class="form-group">
                         <label>EMAIL ADDRESS</label>
-                        <input type="email" id="authEmail" class="form-input" placeholder="demo@xrvlabs.com" required>
+                        <input type="email" id="authEmail" class="form-input" placeholder="demo@gridlabs.com" required>
                     </div>
 
                     <div class="form-group">
@@ -978,9 +904,8 @@
         </div>
     </div>
 
-    <footer class="mega-footer">
+    <footer class="mega-footer" id="globalFooter">
         <div class="mega-footer-content">
-            
             <div class="footer-top-bar">
                 <div class="ftb-left">
                     <div class="social-icons">
@@ -1083,9 +1008,6 @@
                     </div>
                 </div>
             </div>
-
-            
-
         </div>
     </footer>
 
@@ -1142,7 +1064,6 @@
             </div>
     </div>
 </div>
-
 
 <div id="successOverlay">
     <div class="success-box">
@@ -1205,6 +1126,21 @@
         Object.values(views).forEach(view => { if(view) view.classList.remove('active'); });
         if(views[targetViewId]) views[targetViewId].classList.add('active');
         
+        // Handle Header & Footer Visibility dynamically based on View
+        const header = document.getElementById('globalHeader');
+        const footer = document.getElementById('globalFooter');
+        
+        if (targetViewId === 'homeView') {
+            header.style.display = 'block';
+            footer.style.display = 'block';
+        } else if (targetViewId === 'productView') {
+            header.style.display = 'block';
+            footer.style.display = 'none'; // REMOVE FOOTER ON PRODUCT PAGE
+        } else {
+            header.style.display = 'none';
+            footer.style.display = 'none';
+        }
+
         window.scrollTo(0, 0);
 
         if(targetViewId === 'cartView') renderCart();
@@ -1346,14 +1282,11 @@
         currentSelectedProduct = mockProducts.find(p => p.id === id);
         if(!currentSelectedProduct) return;
         
-        // Populate Title and Main Image dynamically based on click
         document.getElementById('pd-hero-img').src = currentSelectedProduct.img;
-        document.getElementById('pd-title').innerText = currentSelectedProduct.title;
         
-        // Reset thumbnails to have the clicked image as active first
         let thumbs = document.querySelectorAll('.pd-thumb');
         thumbs[0].src = currentSelectedProduct.img;
-        thumbs[0].click(); // Simulate click to reset active state
+        thumbs[0].click(); 
         
         // For mobile bottom bar
         document.getElementById('bottom-price-mobile').innerText = `₹${currentSelectedProduct.price}`;
@@ -1368,9 +1301,6 @@
             return;
         }
         
-        // For simulation, if click happens from Product Detail Variant 1 or 2, 
-        // we'll just add the globally selected product to cart with its price.
-        // If it's a specific variant clicked, we can simulate adding it:
         const product = mockProducts.find(p => p.id === (currentSelectedProduct ? currentSelectedProduct.id : productId));
         
         if(product) {
@@ -1383,7 +1313,9 @@
     function updateCartBadges() {
         const count = cart.length;
         document.getElementById('mainCartBadge').innerText = count;
-        document.getElementById('pdCartBadge').innerText = count;
+        // Check if secondary badges exist before updating
+        const pdBadge = document.getElementById('pdCartBadge');
+        if (pdBadge) pdBadge.innerText = count;
     }
 
     function removeFromCart(index) {
@@ -1534,7 +1466,7 @@
         const errorMsg = document.getElementById('authErrorMsg');
 
         if (!isSignup) {
-            if(email === 'demo@xrvlabs.com' && password === 'demo123') {
+            if(email === 'demo@gridlabs.com' && password === 'demo123') {
                 currentUser = { name: "Dr. Demo User", email: email, phone: "+91-9876543210" };
                 errorMsg.style.display = 'none';
                 updateUIForAuth();
