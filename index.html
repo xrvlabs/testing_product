@@ -86,10 +86,12 @@
         .header-logo-text .main { font-size: 20px; font-weight: 800; color: var(--blue-accent); letter-spacing: 0.5px;}
         .header-logo-text .sub { font-size: 9px; font-weight: 700; color: var(--text-muted); align-self: flex-end; margin-top: -2px; letter-spacing: 1px;}
         
-        .location-block { display: flex; align-items: center; gap: 8px; order: 1; }
-        .location-icon { color: var(--blue-accent); font-size: 20px; }
-        .location-text .label { font-size: 11px; font-weight: 700; text-transform: uppercase;}
-        .location-text .pincode { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; text-transform: uppercase;}
+        .location-block { display: flex; align-items: center; gap: 8px; order: 1; cursor: pointer; padding: 6px 10px; border-radius: 8px; background: #e0f2fe; border: 1px solid #bae6fd; transition: background 0.2s;}
+        .location-block:hover { background: #bae6fd; }
+        .location-icon-wrapper { background: #336688; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; }
+        .location-text { display: flex; flex-direction: column; line-height: 1.2; }
+        .location-text .label { font-size: 12px; font-weight: 700; color: var(--text-dark); text-transform: none; }
+        .location-text .pincode { font-size: 11px; color: #336688; font-weight: 700; text-transform: uppercase; margin-top: 2px; }
         
         .search-container { flex: 1 1 100%; order: 3; display: flex; align-items: center; gap: 10px; }
         .search-input-box { flex: 1; display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 8px 12px; background: white; height: 42px; box-sizing: border-box; }
@@ -473,37 +475,54 @@
             will-change: transform, opacity;
         }
 
-        /* Desktop Mode: Dialog */
+        /* LOCATION MODAL SYSTEM */
+        #locationOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 3000;
+            display: none; opacity: 0; transition: opacity 0.3s ease;
+            backdrop-filter: blur(2px);
+        }
+        #locationModal {
+            position: fixed; z-index: 3001; background: white;
+            display: flex; flex-direction: column;
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease;
+            will-change: transform, opacity;
+        }
+        /* Desktop */
         @media (min-width: 1024px) {
             #profileComponent {
                 width: 900px; height: 600px;
                 top: 50%; left: 50%; transform: translate(-50%, -40%) scale(0.95);
                 border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-                padding: 24px; opacity: 0; pointer-events: none;
-                overflow: hidden;
+                padding: 24px; opacity: 0; pointer-events: none; overflow: hidden;
             }
-            #profileComponent.active {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1; pointer-events: auto;
-            }
+            #profileComponent.active { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
             .drag-handle { display: none; }
+
+            #locationModal {
+                width: 440px; top: 50%; left: 50%; transform: translate(-50%, -40%) scale(0.95);
+                border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+                opacity: 0; pointer-events: none; padding: 24px;
+            }
+            #locationModal.active { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
         }
 
-        /* Mobile Mode: Bottom Sheet */
+        /* Mobile Bottom Sheet */
         @media (max-width: 1023px) {
             #profileComponent {
-                width: 100%; bottom: 0; left: 0; 
-                height: 85dvh;
-                border-radius: 20px 20px 0 0;
-                transform: translateY(100%);
+                width: 100%; bottom: 0; left: 0; height: 85dvh;
+                border-radius: 20px 20px 0 0; transform: translateY(100%);
                 padding-bottom: env(safe-area-inset-bottom);
             }
             #profileComponent.active { transform: translateY(0); }
             
-            .drag-handle {
-                width: 40px; height: 4px; background: #ddd; border-radius: 2px;
-                margin: 12px auto; flex-shrink: 0;
+            #locationModal {
+                width: 100%; bottom: 0; left: 0; border-radius: 20px 20px 0 0;
+                transform: translateY(100%); padding: 20px; padding-bottom: calc(20px + env(safe-area-inset-bottom));
             }
+            #locationModal.active { transform: translateY(0); }
+
+            .drag-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 12px auto; flex-shrink: 0; }
         }
 
         .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 10px 16px; border-bottom: 1px solid var(--border-color); }
@@ -624,6 +643,35 @@
         .address-item { display: flex; gap: 12px; margin-bottom: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
         .address-item i { color: var(--text-dark); font-size: 16px; margin-top: 2px; }
 
+        /* Location Modal Internal Styling */
+        .loc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .loc-header h3 { font-size: 18px; font-weight: 800; color: var(--text-dark); margin: 0; }
+        .loc-header i { font-size: 22px; color: var(--text-muted); cursor: pointer; transition: color 0.2s; }
+        .loc-header i:hover { color: var(--red-accent); }
+        
+        .loc-current { display: flex; align-items: center; gap: 12px; padding: 16px; background: #fff8eb; border: 1px solid #fde68a; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .loc-current:hover { background: #fef3c7; }
+        .loc-icon { color: #d97706; font-size: 20px; }
+        .loc-text { display: flex; flex-direction: column; flex: 1; }
+        .loc-text strong { font-size: 14px; font-weight: 800; color: var(--text-dark); }
+        .loc-text span { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 4px; }
+        
+        .toggle-switch { width: 36px; height: 20px; background: #cbd5e1; border-radius: 10px; position: relative; transition: 0.3s; flex-shrink: 0;}
+        .toggle-switch.active { background: var(--blue-accent); }
+        .toggle-knob { width: 16px; height: 16px; background: white; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .toggle-switch.active .toggle-knob { left: 18px; }
+
+        .loc-divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: var(--text-muted); font-size: 12px; font-weight: 700; }
+        .loc-divider::before, .loc-divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
+        .loc-divider span { padding: 0 10px; }
+
+        .loc-input-row { display: flex; align-items: center; gap: 10px; }
+        .loc-input-wrapper { flex: 1; display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 0 12px; height: 44px; box-sizing: border-box; }
+        .loc-input-wrapper i { color: var(--text-muted); font-size: 16px; margin-right: 8px; }
+        .loc-input-wrapper input { flex: 1; border: none; outline: none; font-size: 14px; font-family: 'Quantico', sans-serif; width: 100%; min-width: 0; height: 100%; }
+        .loc-submit-btn { background: #336688; color: white; border: none; border-radius: var(--card-radius); font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; padding: 0 20px; height: 44px; text-transform: uppercase; }
+        .loc-submit-btn:hover { background: #1a4d6a; }
+
     </style>
 </head>
 <body>
@@ -639,11 +687,14 @@
                     <span class="sub">INNOVATIONS</span>
                 </div>
             </div>
-            <div class="location-block">
-                <i class="fa-solid fa-location-dot location-icon"></i>
+            
+            <div class="location-block" onclick="openLocationModal()">
+                <div class="location-icon-wrapper">
+                    <i class="fa-solid fa-location-dot" style="font-size: 14px;"></i>
+                </div>
                 <div class="location-text">
-                    <span class="label">DELIVERING TO</span>
-                    <span class="pincode" id="globalPincodeText">ENTER PINCODE <i class="fa-solid fa-caret-down"></i></span>
+                    <span class="label">Delivering to <span id="globalPincodeText" style="color: #f97316;">ENTER PINCODE</span></span>
+                    <span class="pincode" id="globalCityState">SELECT LOCATION <i class="fa-solid fa-caret-down"></i></span>
                 </div>
             </div>
             
@@ -744,7 +795,7 @@
                                 <i class="fa-solid fa-location-dot"></i>
                                 <input type="text" id="pdPincodeInput" placeholder="Enter 6-digit Pincode" maxlength="6">
                             </div>
-                            <button class="pd-pincode-check-btn" onclick="checkPincode()">CHECK</button>
+                            <button class="pd-pincode-check-btn" id="pdCheckBtn" onclick="checkPincode()">CHECK</button>
                         </div>
                         <div id="pdPincodeResult" class="pd-pincode-result"></div>
                     </div>
@@ -1041,6 +1092,35 @@
 
 </div>
 
+<div id="locationOverlay" onclick="closeLocationModal()"></div>
+<div id="locationModal">
+    <div class="loc-header">
+        <h3>Select Delivery Location</h3>
+        <i class="fa-solid fa-xmark" onclick="closeLocationModal()"></i>
+    </div>
+    <div class="loc-body">
+        <div class="loc-current" onclick="autoFetchLocation()">
+            <i class="fa-solid fa-location-crosshairs loc-icon"></i>
+            <div class="loc-text">
+                <strong>Use my Current Location</strong>
+                <span id="locSubtext">Enable your current location for better services</span>
+            </div>
+            <div class="toggle-switch" id="locToggle">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+        
+        <div class="loc-divider"><span>or</span></div>
+        
+        <div class="loc-input-row">
+            <div class="loc-input-wrapper">
+                <i class="fa-solid fa-location-dot"></i>
+                <input type="text" id="locModalPincode" placeholder="Enter Your Pincode" maxlength="6">
+            </div>
+            <button class="loc-submit-btn" id="locModalSubmitBtn" onclick="submitModalPincode()">SUBMIT</button>
+        </div>
+    </div>
+</div>
 
 <div id="profileOverlay" onclick="closeProfile()"></div>
 <div id="profileComponent">
@@ -1102,6 +1182,172 @@
 </div>
 
 <script>
+    // --- LOCATION LOGIC ---
+    function openLocationModal() {
+        document.getElementById('locationOverlay').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('locationOverlay').style.opacity = '1';
+            document.getElementById('locationModal').classList.add('active');
+            document.body.classList.add('no-scroll');
+        }, 10);
+    }
+
+    function closeLocationModal() {
+        document.getElementById('locationModal').classList.remove('active');
+        document.getElementById('locationOverlay').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('locationOverlay').style.display = 'none';
+            document.body.classList.remove('no-scroll');
+            resetLocToggle();
+        }, 300);
+    }
+
+    function resetLocToggle() {
+        document.getElementById('locToggle').classList.remove('active');
+        document.getElementById('locSubtext').innerText = "Enable your current location for better services";
+    }
+
+    function updateGlobalLocationUI(pincode, city, state) {
+        document.getElementById('globalPincodeText').innerText = pincode;
+        document.getElementById('globalCityState').innerHTML = `${city}, ${state} <i class="fa-solid fa-caret-down"></i>`;
+        
+        // Also sync product page input box if present
+        let pdInput = document.getElementById('pdPincodeInput');
+        if(pdInput) {
+            pdInput.value = pincode;
+            // Trigger delivery info update silently
+            let dateStr = getExpectedDeliveryDate(pincode);
+            document.getElementById('pdPincodeResult').innerHTML = `<span style="color: var(--green-accent); font-weight: 700;"><i class="fa-solid fa-circle-check"></i> Delivery by ${dateStr} to ${pincode}</span>`;
+            document.querySelectorAll('.dynamic-delivery-date').forEach(span => {
+                span.innerHTML = `<i class="fa-solid fa-truck"></i> Arrives By ${dateStr}`;
+                span.style.color = "var(--text-dark)";
+            });
+        }
+    }
+
+    async function autoFetchLocation() {
+        document.getElementById('locToggle').classList.add('active');
+        document.getElementById('locSubtext').innerText = "Fetching your location...";
+
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                try {
+                    let res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                    let data = await res.json();
+                    
+                    let pin = data.address.postcode;
+                    let city = data.address.state_district || data.address.city || data.address.town || "Your City";
+                    let state = data.address.state || "Your State";
+
+                    if(pin) {
+                        updateGlobalLocationUI(pin, city, state);
+                        closeLocationModal();
+                    } else {
+                        alert("Could not accurately detect pincode. Please enter it manually.");
+                        resetLocToggle();
+                    }
+                } catch(e) {
+                    alert("Location fetch failed. Please enter manually.");
+                    resetLocToggle();
+                }
+            }, () => {
+                alert("Location access denied or unavailable.");
+                resetLocToggle();
+            });
+        } else {
+            alert("Geolocation is not supported by your browser.");
+            resetLocToggle();
+        }
+    }
+
+    async function submitModalPincode() {
+        const btn = document.getElementById('locModalSubmitBtn');
+        const pin = document.getElementById('locModalPincode').value.trim();
+        if(pin.length !== 6 || isNaN(pin)) {
+            alert("Please enter a valid 6-digit pincode");
+            return;
+        }
+        
+        btn.innerText = "WAIT...";
+        try {
+            let res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+            let data = await res.json();
+            
+            if(data[0].Status === "Success") {
+                let city = data[0].PostOffice[0].District;
+                let state = data[0].PostOffice[0].State;
+                updateGlobalLocationUI(pin, city, state);
+                closeLocationModal();
+            } else {
+                alert("Invalid Pincode. Please check and try again.");
+            }
+        } catch(e) {
+            // Fallback gracefully if API is down
+            updateGlobalLocationUI(pin, "DELIVERY CITY", "STATE");
+            closeLocationModal();
+        }
+        btn.innerText = "SUBMIT";
+    }
+
+
+    // --- Pincode Logic for Product View ---
+    function getExpectedDeliveryDate(pincode) {
+        const transitDatabase = {
+            "110001": 2, // Metro (2 din)
+            "400001": 3, // Metro (3 din)
+            "302001": 4  // Tier-2 (4 din)
+        };
+
+        let transitDays = transitDatabase[pincode] !== undefined ? transitDatabase[pincode] : 7;
+
+        let deliveryDate = new Date();
+        deliveryDate.setDate(deliveryDate.getDate() + transitDays);
+
+        const options = { weekday: 'short', day: 'numeric', month: 'short' };
+        return deliveryDate.toLocaleDateString('en-IN', options);
+    }
+
+    async function checkPincode() {
+        const input = document.getElementById('pdPincodeInput').value.trim();
+        const resultBox = document.getElementById('pdPincodeResult');
+        const checkBtn = document.getElementById('pdCheckBtn');
+        
+        if(input.length !== 6 || isNaN(input)) {
+            resultBox.innerHTML = '<span style="color: var(--red-accent); font-weight: 700;">Please enter a valid 6-digit Pincode.</span>';
+            return;
+        }
+
+        checkBtn.innerText = "WAIT...";
+        try {
+            let res = await fetch(`https://api.postalpincode.in/pincode/${input}`);
+            let data = await res.json();
+            
+            if(data[0].Status === "Success") {
+                let city = data[0].PostOffice[0].District;
+                let state = data[0].PostOffice[0].State;
+                updateGlobalLocationUI(input, city, state);
+            }
+        } catch(e) {
+            // Silently fallback on API error and just update UI
+            document.getElementById('globalPincodeText').innerText = input;
+        }
+
+        checkBtn.innerText = "CHECK";
+        const dateStr = getExpectedDeliveryDate(input);
+        
+        // Show success message
+        resultBox.innerHTML = `<span style="color: var(--green-accent); font-weight: 700;"><i class="fa-solid fa-circle-check"></i> Delivery by ${dateStr} to ${input}</span>`;
+        
+        // Update dynamic delivery spans in variants
+        const deliverySpans = document.querySelectorAll('.dynamic-delivery-date');
+        deliverySpans.forEach(span => {
+            span.innerHTML = `<i class="fa-solid fa-truck"></i> Arrives By ${dateStr}`;
+            span.style.color = "var(--text-dark)";
+        });
+    }
+
     // --- Dynamic Tab Heights (Only Collapse if > ~4 lines) ---
     function evaluateTabHeights() {
         document.querySelectorAll('.pd-tab-content').forEach(tc => {
@@ -1124,48 +1370,6 @@
             
             if (isDisplayNone) tc.style.display = 'none'; 
         });
-    }
-
-    // --- Pincode Logic ---
-    function getExpectedDeliveryDate(pincode) {
-        const transitDatabase = {
-            "110001": 2, // Metro (2 din)
-            "400001": 3, // Metro (3 din)
-            "302001": 4  // Tier-2 (4 din)
-        };
-
-        let transitDays = transitDatabase[pincode] !== undefined ? transitDatabase[pincode] : 7;
-
-        let deliveryDate = new Date();
-        deliveryDate.setDate(deliveryDate.getDate() + transitDays);
-
-        const options = { weekday: 'short', day: 'numeric', month: 'short' };
-        return deliveryDate.toLocaleDateString('en-IN', options);
-    }
-
-    function checkPincode() {
-        const input = document.getElementById('pdPincodeInput').value.trim();
-        const resultBox = document.getElementById('pdPincodeResult');
-        
-        if(input.length !== 6 || isNaN(input)) {
-            resultBox.innerHTML = '<span style="color: var(--red-accent); font-weight: 700;">Please enter a valid 6-digit Pincode.</span>';
-            return;
-        }
-
-        const dateStr = getExpectedDeliveryDate(input);
-        
-        // Show success message
-        resultBox.innerHTML = `<span style="color: var(--green-accent); font-weight: 700;"><i class="fa-solid fa-circle-check"></i> Delivery by ${dateStr} to ${input}</span>`;
-        
-        // Update dynamic delivery spans in variants
-        const deliverySpans = document.querySelectorAll('.dynamic-delivery-date');
-        deliverySpans.forEach(span => {
-            span.innerHTML = `<i class="fa-solid fa-truck"></i> Arrives By ${dateStr}`;
-            span.style.color = "var(--text-dark)";
-        });
-
-        // Update Global Header Pincode Text
-        document.getElementById('globalPincodeText').innerHTML = `${input} <i class="fa-solid fa-caret-down"></i>`;
     }
 
     // --- Data ---
@@ -1357,7 +1561,7 @@
         document.getElementById('productGrid').innerHTML = prodHTML;
     }
 
-    // --- NEW HEART TOGGLE ANIMATION FUNCTION ---
+    // --- HEART TOGGLE ANIMATION FUNCTION ---
     function toggleWishlist(event, element) {
         if(event) event.stopPropagation(); // Prevents opening the product card when clicked on the grid
 
@@ -1372,7 +1576,7 @@
         }
     }
 
-    // --- NEW PRODUCT VIEW TABS AND IMAGE LOGIC ---
+    // --- PRODUCT VIEW TABS AND IMAGE LOGIC ---
     function changeImage(element) {
         document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
         element.classList.add('active');
