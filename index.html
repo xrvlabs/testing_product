@@ -484,8 +484,21 @@
         /* Auth View */
         .auth-view-layout { display: flex; flex-direction: column; min-height: 100vh; position: relative; }
         @media (min-width: 1024px) {
-            .auth-view-layout { flex-direction: row; align-items: center; justify-content: flex-end; padding: 40px 10%; background: url('https://placehold.co/1920x1080/1a1a1a/ffffff?text=Dental+Clinic+Background') center/cover no-repeat; }
-            .auth-view-layout::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%); z-index: 0; }
+            .auth-view-layout { 
+                flex-direction: row; 
+                align-items: center; 
+                justify-content: flex-end; 
+                padding: 40px 10%; 
+                background: url('login_page.jpg') center/cover no-repeat; 
+            }
+            .auth-view-layout::before { 
+                content: ''; 
+                position: absolute; 
+                top: 0; left: 0; 
+                width: 100%; height: 100%; 
+                background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%); 
+                z-index: 0; 
+            }
         }
         .auth-desktop-promo { display: none; position: relative; z-index: 1; flex: 1; color: white; padding-right: 40px; }
         @media (min-width: 1024px) { .auth-desktop-promo { display: block; } }
