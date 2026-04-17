@@ -73,7 +73,6 @@
         .skel-text-1 { height: 14px; width: 90%; }
         .skel-text-2 { height: 12px; width: 70%; }
         .skel-price { height: 20px; width: 50%; margin-top: auto; }
-        .skel-btn { height: 32px; width: 100%; border-radius: var(--card-radius); }
 
         .tab-skel-row { height: 60px; margin-bottom: 12px; border-radius: 8px; width: 100%; }
         .tab-skel-box { height: 120px; margin-bottom: 16px; border-radius: 8px; width: 100%; }
@@ -122,7 +121,6 @@
         .megamenu { position: static; width: 100%; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: none; flex-direction: column; overflow: hidden; border-bottom: 1px solid var(--border-color); }
         .megamenu.active { display: flex; animation: slideDown 0.3s ease; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .bs-header { display: none; }
         .mm-search { padding: 12px 10px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
         .mm-search input { width: 100%; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 8px 14px; font-size: 13px; outline: none; font-family: 'Quantico', sans-serif;}
         .mm-body { display: flex; flex-direction: column; }
@@ -177,13 +175,7 @@
         }
 
         /* FULL-WIDTH WRAPPER FOR SLIDER */
-        .hero-wrapper-full {
-            width: 100%;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            padding: 16px 10px;
-        }
+        .hero-wrapper-full { width: 100%; background-color: #f0f2f5; display: flex; justify-content: center; padding: 16px 10px; }
         @media (min-width: 768px) { .hero-wrapper-full { padding: 24px 10px; } }
 
         .hero-slider.contained {
@@ -195,11 +187,7 @@
         .hero-slide { flex: 0 0 100%; scroll-snap-align: start; display: flex; position: relative; }
         .hero-slide img { width: 100%; height: auto; object-fit: contain; display: block; }
 
-        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; margin-bottom: 16px; margin-top: 16px; }
-        .section-header h3 { font-size: 16px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border-color); padding: 12px 16px; border-radius: var(--card-radius); width: 100%; justify-content: space-between; text-transform: uppercase; background: white;}
-        .section-header h3 i { color: var(--blue-accent); font-size: 18px; }
-
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 0 10px 32px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 16px 10px 32px; }
         @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
         
         .product-card { border: 1px solid var(--border-color); border-radius: var(--card-radius); background: white; display: flex; flex-direction: column; position: relative; cursor: pointer; transition: var(--transition); will-change: transform, box-shadow; content-visibility: auto; }
@@ -221,109 +209,102 @@
         .coin-icon { background: #fef3c7; border-radius: 50%; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; color: #d97706; font-weight: 700;}
 
         /* -------------------------------------------
-           CLEAN & ALIGNED PRODUCT DETAIL UI 
+           CLEAN & RESPONSIVE PRODUCT DETAIL UI 
            ------------------------------------------- */
         
-        .pd-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding: 16px 10px;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
+        .pd-wrapper { display: flex; flex-direction: column; gap: 16px; padding: 16px 10px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;}
 
-        .pd-back-btn {
-            display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800;
-            color: var(--text-muted); cursor: pointer; padding: 4px 0; width: fit-content;
-            text-transform: uppercase; transition: color 0.2s; letter-spacing: 0.5px;
-        }
+        .pd-back-btn { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; color: var(--text-muted); cursor: pointer; padding: 4px 0; width: fit-content; text-transform: uppercase; transition: color 0.2s; letter-spacing: 0.5px; }
         .pd-back-btn:hover { color: var(--blue-accent); }
 
-        .pd-grid-layout {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            align-items: start; /* Ensures both left and right stick to the top */
-        }
-        @media (min-width: 1024px) {
-            .pd-grid-layout { grid-template-columns: 480px 1fr; }
-        }
+        .pd-grid-layout { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: start; width: 100%; }
+        @media (min-width: 1024px) { .pd-grid-layout { grid-template-columns: 480px 1fr; } }
 
         /* Left Column (Sticky Image) */
-        .pd-image-col {
-            display: flex; flex-direction: column; gap: 16px;
-        }
-        @media (min-width: 1024px) {
-            /* Keeps the image on screen when scrolling the details */
-            .pd-image-col { position: sticky; top: 140px; align-self: start; }
-        }
+        .pd-image-col { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+        @media (min-width: 1024px) { .pd-image-col { position: sticky; top: 140px; align-self: start; } }
         
-        .pd-main-img-box {
-            background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius);
-            padding: 20px; display: flex; justify-content: center; align-items: center;
-            position: relative;
-        }
-        .pd-main-img-box .wishlist-btn-large {
-            position: absolute; top: 12px; right: 12px; font-size: 22px; color: #cbd5e1; cursor: pointer; transition: color 0.2s;
-        }
+        .pd-main-img-box { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 20px; display: flex; justify-content: center; align-items: center; position: relative; width: 100%; box-sizing: border-box;}
+        .pd-main-img-box .wishlist-btn-large { position: absolute; top: 12px; right: 12px; font-size: 22px; color: #cbd5e1; cursor: pointer; transition: color 0.2s; }
         .pd-main-img-box .wishlist-btn-large:hover { color: var(--red-accent); }
-        .pd-main-img { width: 100%; aspect-ratio: 1/1; object-fit: contain; }
+        .pd-main-img { width: 100%; aspect-ratio: 1/1; object-fit: contain; max-width: 100%; }
         
-        .pd-thumb-list { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+        .pd-thumb-list { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; width: 100%;}
         .pd-thumb-list::-webkit-scrollbar { display: none; }
-        .pd-thumb { width: 64px; height: 64px; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 4px; object-fit: contain; cursor: pointer; background: white; transition: 0.2s;}
+        .pd-thumb { width: 64px; height: 64px; flex-shrink: 0; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 4px; object-fit: contain; cursor: pointer; background: white; transition: 0.2s;}
         .pd-thumb.active { border-color: var(--blue-dark); border-width: 2px; }
 
         /* Right Column (Scrollable Content) */
-        .pd-content-col { display: flex; flex-direction: column; gap: 20px; }
+        .pd-content-col { display: flex; flex-direction: column; gap: 20px; width: 100%; min-width: 0; /* Prevents flex blowout */ }
 
-        .pd-title-box { background: white; padding: 24px; border-radius: var(--card-radius); border: 1px solid var(--border-color); }
-        .pd-title-box h1 { font-size: 22px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px; line-height: 1.3;}
+        .pd-title-box { background: white; padding: 20px; border-radius: var(--card-radius); border: 1px solid var(--border-color); width: 100%; box-sizing: border-box;}
+        .pd-title-box h1 { font-size: 20px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px; line-height: 1.3;}
+        @media (min-width: 768px) { .pd-title-box h1 { font-size: 22px; } }
         .pd-title-box p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
         
         .pd-brand-strip { display: flex; align-items: center; gap: 16px; margin-top: 20px; padding: 16px; background: #f8fafc; border-radius: var(--card-radius); border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s;}
         .pd-brand-strip:hover { border-color: var(--blue-accent); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .pd-brand-strip img { width: 48px; height: 48px; object-fit: contain; background: white; border-radius: 4px; padding: 4px; border: 1px solid #e2e8f0; }
+        .pd-brand-strip img { width: 48px; height: 48px; object-fit: contain; background: white; border-radius: 4px; padding: 4px; border: 1px solid #e2e8f0; flex-shrink: 0;}
         .pd-brand-strip div { display: flex; flex-direction: column; gap: 4px;}
         .pd-brand-strip div strong { font-size: 16px; color: var(--text-dark); font-weight: 800;}
         .pd-brand-strip div span { font-size: 12px; color: var(--blue-dark); font-weight: 700; display: flex; align-items: center; gap: 4px;}
 
-        /* Clean Variant Cards */
-        .pd-variants-area { display: flex; flex-direction: column; gap: 16px; }
-        .pd-variant-card { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 20px; display: flex; flex-direction: column; gap: 16px; position: relative; transition: box-shadow 0.2s;}
-        @media (min-width: 768px) { .pd-variant-card { flex-direction: row; align-items: stretch; } }
+        /* New Pincode Box */
+        .pd-pincode-box { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; width: 100%; box-sizing: border-box;}
+        .pd-pincode-header { font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--text-dark); margin-bottom: 12px;}
+        .pd-pincode-input-group { display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 4px 4px 4px 12px; background: #f8fafc;}
+        .pd-pincode-input-group i { color: var(--blue-accent); font-size: 16px; }
+        .pd-pincode-input-group input { flex: 1; border: none; outline: none; background: transparent; padding: 8px; font-size: 14px; font-family: 'Quantico', sans-serif; width: 100%; min-width: 0;}
+        .pd-pincode-input-group button { background: var(--text-dark); color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 700; cursor: pointer; transition: 0.2s;}
+        .pd-pincode-input-group button:hover { background: var(--blue-accent); }
+        .pd-pincode-result { margin-top: 10px; font-size: 12px; }
+
+        /* Clean Variant Cards (Responsive fix) */
+        .pd-variants-area { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+        .pd-variant-card { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; display: flex; flex-direction: column; gap: 16px; transition: box-shadow 0.2s; width: 100%; box-sizing: border-box;}
+        @media (min-width: 768px) { .pd-variant-card { flex-direction: row; align-items: stretch; padding: 20px; } }
         .pd-variant-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); border-color: #cbd5e1; }
         
-        .pd-vc-img { width: 100px; height: 100px; object-fit: contain; background: white; border-radius: 4px; border: 1px solid #e2e8f0; flex-shrink: 0; align-self: center;}
-        .pd-vc-details { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
-        .pd-vc-title { font-size: 16px; font-weight: 800; color: var(--text-dark); }
+        .pd-vc-img { width: 80px; height: 80px; object-fit: contain; background: white; border-radius: 4px; border: 1px solid #e2e8f0; flex-shrink: 0; align-self: flex-start;}
+        @media (min-width: 768px) { .pd-vc-img { width: 100px; height: 100px; align-self: center; } }
+        
+        /* Layout fix for mobile: Image & Title side-by-side */
+        .pd-vc-top-mobile { display: flex; gap: 16px; width: 100%; }
+        @media (min-width: 768px) { .pd-vc-top-mobile { display: contents; } } /* Reverts to normal flow on desktop */
+
+        .pd-vc-details { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; min-width: 0; }
+        .pd-vc-title { font-size: 14px; font-weight: 800; color: var(--text-dark); line-height: 1.4; word-wrap: break-word;}
+        @media (min-width: 768px) { .pd-vc-title { font-size: 16px; } }
+        
         .pd-vc-pricing { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 4px;}
-        .pd-vc-price { font-size: 24px; font-weight: 800; color: var(--text-dark); }
+        .pd-vc-price { font-size: 22px; font-weight: 800; color: var(--text-dark); }
         .pd-vc-mrp { font-size: 14px; color: var(--text-muted); text-decoration: line-through; }
         .pd-vc-coins { font-size: 12px; color: #d97706; font-weight: 700; display: flex; align-items: center; gap: 4px; }
-        .pd-vc-discount { font-size: 12px; color: var(--blue-dark); background: var(--blue-light); padding: 4px 8px; border-radius: 4px; font-weight: 700; }
         
-        .pd-vc-delivery { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--text-muted); margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 12px; flex-wrap: wrap;}
+        .pd-vc-delivery { display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: var(--text-muted); margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 12px;}
+        @media (min-width: 768px) { .pd-vc-delivery { flex-direction: row; align-items: center; gap: 16px; } }
         .pd-vc-delivery span { display: flex; align-items: center; gap: 6px; font-weight: 700; }
         .pd-vc-delivery i { color: var(--blue-dark); font-size: 14px;}
         .pd-vc-delivery .green { color: var(--green-accent); }
 
-        .pd-vc-action { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 8px; min-width: 120px;}
-        @media (max-width: 767px) { .pd-vc-action { flex-direction: row; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px;} }
-        .pd-vc-add-btn { background: #336688; color: white; border: none; padding: 12px 32px; border-radius: var(--card-radius); font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 100%;}
+        .pd-vc-action { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 16px;}
+        @media (min-width: 768px) { .pd-vc-action { flex-direction: column; justify-content: center; align-items: flex-end; border-top: none; padding-top: 0; min-width: 120px; } }
+        
+        .pd-vc-add-btn { background: #336688; color: white; border: none; padding: 10px 32px; border-radius: var(--card-radius); font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s;}
+        @media (min-width: 768px) { .pd-vc-add-btn { width: 100%; padding: 12px 32px; } }
         .pd-vc-add-btn:hover { background: #1a4d6a; }
 
         /* Tabs System matching Screenshot */
-        .pd-tabs-container { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); overflow: hidden; margin-top: 10px;}
+        .pd-tabs-container { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); overflow: hidden; margin-top: 10px; width: 100%; box-sizing: border-box;}
         .pd-tabs-header { display: flex; overflow-x: auto; border-bottom: 1px solid var(--border-color); background: #f8fafc; scrollbar-width: none; }
         .pd-tabs-header::-webkit-scrollbar { display: none; }
-        .pd-tab { padding: 16px 24px; font-size: 14px; font-weight: 700; color: var(--text-muted); cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 8px; border-bottom: 3px solid transparent; transition: 0.2s;}
+        .pd-tab { padding: 16px 20px; font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 8px; border-bottom: 3px solid transparent; transition: 0.2s;}
+        @media (min-width: 768px) { .pd-tab { padding: 16px 24px; font-size: 14px; } }
         .pd-tab:hover { color: var(--blue-dark); background: #f1f5f9; }
         .pd-tab.active { color: #336688; background: white; border-bottom-color: #336688; }
         
-        .pd-tab-content { padding: 24px; font-size: 14px; color: var(--text-dark); line-height: 1.8; }
+        .pd-tab-content { padding: 20px; font-size: 13px; color: var(--text-dark); line-height: 1.6; }
+        @media (min-width: 768px) { .pd-tab-content { padding: 24px; font-size: 14px; line-height: 1.8; } }
         .pd-tab-content ul { padding-left: 20px; list-style-type: disc;}
         .pd-tab-content li { margin-bottom: 10px; color: var(--text-muted);}
 
@@ -598,7 +579,7 @@
                 <i class="fa-solid fa-location-dot location-icon"></i>
                 <div class="location-text">
                     <span class="label">DELIVERING TO</span>
-                    <span class="pincode">ENTER PINCODE <i class="fa-solid fa-caret-down"></i></span>
+                    <span class="pincode" id="globalPincodeText">ENTER PINCODE <i class="fa-solid fa-caret-down"></i></span>
                 </div>
             </div>
             
@@ -700,24 +681,29 @@
                         </div>
                     </div>
 
+                    <div class="pd-pincode-box">
+                        <div class="pd-pincode-header">Check Delivery Info</div>
+                        <div class="pd-pincode-input-group">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <input type="text" id="pdPincodeInput" placeholder="Enter 6-digit Pincode" maxlength="6">
+                            <button onclick="checkPincode()">CHECK</button>
+                        </div>
+                        <div id="pdPincodeResult" class="pd-pincode-result"></div>
+                    </div>
+
                     <div class="pd-variants-area" id="pd-variants-container">
                         
                         <div class="pd-variant-card">
-                            <img src="pro_1.jpg" class="pd-vc-img" alt="Grey Resin">
-                            <div class="pd-vc-details">
-                                <div class="pd-vc-title">Labodent DentWERK HD Model Resin - Grey 1Kg</div>
-                                
-                                <div class="pd-vc-pricing">
-                                    <span class="pd-vc-price">₹1,499</span>
-                                    <span class="pd-vc-mrp">₹6,500</span>
-                                    <span class="pd-vc-coins"><span class="coin-icon">D</span> 75</span>
-                                    <span class="pd-vc-discount">↓ 76.94% OFF</span>
-                                </div>
-
-                                <div class="pd-vc-delivery">
-                                    <span><i class="fa-solid fa-truck"></i> Arrives By Apr 18, 2026</span>
-                                    <span><i class="fa-solid fa-rotate-left"></i> 10-Days Returnable</span>
-                                    <span><i class="fa-solid fa-circle-check green"></i> COD</span>
+                            <div class="pd-vc-top-mobile">
+                                <img src="pro_1.jpg" class="pd-vc-img" alt="Grey Resin">
+                                <div class="pd-vc-details">
+                                    <div class="pd-vc-title">Labodent DentWERK HD Model Resin - Grey 1Kg</div>
+                                    <div class="pd-vc-pricing">
+                                        <span class="pd-vc-price">₹1,499</span>
+                                    </div>
+                                    <div class="pd-vc-delivery">
+                                        <span class="dynamic-delivery-date"><i class="fa-solid fa-truck"></i> Please enter pincode to check delivery</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -727,21 +713,16 @@
                         </div>
 
                         <div class="pd-variant-card">
-                            <img src="pro_2.jpg" class="pd-vc-img" alt="Almond Resin">
-                            <div class="pd-vc-details">
-                                <div class="pd-vc-title">Labodent DentWERK HD Model Resin - Almond 1Kg</div>
-                                
-                                <div class="pd-vc-pricing">
-                                    <span class="pd-vc-price">₹1,499</span>
-                                    <span class="pd-vc-mrp">₹6,500</span>
-                                    <span class="pd-vc-coins"><span class="coin-icon">D</span> 75</span>
-                                    <span class="pd-vc-discount">↓ 76.94% OFF</span>
-                                </div>
-
-                                <div class="pd-vc-delivery">
-                                    <span><i class="fa-solid fa-truck"></i> Arrives By Apr 19, 2026</span>
-                                    <span><i class="fa-solid fa-rotate-left"></i> 10-Days Returnable</span>
-                                    <span><i class="fa-solid fa-circle-check green"></i> COD</span>
+                            <div class="pd-vc-top-mobile">
+                                <img src="pro_2.jpg" class="pd-vc-img" alt="Almond Resin">
+                                <div class="pd-vc-details">
+                                    <div class="pd-vc-title">Labodent DentWERK HD Model Resin - Almond 1Kg</div>
+                                    <div class="pd-vc-pricing">
+                                        <span class="pd-vc-price">₹1,499</span>
+                                    </div>
+                                    <div class="pd-vc-delivery">
+                                        <span class="dynamic-delivery-date"><i class="fa-solid fa-truck"></i> Please enter pincode to check delivery</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1074,6 +1055,48 @@
 </div>
 
 <script>
+    // --- Pincode Logic ---
+    function getExpectedDeliveryDate(pincode) {
+        const transitDatabase = {
+            "110001": 2, // Metro (2 din)
+            "400001": 3, // Metro (3 din)
+            "302001": 4  // Tier-2 (4 din)
+        };
+
+        let transitDays = transitDatabase[pincode] !== undefined ? transitDatabase[pincode] : 7;
+
+        let deliveryDate = new Date();
+        deliveryDate.setDate(deliveryDate.getDate() + transitDays);
+
+        const options = { weekday: 'short', day: 'numeric', month: 'short' };
+        return deliveryDate.toLocaleDateString('en-IN', options);
+    }
+
+    function checkPincode() {
+        const input = document.getElementById('pdPincodeInput').value.trim();
+        const resultBox = document.getElementById('pdPincodeResult');
+        
+        if(input.length !== 6 || isNaN(input)) {
+            resultBox.innerHTML = '<span style="color: var(--red-accent); font-weight: 700;">Please enter a valid 6-digit Pincode.</span>';
+            return;
+        }
+
+        const dateStr = getExpectedDeliveryDate(input);
+        
+        // Show success message
+        resultBox.innerHTML = `<span style="color: var(--green-accent); font-weight: 700;"><i class="fa-solid fa-circle-check"></i> Delivery by ${dateStr} to ${input}</span>`;
+        
+        // Update Variant Cards Delivery Text
+        const deliverySpans = document.querySelectorAll('.dynamic-delivery-date');
+        deliverySpans.forEach(span => {
+            span.innerHTML = `<i class="fa-solid fa-truck"></i> Arrives By ${dateStr}`;
+            span.style.color = "var(--text-dark)";
+        });
+
+        // Update Global Header Pincode Text
+        document.getElementById('globalPincodeText').innerHTML = `${input} <i class="fa-solid fa-caret-down"></i>`;
+    }
+
     // --- Data ---
     const categoriesData = [
         {
