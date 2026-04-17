@@ -176,9 +176,9 @@
             .subcat-title { font-size: 12px; padding: 12px 8px; }
         }
 
-        /* FULL-WIDTH WRAPPER FOR SLIDER - EXACTLY 10px MARGIN/PADDING */
-        .hero-wrapper-full { width: 100%; background-color: var(--primary-bg); display: flex; justify-content: center; padding: 10px; box-sizing: border-box; }
-        /* (Media query for extra padding removed to keep it strictly 10px everywhere) */
+        /* FULL-WIDTH WRAPPER FOR SLIDER */
+        .hero-wrapper-full { width: 100%; background-color: #f0f2f5; display: flex; justify-content: center; padding: 16px 10px; }
+        @media (min-width: 768px) { .hero-wrapper-full { padding: 24px 10px; } }
 
         .hero-slider.contained {
             display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
@@ -187,18 +187,13 @@
         }
         .hero-slider.contained::-webkit-scrollbar { display: none; }
         .hero-slide { flex: 0 0 100%; scroll-snap-align: start; display: flex; position: relative; }
-        
         .hero-slide img { 
             width: 100%; 
             height: auto; 
             object-fit: contain; 
             display: block; 
-            opacity: 1; /* Default to visible */
-        }
-        
-        /* Animation class to be added via JS only once */
-        .fade-in-once {
-            animation: imageFade 0.8s ease-in-out forwards;
+            opacity: 0; /* Starts hidden */
+            animation: imageFade 0.8s ease-in-out forwards; /* Smooth fade in */
         }
 
         /* Unified Home Gaps */
@@ -2133,12 +2128,11 @@
     function renderProducts() {
         let prodHTML = '';
         mockProducts.forEach(prod => {
-            let freebieTag = prod.freebie ? `<div class="freebies-tag"><i class="fa-solid fa-gift"></i> FREEBIES</div>` : '';
+            // FREEBIE tag ka logic yahan se hata diya gaya hai
             prodHTML += `
                 <div class="product-card" onclick="openProduct(${prod.id})">
                     <div class="product-image-container">
                         <i class="fa-regular fa-heart wishlist-btn" onclick="toggleWishlist(event, this)"></i>
-                        ${freebieTag}
                         <img src="${prod.img}" alt="${prod.title}" loading="lazy">
                         <div class="add-btn" onclick="event.stopPropagation(); addToCart(${prod.id})">ADD</div>
                     </div>
