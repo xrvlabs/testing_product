@@ -484,21 +484,8 @@
         /* Auth View */
         .auth-view-layout { display: flex; flex-direction: column; min-height: 100vh; position: relative; }
         @media (min-width: 1024px) {
-            .auth-view-layout { 
-                flex-direction: row; 
-                align-items: center; 
-                justify-content: flex-end; 
-                padding: 40px 10%; 
-                background: url('login_page.jpg') center/cover no-repeat; 
-            }
-            .auth-view-layout::before { 
-                content: ''; 
-                position: absolute; 
-                top: 0; left: 0; 
-                width: 100%; height: 100%; 
-                background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%); 
-                z-index: 0; 
-            }
+            .auth-view-layout { flex-direction: row; align-items: center; justify-content: flex-end; padding: 40px 10%; background: url('login_page.jpg') center/cover no-repeat; }
+            .auth-view-layout::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%); z-index: 0; }
         }
         .auth-desktop-promo { display: none; position: relative; z-index: 1; flex: 1; color: white; padding-right: 40px; }
         @media (min-width: 1024px) { .auth-desktop-promo { display: block; } }
@@ -817,6 +804,39 @@
         .event-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; background: var(--green-light); color: var(--green-accent); text-transform: uppercase; }
         .event-tag.cat { background: var(--blue-light); color: var(--blue-dark); }
 
+        /* =========================================
+           CONTACT US VIEW STYLES
+           ========================================= */
+        #contactView { background: var(--primary-bg); width: 100%; box-sizing: border-box; }
+        .contact-wrapper { display: flex; flex-direction: column; width: 100%; padding: 16px 10px 32px; box-sizing: border-box; gap: 24px; max-width: 1400px; margin: 0 auto;}
+        
+        .contact-page-title { text-align: center; font-size: 20px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; margin-bottom: 10px; }
+        
+        .contact-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (min-width: 1024px) { .contact-grid { grid-template-columns: 1fr 1.5fr; gap: 32px; } }
+        
+        .contact-info-col { display: flex; flex-direction: column; gap: 16px; }
+        .contact-info-card { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 20px; display: flex; gap: 16px; align-items: flex-start; transition: var(--transition); }
+        .contact-info-card:hover { border-color: var(--blue-accent); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transform: translateY(-2px); }
+        .contact-info-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--blue-light); color: var(--blue-accent); display: flex; justify-content: center; align-items: center; font-size: 20px; flex-shrink: 0; }
+        .contact-info-text { display: flex; flex-direction: column; gap: 6px; }
+        .contact-info-text h4 { font-size: 14px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; margin: 0;}
+        .contact-info-text p { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;}
+
+        .contact-form-col { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .contact-form-col h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; color: var(--text-dark); text-transform: uppercase; }
+        
+        .contact-form-row { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; }
+        @media (min-width: 768px) { .contact-form-row { grid-template-columns: 1fr 1fr; } }
+        
+        .contact-input { width: 100%; padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--card-radius); font-size: 14px; outline: none; transition: var(--transition); font-family: 'Quantico', sans-serif; background: #f8fafc; }
+        .contact-input:focus { border-color: var(--blue-accent); background: white; }
+        textarea.contact-input { resize: vertical; min-height: 140px; margin-bottom: 16px; }
+        
+        .contact-submit-btn { background: #336688; color: white; border: none; padding: 14px 32px; border-radius: var(--card-radius); font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--transition); font-family: 'Quantico', sans-serif; text-transform: uppercase; width: 100%;}
+        @media (min-width: 768px) { .contact-submit-btn { width: auto; } }
+        .contact-submit-btn:hover { background: #1a4d6a; }
+
     </style>
 </head>
 <body>
@@ -867,7 +887,7 @@
             <div class="pill">FREEBIES</div>
             <div class="pill">OFFERS</div>
             <div class="pill" onclick="switchView('eventsView')">EVENTS</div>
-            <div class="pill">CONTACT US</div>
+            <div class="pill" onclick="switchView('contactView')">CONTACT US</div>
         </div>
 
         <div class="megamenu-overlay" id="megamenuOverlay" onclick="closeMegamenu()"></div>
@@ -1081,6 +1101,59 @@
         </div>
     </div>
 
+    <div id="contactView" class="view-section">
+        <div class="contact-wrapper">
+            <div class="contact-page-title">Contact Us</div>
+            <div class="contact-grid">
+                
+                <div class="contact-info-col">
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon"><i class="fa-solid fa-location-dot"></i></div>
+                        <div class="contact-info-text">
+                            <h4>Head Office</h4>
+                            <p>Celebration city center, A-452, Gala Gymkhana Rd, South Bopal, Ahmedabad, Gujarat 380058</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon"><i class="fa-solid fa-phone"></i></div>
+                        <div class="contact-info-text">
+                            <h4>Phone</h4>
+                            <p>+91-123-4567-890<br>+91-987-6543-210</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon"><i class="fa-solid fa-envelope"></i></div>
+                        <div class="contact-info-text">
+                            <h4>Email Support</h4>
+                            <p>support@oracodentalinnovation.com<br>info@gridlabs.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon"><i class="fa-solid fa-clock"></i></div>
+                        <div class="contact-info-text">
+                            <h4>Business Hours</h4>
+                            <p>Monday - Sunday<br>9:00 AM - 9:00 PM (IST)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form-col">
+                    <h3>Send us a message</h3>
+                    <form id="contactForm" onsubmit="submitContact(event)">
+                        <div class="contact-form-row">
+                            <input type="text" class="contact-input" placeholder="YOUR NAME" required>
+                            <input type="email" class="contact-input" placeholder="EMAIL ADDRESS" required>
+                        </div>
+                        <input type="text" class="contact-input" placeholder="SUBJECT" style="margin-bottom: 16px;" required>
+                        <textarea class="contact-input" placeholder="HOW CAN WE HELP YOU?..." required></textarea>
+                        <button type="submit" class="contact-submit-btn" id="contactSubmitBtn">SEND MESSAGE</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 
     <div class="floating-actions">
         <div class="talk-agent-btn">Talk to Agent</div>
@@ -1226,7 +1299,7 @@
                 <div class="fm-col hide-on-mobile-tablet">
                     <h4>ABOUT</h4>
                     <ul>
-                        <li>Contact Us</li>
+                        <li><a onclick="switchView('contactView')">Contact Us</a></li>
                         <li>About Us</li>
                         <li>Careers</li>
                     </ul>
@@ -1676,7 +1749,8 @@
         productView: document.getElementById('productView'),
         authView: document.getElementById('authView'),
         cartView: document.getElementById('cartView'),
-        eventsView: document.getElementById('eventsView')
+        eventsView: document.getElementById('eventsView'),
+        contactView: document.getElementById('contactView')
     };
 
     // --- View Management ---
@@ -1694,7 +1768,7 @@
         const header = document.getElementById('globalHeader');
         const footer = document.getElementById('globalFooter');
         
-        if (targetViewId === 'homeView' || targetViewId === 'eventsView') {
+        if (targetViewId === 'homeView' || targetViewId === 'eventsView' || targetViewId === 'contactView') {
             header.style.display = 'block';
             footer.style.display = 'block';
         } else if (targetViewId === 'productView') {
@@ -2249,6 +2323,26 @@
         const isCurrentlyExpanded = element.classList.contains('expanded');
         document.querySelectorAll('.social-icon').forEach(icon => icon.classList.remove('expanded'));
         if (!isCurrentlyExpanded) { element.classList.add('expanded'); }
+    }
+
+    // CONTACT FORM SUBMISSION
+    function submitContact(e) {
+        e.preventDefault();
+        const btn = document.getElementById('contactSubmitBtn');
+        const originalText = btn.innerText;
+        btn.innerText = "SENDING...";
+        btn.style.background = "var(--text-muted)";
+        
+        setTimeout(() => {
+            btn.innerText = "MESSAGE SENT!";
+            btn.style.background = "var(--green-accent)";
+            document.getElementById('contactForm').reset();
+            
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = "#336688";
+            }, 3000);
+        }, 1500);
     }
 
     document.addEventListener('click', (event) => {
