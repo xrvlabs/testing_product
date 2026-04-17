@@ -92,11 +92,11 @@
         .location-text .pincode { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; text-transform: uppercase;}
         
         .search-container { flex: 1 1 100%; order: 3; display: flex; align-items: center; gap: 10px; }
-        .search-input-box { flex: 1; display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 8px 12px; background: white; }
+        .search-input-box { flex: 1; display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 8px 12px; background: white; height: 42px; box-sizing: border-box; }
         .search-input-box input { flex: 1; border: none; outline: none; font-size: 14px; margin-left: 8px; width: 100%; font-family: 'Quantico', sans-serif; color: var(--text-dark);}
         
         .header-actions { display: flex; align-items: center; gap: 16px; margin-left: auto; order: 2; }
-        .auth-trigger { font-size: 14px; font-weight: 700; display:flex; gap:6px; align-items:center; cursor: pointer; color: var(--text-dark); background: #f1f5f9; padding: 6px 12px; border-radius: var(--card-radius); text-transform: uppercase;}
+        .auth-trigger { font-size: 14px; font-weight: 700; display:flex; gap:6px; align-items:center; justify-content: center; cursor: pointer; color: var(--text-dark); background: #f1f5f9; padding: 8px 16px; border-radius: var(--card-radius); text-transform: uppercase; height: 42px; box-sizing: border-box; }
         
         /* Cart Badges */
         .cart-wrapper { position: relative; cursor: pointer; }
@@ -107,11 +107,11 @@
         .pill:hover, .pill.active { background: var(--blue-light); color: var(--blue-dark); border-color: var(--blue-accent); }
 
         @media (min-width: 1024px) {
-            .header-master { flex-wrap: nowrap; padding: 16px 10px; }
-            .header-logo { display: flex; order: 1; margin-right: 20px; }
-            .location-block { order: 2; margin-right: 20px; }
-            .search-container { flex: 1; order: 3; margin: 0 10px; }
-            .header-actions { order: 4; }
+            .header-master { flex-wrap: nowrap; padding: 16px 10px; gap: 10px; }
+            .header-logo { display: flex; order: 1; margin-right: 10px; }
+            .location-block { order: 2; margin-right: 10px; }
+            .search-container { flex: 1; order: 3; margin: 0; }
+            .header-actions { order: 4; margin-left: 0; }
             .nav-pills { justify-content: center; padding: 16px 10px; }
         }
 
