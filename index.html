@@ -66,7 +66,6 @@
         }
         @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
 
-        /* Skeletons Layout */
         .skel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; padding: 0 10px 32px; }
         @media (min-width: 768px) { .skel-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
         .skel-card { border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 12px; height: 280px; display: flex; flex-direction: column; gap: 12px; background: white; }
@@ -188,7 +187,7 @@
         .hero-slide { flex: 0 0 100%; scroll-snap-align: start; display: flex; position: relative; }
         .hero-slide img { width: 100%; height: auto; object-fit: contain; display: block; }
 
-        /* Product Grid Layout */
+        /* Unified Home Gaps */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; padding: 16px 10px 32px; }
         @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
         
@@ -212,7 +211,6 @@
 
         /* -------------------------------------------
            CLEAN, ALIGNED & UNIFORM PRODUCT DETAIL UI 
-           (Updated gaps to match 10px side margin)
            ------------------------------------------- */
         
         .pd-wrapper { 
@@ -260,11 +258,11 @@
         .pd-pincode-input-group { display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 4px 4px 4px 12px; background: #f8fafc;}
         .pd-pincode-input-group i { color: var(--blue-accent); font-size: 16px; }
         .pd-pincode-input-group input { flex: 1; border: none; outline: none; background: transparent; padding: 8px; font-size: 14px; font-family: 'Quantico', sans-serif; width: 100%; min-width: 0;}
-        .pd-pincode-input-group button { background: var(--text-dark); color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 700; cursor: pointer; transition: 0.2s;}
+        .pd-pincode-input-group button { background: var(--text-dark); color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s;}
         .pd-pincode-input-group button:hover { background: var(--blue-accent); }
         .pd-pincode-result { margin-top: 10px; font-size: 12px; }
 
-        /* Cleaned Variant Cards Area */
+        /* Cleaned Variant Cards */
         .pd-variants-area { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .pd-variant-card { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; display: flex; flex-direction: column; gap: 16px; transition: box-shadow 0.2s; width: 100%; box-sizing: border-box;}
         .pd-variant-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); border-color: #cbd5e1; }
@@ -283,17 +281,18 @@
         .pd-vc-delivery i { color: var(--blue-dark); font-size: 14px;}
 
         /* Bottom portion of variant card (Price Left, Button Right) */
-        .pd-vc-bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; border-top: 1px dashed var(--border-color); padding-top: 16px;}
+        .pd-vc-bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; border-top: 1px dashed var(--border-color); padding-top: 12px;}
         
         .pd-vc-price-box { display: flex; flex-direction: column; gap: 2px;}
-        .pd-vc-price { font-size: 26px; font-weight: 800; color: var(--text-dark); line-height: 1;}
-        @media (min-width: 768px) { .pd-vc-price { font-size: 32px; } }
+        .pd-vc-price { font-size: 20px; font-weight: 800; color: var(--text-dark); line-height: 1;}
+        @media (min-width: 768px) { .pd-vc-price { font-size: 24px; } }
         .pd-vc-mrp { font-size: 13px; color: var(--text-muted); text-decoration: line-through; }
         
-        .pd-vc-add-btn { background: #336688; color: white; border: none; padding: 12px 32px; border-radius: var(--card-radius); font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s;}
+        /* ADD button matching CHECK button */
+        .pd-vc-add-btn { background: #336688; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s;}
         .pd-vc-add-btn:hover { background: #1a4d6a; }
 
-        /* Simplified Tabs System (50/50 Split) */
+        /* Simplified Tabs System (50/50 Split & Accordion) */
         .pd-tabs-container { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); overflow: hidden; width: 100%; margin-top: 0px; box-sizing: border-box;}
         .pd-tabs-header { display: flex; width: 100%; border-bottom: 1px solid var(--border-color); background: #f8fafc; }
         
@@ -303,8 +302,22 @@
         .pd-tab.active { color: #336688; background: white; border-bottom-color: #336688; }
         .pd-tab i { font-size: 16px; }
         
-        .pd-tab-content { padding: 20px; font-size: 14px; color: var(--text-dark); line-height: 1.6; }
-        @media (min-width: 768px) { .pd-tab-content { padding: 24px; line-height: 1.8; } }
+        .pd-tab-content { 
+            padding: 20px; font-size: 14px; color: var(--text-dark); line-height: 1.6; 
+            max-height: 120px; overflow: hidden; position: relative;
+            cursor: pointer; transition: max-height 0.4s ease;
+        }
+        @media (min-width: 768px) { .pd-tab-content { padding: 24px; line-height: 1.8; max-height: 140px; } }
+        
+        /* Fade effect */
+        .pd-tab-content:not(.expanded)::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 40px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+            pointer-events: none;
+        }
+
+        .pd-tab-content.expanded { max-height: 1000px; cursor: auto; }
+        
         .pd-tab-content ul { padding-left: 20px; list-style-type: none;}
         .pd-tab-content li { margin-bottom: 12px; color: var(--text-dark); display: flex; gap: 10px; align-items: flex-start;}
         .pd-tab-content li::before { content: '•'; color: var(--blue-accent); font-weight: bold; font-size: 18px; line-height: 1;}
@@ -734,7 +747,7 @@
                             <div class="pd-tab" onclick="switchTab(this, 'tab-desc')"><i class="fa-solid fa-book-open"></i> Description</div>
                         </div>
 
-                        <div class="pd-tab-content" id="tab-features">
+                        <div class="pd-tab-content" id="tab-features" onclick="this.classList.add('expanded')">
                             <ul>
                                 <li>High precision resin for accurate dental model printing</li>
                                 <li>Low shrinkage ensures dimensional stability</li>
@@ -747,7 +760,7 @@
                             </ul>
                         </div>
                         
-                        <div class="pd-tab-content" id="tab-desc" style="display: none;">
+                        <div class="pd-tab-content" id="tab-desc" style="display: none;" onclick="this.classList.add('expanded')">
                             <strong>DentWerk 3D Model 4 Resin</strong> is a high-performance photopolymer resin specifically developed for dental model fabrication using advanced 3D printing technologies. Designed to deliver exceptional accuracy and detail, it ensures precise reproduction of dental structures, making it ideal for study models, diagnostic setups, and treatment planning. 
                             <br><br>
                             Compatible with LCD, DLP, and SLA 3D printers operating within a wavelength range of 365-405 nm, this resin offers versatility across multiple digital workflows.
@@ -1279,7 +1292,10 @@
         document.querySelectorAll('.pd-tab').forEach(t => t.classList.remove('active'));
         element.classList.add('active');
         
-        document.querySelectorAll('.pd-tab-content').forEach(tc => tc.style.display = 'none');
+        document.querySelectorAll('.pd-tab-content').forEach(tc => {
+            tc.style.display = 'none';
+            tc.classList.remove('expanded'); // Reset accordion when switching tabs
+        });
         document.getElementById(tabId).style.display = 'block';
     }
 
