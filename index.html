@@ -271,13 +271,13 @@
         }
         
         .zoom-result {
-            position: fixed; /* Fixed to the screen, not the scrollable document */
-            top: 50vh; /* Absolute middle of the screen vertically */
-            /* Mathematically places it exactly in the center of the right-side content column */
-            left: calc(480px + ((100vw - 480px) / 2)); 
-            transform: translate(-50%, -50%); /* Perfect centering offset */
-            width: 550px; 
-            height: 550px;
+            position: fixed; 
+            top: 140px; /* Aligns with the top of the sticky image */
+            bottom: 32px; /* Matches the bottom margin of the page */
+            left: 500px; /* 10px left margin + 480px image + 10px gap */
+            right: 10px; /* Matches the right margin of the page */
+            width: auto; /* Stretches horizontally to fill space */
+            height: auto; /* Stretches vertically to fill space */
             background-color: white;
             background-repeat: no-repeat;
             display: none;
