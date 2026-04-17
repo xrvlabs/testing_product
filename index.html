@@ -86,19 +86,19 @@
         .header-logo-text .main { font-size: 20px; font-weight: 800; color: var(--blue-accent); letter-spacing: 0.5px;}
         .header-logo-text .sub { font-size: 9px; font-weight: 700; color: var(--text-muted); align-self: flex-end; margin-top: -2px; letter-spacing: 1px;}
         
-        .location-block { display: flex; align-items: center; gap: 8px; order: 1; cursor: pointer; padding: 6px 10px; border-radius: 8px; background: #e0f2fe; border: 1px solid #bae6fd; transition: background 0.2s;}
+        .location-block { display: flex; align-items: center; gap: 8px; order: 1; cursor: pointer; padding: 0 12px; border-radius: var(--card-radius); background: #e0f2fe; border: 1px solid #bae6fd; transition: background 0.2s; height: 42px; box-sizing: border-box;}
         .location-block:hover { background: #bae6fd; }
-        .location-icon-wrapper { background: #336688; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; }
-        .location-text { display: flex; flex-direction: column; line-height: 1.2; }
-        .location-text .label { font-size: 12px; font-weight: 700; color: var(--text-dark); text-transform: none; }
-        .location-text .pincode { font-size: 11px; color: #336688; font-weight: 700; text-transform: uppercase; margin-top: 2px; }
+        .location-icon-wrapper { background: #336688; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; }
+        .location-text { display: flex; flex-direction: column; line-height: 1.1; justify-content: center; }
+        .location-text .label { font-size: 11px; font-weight: 700; color: var(--text-dark); text-transform: none; }
+        .location-text .pincode { font-size: 12px; color: #336688; font-weight: 800; text-transform: uppercase; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
         
         .search-container { flex: 1 1 100%; order: 3; display: flex; align-items: center; gap: 10px; }
-        .search-input-box { flex: 1; display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 8px 12px; background: white; height: 42px; box-sizing: border-box; }
+        .search-input-box { flex: 1; display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 0 12px; background: white; height: 42px; box-sizing: border-box; }
         .search-input-box input { flex: 1; border: none; outline: none; font-size: 14px; margin-left: 8px; width: 100%; font-family: 'Quantico', sans-serif; color: var(--text-dark);}
         
-        .header-actions { display: flex; align-items: center; gap: 16px; margin-left: auto; order: 2; }
-        .auth-trigger { font-size: 14px; font-weight: 700; display:flex; gap:6px; align-items:center; justify-content: center; cursor: pointer; color: var(--text-dark); background: #f1f5f9; padding: 8px 16px; border-radius: var(--card-radius); text-transform: uppercase; height: 42px; box-sizing: border-box; }
+        .header-actions { display: flex; align-items: center; margin-left: auto; order: 2; }
+        .auth-trigger { font-size: 14px; font-weight: 700; display:flex; gap:6px; align-items:center; justify-content: center; cursor: pointer; color: var(--text-dark); background: #f1f5f9; padding: 0 16px; border-radius: var(--card-radius); text-transform: uppercase; height: 42px; box-sizing: border-box; }
         
         /* Cart Badges */
         .cart-wrapper { position: relative; cursor: pointer; }
@@ -109,9 +109,10 @@
         .pill:hover, .pill.active { background: var(--blue-light); color: var(--blue-dark); border-color: var(--blue-accent); }
 
         @media (min-width: 1024px) {
-            .header-master { flex-wrap: nowrap; padding: 16px 10px; gap: 10px; }
-            .header-logo { display: flex; order: 1; margin-right: 10px; }
-            .location-block { order: 2; margin-right: 10px; }
+            /* Changed gap from 16px to 10px to match the product-grid gap */
+            .header-master { flex-wrap: nowrap; padding: 16px 10px; gap: 10px; } 
+            .header-logo { display: flex; order: 1; margin-right: 0; }
+            .location-block { order: 2; margin-right: 0; }
             .search-container { flex: 1; order: 3; margin: 0; }
             .header-actions { order: 4; margin-left: 0; }
             .nav-pills { justify-content: center; padding: 16px 10px; }
@@ -693,8 +694,8 @@
                     <i class="fa-solid fa-location-dot" style="font-size: 14px;"></i>
                 </div>
                 <div class="location-text">
-                    <span class="label">Delivering to <span id="globalPincodeText" style="color: #f97316;">ENTER PINCODE</span></span>
-                    <span class="pincode" id="globalCityState">SELECT LOCATION <i class="fa-solid fa-caret-down"></i></span>
+                    <span class="label" id="globalLocLabel">DELIVERING TO</span>
+                    <span class="pincode"><span id="globalLocValue">ENTER PINCODE</span> <i class="fa-solid fa-caret-down"></i></span>
                 </div>
             </div>
             
@@ -1208,8 +1209,8 @@
     }
 
     function updateGlobalLocationUI(pincode, city, state) {
-        document.getElementById('globalPincodeText').innerText = pincode;
-        document.getElementById('globalCityState').innerHTML = `${city}, ${state} <i class="fa-solid fa-caret-down"></i>`;
+        document.getElementById('globalLocLabel').innerHTML = `Delivering to <span style="color: #f97316;">${pincode}</span>`;
+        document.getElementById('globalLocValue').innerHTML = `${city}, ${state}`;
         
         // Also sync product page input box if present
         let pdInput = document.getElementById('pdPincodeInput');
@@ -1331,7 +1332,7 @@
             }
         } catch(e) {
             // Silently fallback on API error and just update UI
-            document.getElementById('globalPincodeText').innerText = input;
+            document.getElementById('globalLocLabel').innerHTML = `Delivering to <span style="color: #f97316;">${input}</span>`;
         }
 
         checkBtn.innerText = "CHECK";
