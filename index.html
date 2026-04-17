@@ -210,13 +210,13 @@
 
         /* -------------------------------------------
            CLEAN, ALIGNED & UNIFORM PRODUCT DETAIL UI 
-           (Merged from Code 2 with Code 1 Margins/Paddings)
+           (Updated gaps to match 10px side margin)
            ------------------------------------------- */
         
         .pd-wrapper { 
             display: flex; flex-direction: column; 
-            gap: 16px; 
-            padding: 16px 10px; 
+            gap: 10px; 
+            padding: 10px; 
             max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
         }
 
@@ -227,11 +227,11 @@
         }
         .pd-back-btn:hover { color: var(--blue-accent); }
 
-        .pd-grid-layout { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: start; width: 100%; }
-        @media (min-width: 1024px) { .pd-grid-layout { grid-template-columns: 480px 1fr; } }
+        .pd-grid-layout { display: grid; grid-template-columns: 1fr; gap: 10px; align-items: start; width: 100%; }
+        @media (min-width: 1024px) { .pd-grid-layout { grid-template-columns: 480px 1fr; gap: 24px; } }
 
         /* Left Column (Image Area) */
-        .pd-image-col { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+        .pd-image-col { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         @media (min-width: 1024px) { .pd-image-col { position: sticky; top: 140px; align-self: start; } }
         
         .pd-main-img-box { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 20px; display: flex; justify-content: center; align-items: center; position: relative; width: 100%; box-sizing: border-box;}
@@ -245,7 +245,7 @@
         .pd-thumb.active { border-color: var(--blue-dark); border-width: 2px; }
 
         /* Right Column (Scrollable Content) */
-        .pd-content-col { display: flex; flex-direction: column; gap: 20px; width: 100%; min-width: 0; }
+        .pd-content-col { display: flex; flex-direction: column; gap: 10px; width: 100%; min-width: 0; }
 
         .pd-title-box { background: white; padding: 20px; border-radius: var(--card-radius); border: 1px solid var(--border-color); width: 100%; box-sizing: border-box;}
         .pd-title-box h1 { font-size: 20px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px; line-height: 1.3;}
@@ -262,8 +262,8 @@
         .pd-pincode-input-group button:hover { background: var(--blue-accent); }
         .pd-pincode-result { margin-top: 10px; font-size: 12px; }
 
-        /* Cleaned Variant Cards (Big Price Left, Add Button Right) */
-        .pd-variants-area { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+        /* Cleaned Variant Cards Area */
+        .pd-variants-area { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .pd-variant-card { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; display: flex; flex-direction: column; gap: 16px; transition: box-shadow 0.2s; width: 100%; box-sizing: border-box;}
         .pd-variant-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); border-color: #cbd5e1; }
         
@@ -292,7 +292,7 @@
         .pd-vc-add-btn:hover { background: #1a4d6a; }
 
         /* Simplified Tabs System (50/50 Split) */
-        .pd-tabs-container { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); overflow: hidden; width: 100%; margin-top: 10px; box-sizing: border-box;}
+        .pd-tabs-container { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); overflow: hidden; width: 100%; margin-top: 0px; box-sizing: border-box;}
         .pd-tabs-header { display: flex; width: 100%; border-bottom: 1px solid var(--border-color); background: #f8fafc; }
         
         .pd-tab { flex: 1; display: flex; justify-content: center; align-items: center; gap: 8px; padding: 16px 10px; font-size: 13px; font-weight: 800; color: var(--text-muted); cursor: pointer; text-transform: uppercase; border-bottom: 3px solid transparent; transition: 0.2s;}
