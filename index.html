@@ -271,20 +271,18 @@
         }
         
         .zoom-result {
-            position: fixed; 
-            top: 140px; /* Aligns with the top of the sticky image */
-            bottom: 32px; /* Matches the bottom margin of the page */
-            left: 500px; /* 10px left margin + 480px image + 10px gap */
-            right: 10px; /* Matches the right margin of the page */
-            width: auto; /* Stretches horizontally to fill space */
-            height: auto; /* Stretches vertically to fill space */
+            position: absolute; /* Keeps it attached to the image box */
+            top: 0; /* Aligns to the top corner */
+            left: calc(100% + 10px); /* Positions it just to the right of the image, at the left edge of the content column */
+            width: 500px; /* Restored smaller width */
+            height: 500px; /* Restored smaller height */
             background-color: white;
             background-repeat: no-repeat;
             display: none;
             z-index: 1000;
             border-radius: var(--card-radius);
             border: 1px solid var(--border-color);
-            box-shadow: 0 20px 80px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
         }
         
         /* Blue Overlay for Right Column */
