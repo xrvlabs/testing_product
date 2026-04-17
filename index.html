@@ -187,7 +187,14 @@
         }
         .hero-slider.contained::-webkit-scrollbar { display: none; }
         .hero-slide { flex: 0 0 100%; scroll-snap-align: start; display: flex; position: relative; }
-        .hero-slide img { width: 100%; height: auto; object-fit: contain; display: block; }
+        .hero-slide img { 
+            width: 100%; 
+            height: auto; 
+            object-fit: contain; 
+            display: block; 
+            opacity: 0; /* Starts hidden */
+            animation: imageFade 0.8s ease-in-out forwards; /* Smooth fade in */
+        }
 
         /* Unified Home Gaps */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; padding: 16px 10px 32px; }
@@ -852,15 +859,17 @@
         .loc-submit-btn { background: #336688; color: white; border: none; border-radius: var(--card-radius); font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; padding: 0 20px; height: 44px; text-transform: uppercase; }
         .loc-submit-btn:hover { background: #1a4d6a; }
 
-        /* =========================================
-           EVENTS VIEW STYLES (UPDATED FOR MOBILE/TABLET)
+       /* =========================================
+           EVENTS VIEW STYLES (FULL WIDTH)
            ========================================= */
         #eventsView { background: var(--primary-bg); width: 100%; box-sizing: border-box; }
-        .events-wrapper { display: flex; flex-direction: column; width: 100%; padding: 16px 10px 32px; box-sizing: border-box; gap: 16px; }
+        
+        /* Removed max-width and margin to allow full-width stretch */
+        .events-wrapper { display: flex; flex-direction: column; width: 100%; padding: 10px; box-sizing: border-box; gap: 10px; }
 
-        .events-page-title { text-align: center; font-size: 20px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; margin-bottom: 10px; }
+        .events-page-title { text-align: center; font-size: 18px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; background: white; padding: 16px; border-radius: var(--card-radius); border: 1px solid var(--border-color); margin-bottom: 0; }
 
-        .events-tabs { display: flex; justify-content: center; border-bottom: 1px solid var(--border-color); background: white; border-radius: var(--card-radius); overflow: hidden; margin-bottom: 10px;}
+        .events-tabs { display: flex; justify-content: center; border-bottom: 1px solid var(--border-color); background: white; border-radius: var(--card-radius); overflow: hidden;}
         .events-tab { flex: 1; max-width: 200px; text-align: center; padding: 14px; font-size: 14px; font-weight: 700; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; transition: var(--transition); text-transform: uppercase;}
         .events-tab.active { color: var(--blue-accent); border-bottom-color: var(--blue-accent); background: var(--blue-light); }
 
@@ -881,7 +890,7 @@
         .event-select { border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 0 12px; height: 42px; font-size: 13px; font-family: 'Quantico', sans-serif; background: white; color: var(--text-dark); outline: none; width: 100%; min-width: 0; box-sizing: border-box; cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23757575" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px;}
         @media (min-width: 768px) { .event-select { width: auto; min-width: 130px; } }
 
-        .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; margin-top: 10px;}
+        .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
         
         .event-card { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); overflow: hidden; display: flex; flex-direction: column; transition: var(--transition); cursor: pointer;}
         .event-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); border-color: #cbd5e1; }
@@ -915,34 +924,47 @@
            CONTACT US VIEW STYLES
            ========================================= */
         #contactView { background: var(--primary-bg); width: 100%; box-sizing: border-box; }
-        .contact-wrapper { display: flex; flex-direction: column; width: 100%; padding: 16px 10px 32px; box-sizing: border-box; gap: 24px; max-width: 1400px; margin: 0 auto;}
         
-        .contact-page-title { text-align: center; font-size: 20px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; margin-bottom: 10px; }
+        .contact-wrapper { display: flex; flex-direction: column; width: 100%; padding: 10px; box-sizing: border-box; gap: 10px; }
         
-        .contact-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (min-width: 1024px) { .contact-grid { grid-template-columns: 1fr 1.5fr; gap: 32px; } }
+        .contact-page-title { text-align: center; font-size: 18px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; background: white; padding: 16px; border-radius: var(--card-radius); border: 1px solid var(--border-color); margin-bottom: 0; }
         
-        .contact-info-col { display: flex; flex-direction: column; gap: 16px; }
-        .contact-info-card { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 20px; display: flex; gap: 16px; align-items: flex-start; transition: var(--transition); }
+        .contact-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        @media (min-width: 1024px) { .contact-grid { grid-template-columns: 1fr 1.5fr; gap: 10px; } }
+        
+        .contact-info-col { display: flex; flex-direction: column; gap: 10px; }
+        .contact-info-card { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; display: flex; gap: 16px; align-items: flex-start; transition: var(--transition); }
         .contact-info-card:hover { border-color: var(--blue-accent); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transform: translateY(-2px); }
         .contact-info-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--blue-light); color: var(--blue-accent); display: flex; justify-content: center; align-items: center; font-size: 20px; flex-shrink: 0; }
         .contact-info-text { display: flex; flex-direction: column; gap: 6px; }
         .contact-info-text h4 { font-size: 14px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; margin: 0;}
         .contact-info-text p { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;}
 
-        .contact-form-col { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .contact-form-col { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 24px; }
         .contact-form-col h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; color: var(--text-dark); text-transform: uppercase; }
         
-        .contact-form-row { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; }
+        .contact-form-row { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
         @media (min-width: 768px) { .contact-form-row { grid-template-columns: 1fr 1fr; } }
         
         .contact-input { width: 100%; padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--card-radius); font-size: 14px; outline: none; transition: var(--transition); font-family: 'Quantico', sans-serif; background: #f8fafc; }
         .contact-input:focus { border-color: var(--blue-accent); background: white; }
-        textarea.contact-input { resize: vertical; min-height: 140px; margin-bottom: 16px; }
+        textarea.contact-input { resize: vertical; min-height: 140px; margin-bottom: 10px; }
         
-        .contact-submit-btn { background: #336688; color: white; border: none; padding: 14px 32px; border-radius: var(--card-radius); font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--transition); font-family: 'Quantico', sans-serif; text-transform: uppercase; width: 100%;}
+        .contact-submit-btn { background: #336688; color: white; border: none; padding: 14px 32px; border-radius: var(--card-radius); font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--transition); font-family: 'Quantico', sans-serif; text-transform: uppercase; width: 100%; margin-top: 6px;}
         @media (min-width: 768px) { .contact-submit-btn { width: auto; } }
         .contact-submit-btn:hover { background: #1a4d6a; }
+
+        /* FAQ Section CSS */
+        .faq-section { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 20px; }
+        .faq-title { font-size: 16px; font-weight: 800; text-transform: uppercase; margin-bottom: 16px; color: var(--text-dark); }
+        .faq-item { border-bottom: 1px solid var(--border-color); padding: 14px 0; cursor: pointer; transition: var(--transition); }
+        .faq-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .faq-item:first-of-type { padding-top: 0; }
+        .faq-q { font-size: 14px; font-weight: 700; color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; gap: 10px;}
+        .faq-q i { transition: transform 0.3s; color: var(--blue-accent); }
+        .faq-a { font-size: 13px; color: var(--text-muted); margin-top: 10px; display: none; line-height: 1.6; }
+        .faq-item.active .faq-a { display: block; }
+        .faq-item.active .faq-q i { transform: rotate(180deg); }
 
     </style>
 </head>
@@ -1179,6 +1201,13 @@
                         </div>
                     </div>
                     <div class="contact-info-card">
+                        <div class="contact-info-icon"><i class="fa-solid fa-user-shield"></i></div>
+                        <div class="contact-info-text">
+                            <h4>Grievance Officer</h4>
+                            <p>Mr. Rajesh Kumar<br>grievance@gridlabs.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
                         <div class="contact-info-icon"><i class="fa-solid fa-clock"></i></div>
                         <div class="contact-info-text">
                             <h4>Business Hours</h4>
@@ -1194,13 +1223,34 @@
                             <input type="text" class="contact-input" placeholder="YOUR NAME" required>
                             <input type="email" class="contact-input" placeholder="EMAIL ADDRESS" required>
                         </div>
-                        <input type="text" class="contact-input" placeholder="SUBJECT" style="margin-bottom: 16px;" required>
+                        <input type="text" class="contact-input" placeholder="SUBJECT" style="margin-bottom: 10px;" required>
                         <textarea class="contact-input" placeholder="HOW CAN WE HELP YOU?..." required></textarea>
                         <button type="submit" class="contact-submit-btn" id="contactSubmitBtn">SEND MESSAGE</button>
                     </form>
                 </div>
 
             </div>
+
+            <div class="faq-section">
+                <div class="faq-title">Frequently Asked Questions</div>
+                <div class="faq-item" onclick="this.classList.toggle('active')">
+                    <div class="faq-q">How can I track my order? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-a">You can easily track your order by logging into your profile and visiting the 'Orders' section. A tracking link is also sent via email once the order is dispatched from our warehouse.</div>
+                </div>
+                <div class="faq-item" onclick="this.classList.toggle('active')">
+                    <div class="faq-q">What is the return and replacement policy? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-a">We offer a 10-day replacement policy for defective or damaged products. Please ensure the product is unused and in its original packaging while initiating the return.</div>
+                </div>
+                <div class="faq-item" onclick="this.classList.toggle('active')">
+                    <div class="faq-q">Do you offer bulk discounts for clinics? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-a">Yes, we have a dedicated B2B program for dental clinics and hospitals. Please reach out to our support team at info@gridlabs.com with your requirements for special pricing.</div>
+                </div>
+                <div class="faq-item" onclick="this.classList.toggle('active')">
+                    <div class="faq-q">How do I redeem my reward coins? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-a">Reward coins are automatically applied as a discount on your cart value during checkout. Make sure you are logged into your account to avail the benefits!</div>
+                </div>
+            </div>
+
         </div>
     </div>
 
