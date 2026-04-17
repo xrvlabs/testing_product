@@ -227,6 +227,7 @@
            CLEAN, ALIGNED & UNIFORM PRODUCT DETAIL UI 
            ------------------------------------------- */
         
+        /* Removed max-width to allow fluid layout mimicking the home page grid margins */
         .pd-wrapper { 
             display: flex; flex-direction: column; 
             gap: 10px; 
@@ -242,6 +243,7 @@
         .pd-back-btn:hover { color: var(--blue-accent); }
 
         .pd-grid-layout { display: grid; grid-template-columns: 1fr; gap: 10px; align-items: start; width: 100%; }
+        /* YAHAN DESKTOP VIEW KE LIYE GAP 24px SE 10px KIYA GAYA HAI */
         @media (min-width: 1024px) { .pd-grid-layout { grid-template-columns: 480px 1fr; gap: 10px; } }
 
         /* Left Column (Image Area) */
@@ -308,13 +310,13 @@
         /* Right Column (Scrollable Content) */
         .pd-content-col { display: flex; flex-direction: column; gap: 10px; width: 100%; min-width: 0; position: relative; }
 
-        .pd-title-box { background: white; padding: 20px; border-radius: var(--card-radius); border: 1px solid var(--border-color); width: 100%; box-sizing: border-box;}
+        .pd-title-box { background: white; padding: 20px 10px; border-radius: var(--card-radius); border: 1px solid var(--border-color); width: 100%; box-sizing: border-box;}
         .pd-title-box h1 { font-size: 20px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px; line-height: 1.3;}
         @media (min-width: 768px) { .pd-title-box h1 { font-size: 24px; } }
         .pd-title-box p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
 
         /* Pincode Box */
-        .pd-pincode-box { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; width: 100%; box-sizing: border-box;}
+        .pd-pincode-box { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px 10px; width: 100%; box-sizing: border-box;}
         .pd-pincode-header { font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--text-dark); margin-bottom: 12px;}
         
         .pd-pincode-wrapper { display: flex; gap: 10px; width: 100%; }
@@ -338,7 +340,7 @@
             .pd-variant-card:only-child { grid-column: span 2; }
         }
         
-        .pd-variant-card { position: relative; z-index: 1; background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; display: flex; flex-direction: column; gap: 16px; transition: box-shadow 0.2s; width: 100%; box-sizing: border-box;}
+        .pd-variant-card { position: relative; z-index: 1; background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px 10px; display: flex; flex-direction: column; gap: 16px; transition: box-shadow 0.2s; width: 100%; box-sizing: border-box;}
         .pd-variant-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); border-color: #cbd5e1; z-index: 50; }
         
         .pd-vc-top { display: flex; gap: 16px; align-items: flex-start; width: 100%; }
@@ -351,10 +353,10 @@
         /* VARIANT HOVER PREVIEW POPUP */
         .variant-preview-popup {
             position: absolute;
-            top: -70px; /* Adjusted to center the larger box relative to the thumbnail */
+            top: -70px;
             left: 90px;
             width: 240px;
-            height: 240px; /* Added fixed height to make it a large square */
+            height: 240px; 
             background: #fff;
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -380,13 +382,12 @@
         
         .variant-preview-popup img {
             width: 100%;
-            height: 100%; /* Forces image to fill the whole box */
+            height: 100%; 
             object-fit: contain;
             margin: 0; 
             border-radius: 4px;
         }
         
-        /* Hides the title and price inside the hover popup */
         .vp-title, .vp-price { 
             display: none !important; 
         }
@@ -439,11 +440,11 @@
         .pd-tab i { font-size: 16px; }
         
         .pd-tab-content { 
-            padding: 20px; font-size: 14px; color: var(--text-dark); line-height: 1.6; 
+            padding: 20px 10px; font-size: 14px; color: var(--text-dark); line-height: 1.6; 
             max-height: 120px; overflow: hidden; position: relative;
             transition: max-height 0.4s ease;
         }
-        @media (min-width: 768px) { .pd-tab-content { padding: 24px; line-height: 1.8; max-height: 140px; } }
+        @media (min-width: 768px) { .pd-tab-content { padding: 24px 10px; line-height: 1.8; max-height: 140px; } }
         
         .pd-tab-content.is-collapsible:not(.expanded) { cursor: pointer; }
 
