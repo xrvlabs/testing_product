@@ -35,12 +35,6 @@
         .app-container {
             width: 100%; max-width: 100%; background-color: #ffffff; min-height: 100vh;
             position: relative; overflow-x: hidden; display: flex; flex-direction: column; contain: paint;
-            
-            /* DYNAMIC UNIFORM GAP SYSTEM */
-            --layout-gap: 16px; 
-        }
-        @media (min-width: 1024px) {
-            .app-container { --layout-gap: 24px; }
         }
 
         /* Scrollbar Visibility Control */
@@ -72,7 +66,7 @@
         }
         @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
 
-        .skel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--layout-gap); padding: 0 var(--layout-gap) 32px; }
+        .skel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 0 10px 32px; }
         @media (min-width: 768px) { .skel-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
         .skel-card { border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 12px; height: 280px; display: flex; flex-direction: column; gap: 12px; background: white; }
         .skel-img { height: 140px; width: 100%; border-radius: var(--card-radius); }
@@ -85,7 +79,7 @@
 
         /* GLOBAL HEADER STYLES */
         .sticky-header-container { position: sticky; top: 0; z-index: 500; background: white; border-bottom: 1px solid var(--border-color);}
-        .header-master { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px var(--layout-gap); box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-bottom: 1px solid var(--border-color);}
+        .header-master { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-bottom: 1px solid var(--border-color);}
         .header-logo { display: none; align-items: center; gap: 6px; cursor: pointer; line-height: 1; }
         .header-logo i { color: var(--blue-accent); font-size: 28px; }
         .header-logo-text { display: flex; flex-direction: column; }
@@ -108,17 +102,17 @@
         .cart-wrapper { position: relative; cursor: pointer; }
         .cart-badge { position: absolute; top: -8px; right: -8px; background: var(--red-accent); color: white; font-size: 10px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-        .nav-pills { display: flex; gap: 10px; padding: 12px var(--layout-gap); overflow-x: auto; background: white; white-space: nowrap; }
+        .nav-pills { display: flex; gap: 10px; padding: 12px 10px; overflow-x: auto; background: white; white-space: nowrap; }
         .pill { padding: 8px 16px; border: 1px solid var(--border-color); border-radius: var(--card-radius); font-size: 13px; font-weight: 700; color: var(--text-dark); cursor: pointer; text-transform: uppercase; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
         .pill:hover, .pill.active { background: var(--blue-light); color: var(--blue-dark); border-color: var(--blue-accent); }
 
         @media (min-width: 1024px) {
-            .header-master { flex-wrap: nowrap; padding: 16px var(--layout-gap); }
+            .header-master { flex-wrap: nowrap; padding: 16px 10px; }
             .header-logo { display: flex; order: 1; margin-right: 20px; }
             .location-block { order: 2; margin-right: 20px; }
             .search-container { flex: 1; order: 3; margin: 0 10px; }
             .header-actions { order: 4; }
-            .nav-pills { justify-content: center; padding: 16px var(--layout-gap); }
+            .nav-pills { justify-content: center; padding: 16px 10px; }
         }
 
         /* Megamenu */
@@ -181,7 +175,8 @@
         }
 
         /* FULL-WIDTH WRAPPER FOR SLIDER */
-        .hero-wrapper-full { width: 100%; background-color: #f0f2f5; display: flex; justify-content: center; padding: var(--layout-gap); }
+        .hero-wrapper-full { width: 100%; background-color: #f0f2f5; display: flex; justify-content: center; padding: 16px 10px; }
+        @media (min-width: 768px) { .hero-wrapper-full { padding: 24px 10px; } }
 
         .hero-slider.contained {
             display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
@@ -192,7 +187,7 @@
         .hero-slide { flex: 0 0 100%; scroll-snap-align: start; display: flex; position: relative; }
         .hero-slide img { width: 100%; height: auto; object-fit: contain; display: block; }
 
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--layout-gap); padding: var(--layout-gap) var(--layout-gap) 32px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 16px 10px 32px; }
         @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
         
         .product-card { border: 1px solid var(--border-color); border-radius: var(--card-radius); background: white; display: flex; flex-direction: column; position: relative; cursor: pointer; transition: var(--transition); will-change: transform, box-shadow; content-visibility: auto; }
@@ -213,16 +208,15 @@
         .coin-reward { font-size: 11px; color: #d97706; display: flex; align-items: center; gap: 4px; margin-top: 6px; font-weight: 700; text-transform: uppercase;}
         .coin-icon { background: #fef3c7; border-radius: 50%; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; color: #d97706; font-weight: 700;}
 
-
         /* -------------------------------------------
            CLEAN, ALIGNED & UNIFORM PRODUCT DETAIL UI 
+           (Merged from Code 2 with Code 1 Margins/Paddings)
            ------------------------------------------- */
         
-        /* Unified Wrapper using the global gap variable */
         .pd-wrapper { 
             display: flex; flex-direction: column; 
-            gap: var(--layout-gap); 
-            padding: var(--layout-gap); 
+            gap: 16px; 
+            padding: 16px 10px; 
             max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;
         }
 
@@ -233,11 +227,11 @@
         }
         .pd-back-btn:hover { color: var(--blue-accent); }
 
-        .pd-grid-layout { display: grid; grid-template-columns: 1fr; gap: var(--layout-gap); align-items: start; width: 100%; }
+        .pd-grid-layout { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: start; width: 100%; }
         @media (min-width: 1024px) { .pd-grid-layout { grid-template-columns: 480px 1fr; } }
 
         /* Left Column (Image Area) */
-        .pd-image-col { display: flex; flex-direction: column; gap: var(--layout-gap); width: 100%; }
+        .pd-image-col { display: flex; flex-direction: column; gap: 16px; width: 100%; }
         @media (min-width: 1024px) { .pd-image-col { position: sticky; top: 140px; align-self: start; } }
         
         .pd-main-img-box { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 20px; display: flex; justify-content: center; align-items: center; position: relative; width: 100%; box-sizing: border-box;}
@@ -251,7 +245,7 @@
         .pd-thumb.active { border-color: var(--blue-dark); border-width: 2px; }
 
         /* Right Column (Scrollable Content) */
-        .pd-content-col { display: flex; flex-direction: column; gap: var(--layout-gap); width: 100%; min-width: 0; }
+        .pd-content-col { display: flex; flex-direction: column; gap: 20px; width: 100%; min-width: 0; }
 
         .pd-title-box { background: white; padding: 20px; border-radius: var(--card-radius); border: 1px solid var(--border-color); width: 100%; box-sizing: border-box;}
         .pd-title-box h1 { font-size: 20px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px; line-height: 1.3;}
@@ -269,7 +263,7 @@
         .pd-pincode-result { margin-top: 10px; font-size: 12px; }
 
         /* Cleaned Variant Cards (Big Price Left, Add Button Right) */
-        .pd-variants-area { display: flex; flex-direction: column; gap: var(--layout-gap); width: 100%; }
+        .pd-variants-area { display: flex; flex-direction: column; gap: 16px; width: 100%; }
         .pd-variant-card { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; display: flex; flex-direction: column; gap: 16px; transition: box-shadow 0.2s; width: 100%; box-sizing: border-box;}
         .pd-variant-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); border-color: #cbd5e1; }
         
@@ -298,7 +292,7 @@
         .pd-vc-add-btn:hover { background: #1a4d6a; }
 
         /* Simplified Tabs System (50/50 Split) */
-        .pd-tabs-container { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); overflow: hidden; width: 100%; box-sizing: border-box;}
+        .pd-tabs-container { background: white; border: 1px solid var(--border-color); border-radius: var(--card-radius); overflow: hidden; width: 100%; margin-top: 10px; box-sizing: border-box;}
         .pd-tabs-header { display: flex; width: 100%; border-bottom: 1px solid var(--border-color); background: #f8fafc; }
         
         .pd-tab { flex: 1; display: flex; justify-content: center; align-items: center; gap: 8px; padding: 16px 10px; font-size: 13px; font-weight: 800; color: var(--text-muted); cursor: pointer; text-transform: uppercase; border-bottom: 3px solid transparent; transition: 0.2s;}
@@ -358,8 +352,8 @@
         .auth-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; text-align: center; color: var(--text-dark); text-transform: uppercase;}
         .auth-subtitle { font-size: 11px; color: var(--text-muted); text-align: center; margin-bottom: 24px; text-transform: uppercase;}
         .auth-tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 24px; }
-        .auth-tab-auth { flex: 1; text-align: center; padding: 12px; font-size: 15px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: var(--transition); border-radius: var(--card-radius) var(--card-radius) 0 0; text-transform: uppercase;}
-        .auth-tab-auth.active { color: var(--blue-accent); border-bottom: 2px solid var(--blue-accent); margin-bottom: -2px; }
+        .auth-tab { flex: 1; text-align: center; padding: 12px; font-size: 15px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: var(--transition); border-radius: var(--card-radius) var(--card-radius) 0 0; text-transform: uppercase;}
+        .auth-tab.active { color: var(--blue-accent); border-bottom: 2px solid var(--blue-accent); margin-bottom: -2px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark); }
         .form-input { width: 100%; padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--card-radius); font-size: 15px; outline: none; transition: var(--transition); font-family: 'Quantico', sans-serif;}
@@ -400,17 +394,51 @@
         .rain-drop { position: absolute; font-size: 28px; z-index: 5; animation: rainFall linear forwards; pointer-events: none; }
 
         /* PROFILE MODAL / BOTTOM SHEET SYSTEM */
-        #profileOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(4px); }
-        #profileComponent { position: fixed; z-index: 2001; background: white; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease; display: flex; flex-direction: column; will-change: transform, opacity; }
+        #profileOverlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.5); z-index: 2000; 
+            display: none; opacity: 0; transition: opacity 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+        
+        #profileComponent {
+            position: fixed; z-index: 2001; background: white;
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease;
+            display: flex; flex-direction: column;
+            will-change: transform, opacity;
+        }
+
+        /* Desktop Mode: Dialog */
         @media (min-width: 1024px) {
-            #profileComponent { width: 900px; height: 600px; top: 50%; left: 50%; transform: translate(-50%, -40%) scale(0.95); border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); padding: 24px; opacity: 0; pointer-events: none; overflow: hidden; }
-            #profileComponent.active { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
+            #profileComponent {
+                width: 900px; height: 600px;
+                top: 50%; left: 50%; transform: translate(-50%, -40%) scale(0.95);
+                border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+                padding: 24px; opacity: 0; pointer-events: none;
+                overflow: hidden;
+            }
+            #profileComponent.active {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1; pointer-events: auto;
+            }
             .drag-handle { display: none; }
         }
+
+        /* Mobile Mode: Bottom Sheet */
         @media (max-width: 1023px) {
-            #profileComponent { width: 100%; bottom: 0; left: 0; height: 85dvh; border-radius: 20px 20px 0 0; transform: translateY(100%); padding-bottom: env(safe-area-inset-bottom); }
+            #profileComponent {
+                width: 100%; bottom: 0; left: 0; 
+                height: 85dvh;
+                border-radius: 20px 20px 0 0;
+                transform: translateY(100%);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
             #profileComponent.active { transform: translateY(0); }
-            .drag-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 12px auto; flex-shrink: 0; }
+            
+            .drag-handle {
+                width: 40px; height: 4px; background: #ddd; border-radius: 2px;
+                margin: 12px auto; flex-shrink: 0;
+            }
         }
 
         .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 10px 16px; border-bottom: 1px solid var(--border-color); }
@@ -420,9 +448,19 @@
         .back-profile:hover { transform: translateX(-3px); }
 
         .profile-scroll-content { overflow-y: auto; flex: 1; padding: 10px 16px 24px; }
-        .dash-grid { display: grid; gap: 12px; margin-bottom: 24px; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+
+        /* Dashboard Grid */
+        .dash-grid { 
+            display: grid; gap: 12px; margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        }
         @media (min-width: 1024px) { .dash-grid { grid-template-columns: repeat(4, 1fr); } }
-        .dash-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; background: #fafafa; text-align: center; cursor: pointer; transition: var(--transition); }
+
+        .dash-card { 
+            border: 1px solid var(--border-color); border-radius: 8px; 
+            padding: 16px; background: #fafafa; text-align: center;
+            cursor: pointer; transition: var(--transition);
+        }
         .dash-card:hover { border-color: var(--blue-accent); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transform: translateY(-2px);}
         .dash-card i { font-size: 24px; color: var(--blue-accent); margin-bottom: 10px; display: block;}
         .dash-card span { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-dark); }
@@ -432,23 +470,55 @@
         .order-row { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid #eee; font-size: 13px;}
         .order-row:last-child { border-bottom: none; }
 
-        .signout-btn { width: 100%; padding: 16px; border: 1px solid var(--red-accent); color: var(--red-accent); background: white; font-weight: 800; border-radius: 8px; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin-top: 16px; }
+        .signout-btn { 
+            width: 100%; padding: 16px; border: 1px solid var(--red-accent); 
+            color: var(--red-accent); background: white; font-weight: 800; 
+            border-radius: 8px; cursor: pointer; text-transform: uppercase;
+            transition: 0.3s; margin-top: 16px;
+        }
         .signout-btn:hover { background: var(--red-accent); color: white; }
 
+        /* Tab Content Styles */
         .tab-content-box { background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; margin-bottom: 12px; font-size: 13px;}
         .tab-content-box h4 { margin-bottom: 8px; font-size: 14px; text-transform: uppercase; color: var(--blue-accent); }
         .tab-content-box p { color: var(--text-muted); margin-bottom: 4px; }
 
-        /* GLOBAL FOOTER SETTINGS */
-        .mega-footer { background: #ffffff; border-top: 1px solid var(--border-color); margin-top: auto; position: relative; }
-        .mega-footer::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 20 Q60 10 70 20 T50 40 Q40 50 30 40 T50 20" fill="none" stroke="%23f0f0f0" stroke-width="2"/></svg>'); background-repeat: repeat; opacity: 0.5; z-index: 0; pointer-events: none; }
+
+        /* HUGE FOOTER SETTINGS */
+        .mega-footer { 
+            background: #ffffff; 
+            border-top: 1px solid var(--border-color); 
+            margin-top: auto;
+            position: relative;
+        }
+        .mega-footer::before {
+            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 20 Q60 10 70 20 T50 40 Q40 50 30 40 T50 20" fill="none" stroke="%23f0f0f0" stroke-width="2"/></svg>');
+            background-repeat: repeat; opacity: 0.5; z-index: 0; pointer-events: none;
+        }
         .mega-footer-content { position: relative; z-index: 1; }
         
-        .footer-top-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border-color); gap: 16px; background: white; }
+        .footer-top-bar { 
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; 
+            padding: 16px 24px; border-bottom: 1px solid var(--border-color); gap: 16px; background: white;
+        }
         .ftb-left { display: flex; align-items: center; gap: 16px; font-size: 13px; font-weight: 800; text-transform: uppercase; }
         
+        /* Smooth Expanding Social Icons */
         .social-icons { display: flex; gap: 8px; }
-        .social-icon { max-width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; color: white; font-size: 16px; cursor: pointer; transition: max-width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.2s; overflow: hidden; white-space: nowrap; }
+        .social-icon { 
+            max-width: 32px; 
+            height: 32px; 
+            border-radius: 4px; 
+            display: flex; 
+            align-items: center; 
+            color: white; 
+            font-size: 16px; 
+            cursor: pointer; 
+            transition: max-width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.2s;
+            overflow: hidden;
+            white-space: nowrap;
+        }
         .social-icon i { min-width: 32px; text-align: center; display: inline-block; }
         .social-text { font-size: 12px; font-weight: 700; opacity: 0; padding-right: 12px; transition: opacity 0.3s ease; }
         .social-icon.expanded { max-width: 140px; }
@@ -459,7 +529,11 @@
         .app-btn { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: var(--card-radius); cursor: pointer; background: white;}
         .app-btn i { font-size: 20px; } .app-btn .texts { display: flex; flex-direction: column; font-size: 9px; line-height: 1.2; text-align: left; } .app-btn .texts strong { font-size: 12px; }
 
-        .footer-main-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; padding: 40px 24px; max-width: 1600px; margin: 0 auto; }
+        .footer-main-grid { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 24px; padding: 40px 24px; max-width: 1600px; margin: 0 auto;
+        }
+        
         .copyright-text { margin-top: 24px; font-size: 11px; color: var(--text-muted); text-align: right; }
         
         @media(max-width: 1023px) {
@@ -703,7 +777,8 @@
             <span>MY CART</span>
         </div>
         <div class="cart-wrapper-main">
-            <div id="cartItemsList"></div>
+            <div id="cartItemsList">
+                </div>
             <div class="empty-state" id="emptyCartState" style="display: none;">
                 <i class="fa-solid fa-cart-shopping" style="font-size: 40px; color:#e0e0e0; margin-bottom: 16px; display: block; text-align: center;"></i>
                 <div style="text-align: center; font-weight: 700; color: var(--text-muted);">YOUR CART IS EMPTY</div>
@@ -722,6 +797,20 @@
     <div id="authView" class="view-section">
         <div class="auth-view-layout">
             <div class="mobile-auth-close" onclick="switchView('homeView')"><i class="fa-solid fa-xmark"></i></div>
+
+            <div class="auth-mobile-slider-wrapper">
+                <div class="auth-slider-track">
+                    <img src="pro_1.jpg" alt="1">
+                    <img src="pro_2.jpg" alt="2">
+                    <img src="pro_1.jpg" alt="3">
+                    <img src="pro_2.jpg" alt="4">
+                    <img src="pro_1.jpg" alt="1">
+                    <img src="pro_2.jpg" alt="2">
+                    <img src="pro_1.jpg" alt="3">
+                    <img src="pro_2.jpg" alt="4">
+                </div>
+                <div class="slider-fade-bottom"></div>
+            </div>
 
             <div class="auth-desktop-promo">
                 <h1>JOIN 2 LAKH+ INDIAN DENTISTS WHO TRUST ORACO DENTAL INNOVATIONS TO GROW THEIR BUSINESS</h1>
@@ -748,8 +837,8 @@
 
                 <form id="authForm" onsubmit="submitAuth(event)">
                     <div class="auth-tabs">
-                        <div class="auth-tab-auth active" id="tabLogin" onclick="toggleAuthMode('login')">LOGIN</div>
-                        <div class="auth-tab-auth" id="tabSignup" onclick="toggleAuthMode('signup')">SIGN UP</div>
+                        <div class="auth-tab active" id="tabLogin" onclick="toggleAuthMode('login')">LOGIN</div>
+                        <div class="auth-tab" id="tabSignup" onclick="toggleAuthMode('signup')">SIGN UP</div>
                     </div>
 
                     <div class="form-group">
@@ -781,12 +870,28 @@
             <div class="footer-top-bar">
                 <div class="ftb-left">
                     <div class="social-icons">
-                        <div class="social-icon si-fb" onclick="toggleSocial(event, this)"><i class="fa-brands fa-facebook-f"></i><span class="social-text">Facebook</span></div>
-                        <div class="social-icon si-ig" onclick="toggleSocial(event, this)"><i class="fa-brands fa-instagram"></i><span class="social-text">Instagram</span></div>
-                        <div class="social-icon si-x" onclick="toggleSocial(event, this)"><i class="fa-brands fa-x-twitter"></i><span class="social-text">Twitter</span></div>
-                        <div class="social-icon si-yt" onclick="toggleSocial(event, this)"><i class="fa-brands fa-youtube"></i><span class="social-text">YouTube</span></div>
-                        <div class="social-icon si-in" onclick="toggleSocial(event, this)"><i class="fa-brands fa-linkedin-in"></i><span class="social-text">LinkedIn</span></div>
+                        <div class="social-icon si-fb" onclick="toggleSocial(event, this)">
+                            <i class="fa-brands fa-facebook-f"></i>
+                            <span class="social-text">Facebook</span>
+                        </div>
+                        <div class="social-icon si-ig" onclick="toggleSocial(event, this)">
+                            <i class="fa-brands fa-instagram"></i>
+                            <span class="social-text">Instagram</span>
+                        </div>
+                        <div class="social-icon si-x" onclick="toggleSocial(event, this)">
+                            <i class="fa-brands fa-x-twitter"></i>
+                            <span class="social-text">Twitter</span>
+                        </div>
+                        <div class="social-icon si-yt" onclick="toggleSocial(event, this)">
+                            <i class="fa-brands fa-youtube"></i>
+                            <span class="social-text">YouTube</span>
+                        </div>
+                        <div class="social-icon si-in" onclick="toggleSocial(event, this)">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                            <span class="social-text">LinkedIn</span>
+                        </div>
                     </div>
+                    
                 </div>
                 <div class="ftb-right">
                     <span class="hide-on-mobile-tablet"><i class="fa-solid fa-mobile-screen-button"></i> EXPERIENCE THE MOBILE APP</span>
@@ -804,25 +909,60 @@
             <div class="footer-main-grid">
                 <div class="fm-col hide-on-mobile-tablet">
                     <h4>ABOUT</h4>
-                    <ul><li>Contact Us</li><li>About Us</li><li>Careers</li></ul>
+                    <ul>
+                        <li>Contact Us</li>
+                        <li>About Us</li>
+                        <li>Careers</li>
+                    </ul>
+                    <p style="margin-top:24px; font-size:12px; color:var(--text-dark);">
+                        <strong>Our Warehouses:</strong> Gurugram, Delhi, Chennai.
+                    </p>
                 </div>
                 <div class="fm-col hide-on-mobile-tablet">
                     <h4>CONTACT US</h4>
-                    <ul><li>Investor Relations</li><li>Dealer Price Bulk Inquiry</li><li>Waldent Dealership</li><li>Sell on Dentalkart</li></ul>
+                    <ul>
+                        <li>Investor Relations</li>
+                        <li>Dealer Price Bulk Inquiry</li>
+                        <li>Waldent Dealership</li>
+                        <li>Sell on Dentalkart</li>
+                    </ul>
                 </div>
                 <div class="fm-col hide-on-mobile-tablet">
                     <h4>HELP</h4>
-                    <ul><li>Orders</li><li>Refunds</li><li>Payments</li><li>Rewards</li></ul>
+                    <ul>
+                        <li>Orders</li>
+                        <li>Refunds</li>
+                        <li>Payments</li>
+                        <li>Rewards</li>
+                    </ul>
                 </div>
                 <div class="fm-col hide-on-mobile-tablet">
                     <h4>POLICY</h4>
-                    <ul><li>Return Policy</li><li>Terms of Use</li><li>Privacy</li><li>Sitemap</li></ul>
+                    <ul>
+                        <li>Return Policy</li>
+                        <li>Terms of Use</li>
+                        <li>Privacy</li>
+                        <li>Sitemap</li>
+                    </ul>
                 </div>
                 <div class="fm-col fm-address-col">
                     <h4 class="hide-on-mobile-tablet">REGISTERED OFFICE ADDRESS</h4>
-                    <div class="address-item hide-on-mobile-tablet"><i class="fa-solid fa-location-dot"></i><span>Celebration city center, Bopal, Ahmedabad, Gujarat 380058</span></div>
-                    <div class="address-item hide-on-mobile-tablet"><i class="fa-solid fa-phone"></i><span>+91-123-4567-890</span></div>
-                    <div class="address-item hide-on-mobile-tablet"><i class="fa-solid fa-envelope"></i><span>support@oracodentalinnovation.com</span></div>
+                    <div class="address-item hide-on-mobile-tablet">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>Celebration city center, A-452, Gala Gymkhana Rd, South Bopal, Bopal, Ahmedabad, Gujarat 380058</span>
+                    </div>
+                    <div class="address-item hide-on-mobile-tablet">
+                        <i class="fa-solid fa-phone"></i>
+                        <span>+91-123-4567-890</span>
+                    </div>
+                    <div class="address-item hide-on-mobile-tablet">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>support@oracodentalinnovation.com</span>
+                    </div>
+                    <div class="address-item hide-on-mobile-tablet">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span>Mon-Sun (9:00 AM - 9:00 PM)</span>
+                    </div>
                     <div class="copyright-text">
                         2024-2026, ORACO DENTAL INNOVATION PVT. LTD.<br>
                         CRAFTED WITH <i class="fa-solid fa-heart" style="color:var(--red-accent);"></i> IN INDIA BY GRIDLABS PROD.
@@ -838,6 +978,7 @@
 <div id="profileOverlay" onclick="closeProfile()"></div>
 <div id="profileComponent">
     <div class="drag-handle"></div>
+    
     <div class="profile-header">
         <div style="display:flex; align-items:center;">
             <i class="fa-solid fa-arrow-left back-profile" id="profileBackBtn" style="display:none;" onclick="closeProfileTab()"></i>
@@ -874,8 +1015,14 @@
     </div>
 
     <div class="profile-scroll-content" id="profileTabContent" style="display:none;">
-        <div id="profileShimmer"><div class="skeleton tab-skel-box"></div></div>
-        <div id="profileActualContent" style="display:none;"></div>
+        <div id="profileShimmer">
+            <div class="skeleton tab-skel-box"></div>
+            <div class="skeleton tab-skel-row"></div>
+            <div class="skeleton tab-skel-row"></div>
+        </div>
+        
+        <div id="profileActualContent" style="display:none;">
+            </div>
     </div>
 </div>
 
@@ -890,10 +1037,17 @@
 <script>
     // --- Pincode Logic ---
     function getExpectedDeliveryDate(pincode) {
-        const transitDatabase = { "110001": 2, "400001": 3, "302001": 4 };
+        const transitDatabase = {
+            "110001": 2, // Metro (2 din)
+            "400001": 3, // Metro (3 din)
+            "302001": 4  // Tier-2 (4 din)
+        };
+
         let transitDays = transitDatabase[pincode] !== undefined ? transitDatabase[pincode] : 7;
+
         let deliveryDate = new Date();
         deliveryDate.setDate(deliveryDate.getDate() + transitDays);
+
         const options = { weekday: 'short', day: 'numeric', month: 'short' };
         return deliveryDate.toLocaleDateString('en-IN', options);
     }
@@ -909,14 +1063,17 @@
 
         const dateStr = getExpectedDeliveryDate(input);
         
+        // Show success message
         resultBox.innerHTML = `<span style="color: var(--green-accent); font-weight: 700;"><i class="fa-solid fa-circle-check"></i> Delivery by ${dateStr} to ${input}</span>`;
         
+        // Update dynamic delivery spans in variants
         const deliverySpans = document.querySelectorAll('.dynamic-delivery-date');
         deliverySpans.forEach(span => {
             span.innerHTML = `<i class="fa-solid fa-truck"></i> Arrives By ${dateStr}`;
             span.style.color = "var(--text-dark)";
         });
 
+        // Update Global Header Pincode Text
         document.getElementById('globalPincodeText').innerHTML = `${input} <i class="fa-solid fa-caret-down"></i>`;
     }
 
@@ -948,6 +1105,7 @@
         { id: 4, title: 'ARMA DENTAL TEMPORARY CROWN & BRIDGE 3D PRINTING RESIN', img: 'pro_2.jpg', priceNum: 15000, price: '15,000', mrp: '18,000', discount: '16.66', coins: 500, freebie: false }
     ];
 
+    // --- State ---
     let currentUser = null; 
     let cart = [];
     let orderHistory = [];
@@ -960,6 +1118,7 @@
         cartView: document.getElementById('cartView')
     };
 
+    // --- View Management ---
     function switchView(targetViewId) {
         closeMegamenu(); 
         
@@ -970,6 +1129,7 @@
         Object.values(views).forEach(view => { if(view) view.classList.remove('active'); });
         if(views[targetViewId]) views[targetViewId].classList.add('active');
         
+        // Handle Header & Footer Visibility dynamically based on View
         const header = document.getElementById('globalHeader');
         const footer = document.getElementById('globalFooter');
         
@@ -978,16 +1138,18 @@
             footer.style.display = 'block';
         } else if (targetViewId === 'productView') {
             header.style.display = 'block';
-            footer.style.display = 'none'; 
+            footer.style.display = 'none'; // REMOVE FOOTER ON PRODUCT PAGE
         } else {
             header.style.display = 'none';
             footer.style.display = 'none';
         }
 
         window.scrollTo(0, 0);
+
         if(targetViewId === 'cartView') renderCart();
     }
 
+    // --- Search Animation ---
     function typeWriterEffect() {
         const searchInput = document.getElementById('mainSearchInput');
         if (!searchInput) return;
@@ -1012,6 +1174,7 @@
         type();
     }
 
+    // --- Mega Menu ---
     function renderCategories() {
         const catList = document.getElementById('mmCatList');
         if(!catList) return;
@@ -1046,7 +1209,9 @@
     function toggleMegamenu(e) {
         if(e) e.stopPropagation();
         const megamenu = document.getElementById('megamenu');
-        if (megamenu.classList.contains('active')) { closeMegamenu(); } else {
+        if (megamenu.classList.contains('active')) {
+            closeMegamenu();
+        } else {
             megamenu.classList.add('active');
             document.getElementById('catDropdownBtn').classList.add('active');
             if (window.innerWidth >= 1024) {
@@ -1066,9 +1231,12 @@
         document.body.classList.remove('no-scroll'); 
     }
 
+    // --- Products & Shimmers ---
     function renderSkeletons() {
         let skelHTML = '';
-        for(let i=0; i<4; i++) { skelHTML += `<div class="skel-card"><div class="skeleton skel-img"></div><div class="skeleton skel-text-1"></div><div class="skeleton skel-text-2"></div><div class="skeleton skel-price"></div></div>`; }
+        for(let i=0; i<4; i++) {
+            skelHTML += `<div class="skel-card"><div class="skeleton skel-img"></div><div class="skeleton skel-text-1"></div><div class="skeleton skel-text-2"></div><div class="skeleton skel-price"></div></div>`;
+        }
         document.getElementById('skeletonContainer').innerHTML = skelHTML;
     }
 
@@ -1098,6 +1266,7 @@
         document.getElementById('productGrid').innerHTML = prodHTML;
     }
 
+    // --- NEW PRODUCT VIEW TABS AND IMAGE LOGIC ---
     function changeImage(element) {
         document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
         element.classList.add('active');
@@ -1107,6 +1276,7 @@
     function switchTab(element, tabId) {
         document.querySelectorAll('.pd-tab').forEach(t => t.classList.remove('active'));
         element.classList.add('active');
+        
         document.querySelectorAll('.pd-tab-content').forEach(tc => tc.style.display = 'none');
         document.getElementById(tabId).style.display = 'block';
     }
@@ -1114,17 +1284,28 @@
     function openProduct(id) {
         currentSelectedProduct = mockProducts.find(p => p.id === id);
         if(!currentSelectedProduct) return;
+        
         document.getElementById('pd-hero-img').src = currentSelectedProduct.img;
+        
         let thumbs = document.querySelectorAll('.pd-thumb');
         thumbs[0].src = currentSelectedProduct.img;
         thumbs[0].click(); 
+        
+        // For mobile bottom bar
         document.getElementById('bottom-price-mobile').innerText = `₹${currentSelectedProduct.price}`;
+
         switchView('productView');
     }
 
+    // --- Cart & Orders Logic ---
     function addToCart(productId) {
-        if (!currentUser) { switchView('authView'); return; }
+        if (!currentUser) {
+            switchView('authView');
+            return;
+        }
+        
         const product = mockProducts.find(p => p.id === (currentSelectedProduct ? currentSelectedProduct.id : productId));
+        
         if(product) {
             cart.push(product);
             updateCartBadges();
@@ -1135,6 +1316,9 @@
     function updateCartBadges() {
         const count = cart.length;
         document.getElementById('mainCartBadge').innerText = count;
+        // Check if secondary badges exist before updating
+        const pdBadge = document.getElementById('pdCartBadge');
+        if (pdBadge) pdBadge.innerText = count;
     }
 
     function removeFromCart(index) {
@@ -1158,10 +1342,20 @@
         emptyState.style.display = 'none';
         summaryBlock.style.display = 'block';
 
-        let html = ''; let total = 0;
+        let html = '';
+        let total = 0;
         cart.forEach((item, index) => {
             total += item.priceNum;
-            html += `<div class="cart-item"><div class="cart-item-img"><img src="${item.img}"></div><div class="cart-item-info"><div class="cart-item-title">${item.title}</div><div class="cart-item-price">₹${item.price}</div></div><i class="fa-solid fa-trash remove-btn" onclick="removeFromCart(${index})"></i></div>`;
+            html += `
+                <div class="cart-item">
+                    <div class="cart-item-img"><img src="${item.img}"></div>
+                    <div class="cart-item-info">
+                        <div class="cart-item-title">${item.title}</div>
+                        <div class="cart-item-price">₹${item.price}</div>
+                    </div>
+                    <i class="fa-solid fa-trash remove-btn" onclick="removeFromCart(${index})"></i>
+                </div>
+            `;
         });
         listContainer.innerHTML = html;
         document.getElementById('cartSubtotal').innerText = `₹${total.toLocaleString()}`;
@@ -1171,23 +1365,40 @@
     function placeOrder() {
         if(cart.length === 0) return;
         let total = cart.reduce((sum, item) => sum + item.priceNum, 0);
-        orderHistory.unshift({ id: 'ORD-' + Math.floor(Math.random() * 10000), date: new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}), items: [...cart], total: total });
-        cart = []; updateCartBadges(); triggerRain();
+        
+        orderHistory.unshift({
+            id: 'ORD-' + Math.floor(Math.random() * 10000),
+            date: new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}),
+            items: [...cart],
+            total: total
+        });
+
+        cart = [];
+        updateCartBadges();
+        triggerRain();
     }
 
     function renderProfileOrders() {
         const container = document.getElementById('profileOrderHistoryList');
         if(orderHistory.length === 0) return; 
+
         let html = '';
         orderHistory.forEach(order => {
-            html += `<div class="order-row"><div><strong>#${order.id}</strong><br><small>${order.date}</small></div><div style="text-align:right; color:var(--text-muted);"><strong>Processing</strong><br>₹${order.total.toLocaleString()}</div></div>`;
+            html += `
+                <div class="order-row">
+                    <div><strong>#${order.id}</strong><br><small>${order.date}</small></div>
+                    <div style="text-align:right; color:var(--text-muted);"><strong>Processing</strong><br>₹${order.total.toLocaleString()}</div>
+                </div>
+            `;
         });
-        container.innerHTML = html;
+        const existing = container.innerHTML;
+        container.innerHTML = html + existing;
     }
 
     function triggerRain() {
         const overlay = document.getElementById('successOverlay');
         overlay.style.display = 'flex';
+        
         const symbols = ['🎉', '📦', '💙', '🦷'];
         for(let i=0; i<60; i++) {
             let drop = document.createElement('div');
@@ -1199,29 +1410,54 @@
             overlay.appendChild(drop);
             setTimeout(() => drop.remove(), 4000);
         }
-        setTimeout(() => { overlay.style.display = 'none'; switchView('homeView'); openProfile(); renderProfileOrders(); }, 3500);
+
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            switchView('homeView'); 
+            openProfile(); 
+            renderProfileOrders();
+        }, 3500);
     }
 
-    function handleAuthClick() { if (currentUser) { openProfile(); } else { switchView('authView'); toggleAuthMode('login'); } }
+    // --- AUTH & PROFILE ---
+    function handleAuthClick() {
+        if (currentUser) {
+            openProfile();
+        } else {
+            switchView('authView');
+            toggleAuthMode('login');
+        }
+    }
 
     function openProfile() {
         document.getElementById('profileOverlay').style.display = 'block';
         closeProfileTab(true); 
-        setTimeout(() => { document.getElementById('profileOverlay').style.opacity = '1'; document.getElementById('profileComponent').classList.add('active'); document.body.classList.add('no-scroll'); }, 10);
+        setTimeout(() => {
+            document.getElementById('profileOverlay').style.opacity = '1';
+            document.getElementById('profileComponent').classList.add('active');
+            document.body.classList.add('no-scroll');
+        }, 10);
     }
 
     function closeProfile() {
         document.getElementById('profileComponent').classList.remove('active');
         document.getElementById('profileOverlay').style.opacity = '0';
-        setTimeout(() => { document.getElementById('profileOverlay').style.display = 'none'; document.body.classList.remove('no-scroll'); }, 300);
+        setTimeout(() => {
+            document.getElementById('profileOverlay').style.display = 'none';
+            document.body.classList.remove('no-scroll');
+        }, 300);
     }
 
     function toggleAuthMode(mode) {
         document.getElementById('authErrorMsg').style.display = 'none';
         if (mode === 'login') {
-            document.getElementById('tabLogin').classList.add('active'); document.getElementById('tabSignup').classList.remove('active'); document.getElementById('authSubmitBtn').innerText = 'LOGIN SECURELY';
+            document.getElementById('tabLogin').classList.add('active');
+            document.getElementById('tabSignup').classList.remove('active');
+            document.getElementById('authSubmitBtn').innerText = 'LOGIN SECURELY';
         } else {
-            document.getElementById('tabSignup').classList.add('active'); document.getElementById('tabLogin').classList.remove('active'); document.getElementById('authSubmitBtn').innerText = 'CREATE ACCOUNT';
+            document.getElementById('tabSignup').classList.add('active');
+            document.getElementById('tabLogin').classList.remove('active');
+            document.getElementById('authSubmitBtn').innerText = 'CREATE ACCOUNT';
         }
     }
 
@@ -1233,25 +1469,67 @@
         const errorMsg = document.getElementById('authErrorMsg');
 
         if (!isSignup) {
-            if(email === 'demo@gridlabs.com' && password === 'demo123') { currentUser = { name: "Dr. Demo User", email: email, phone: "+91-9876543210" }; errorMsg.style.display = 'none'; updateUIForAuth(); switchView('homeView'); } else { errorMsg.style.display = 'block'; }
+            if(email === 'demo@gridlabs.com' && password === 'demo123') {
+                currentUser = { name: "Dr. Demo User", email: email, phone: "+91-9876543210" };
+                errorMsg.style.display = 'none';
+                updateUIForAuth();
+                switchView('homeView');
+            } else {
+                errorMsg.style.display = 'block';
+            }
         } else {
-            let name = "Dr. " + email.split('@')[0]; currentUser = { name: name, email: email, phone: "+91-9876543210" }; errorMsg.style.display = 'none'; updateUIForAuth(); switchView('homeView');
+            let name = "Dr. " + email.split('@')[0];
+            currentUser = { name: name, email: email, phone: "+91-9876543210" };
+            errorMsg.style.display = 'none';
+            updateUIForAuth();
+            switchView('homeView');
         }
     }
 
-    function logoutUser() { currentUser = null; cart = []; orderHistory = []; updateCartBadges(); updateUIForAuth(); closeProfile(); switchView('homeView'); }
+    function logoutUser() {
+        currentUser = null;
+        cart = []; 
+        orderHistory = []; 
+        updateCartBadges();
+        updateUIForAuth();
+        closeProfile();
+        switchView('homeView');
+    }
 
     function updateUIForAuth() {
         const mainCartIcon = document.getElementById('mainCartIcon');
-        if (currentUser) { document.getElementById('topBarAuthText').innerText = "HI, " + currentUser.name.split(' ')[0].toUpperCase(); document.getElementById('authForm').reset(); mainCartIcon.style.display = 'block'; } else { document.getElementById('topBarAuthText').innerText = "LOGIN"; mainCartIcon.style.display = 'none'; }
+
+        if (currentUser) {
+            document.getElementById('topBarAuthText').innerText = "HI, " + currentUser.name.split(' ')[0].toUpperCase();
+            document.getElementById('authForm').reset();
+            mainCartIcon.style.display = 'block';
+        } else {
+            document.getElementById('topBarAuthText').innerText = "LOGIN";
+            mainCartIcon.style.display = 'none';
+        }
     }
 
     function openProfileTab(tabName) {
-        document.getElementById('profileMainContent').style.display = 'none'; document.getElementById('profileTabContent').style.display = 'block'; document.getElementById('profileBackBtn').style.display = 'block'; document.getElementById('profileModalTitle').innerText = tabName; document.getElementById('profileShimmer').style.display = 'block'; document.getElementById('profileActualContent').style.display = 'none';
-        setTimeout(() => { document.getElementById('profileShimmer').style.display = 'none'; document.getElementById('profileActualContent').innerHTML = getTabContentHTML(tabName); document.getElementById('profileActualContent').style.display = 'block'; }, 800);
+        document.getElementById('profileMainContent').style.display = 'none';
+        document.getElementById('profileTabContent').style.display = 'block';
+        document.getElementById('profileBackBtn').style.display = 'block';
+        document.getElementById('profileModalTitle').innerText = tabName;
+        document.getElementById('profileShimmer').style.display = 'block';
+        document.getElementById('profileActualContent').style.display = 'none';
+
+        setTimeout(() => {
+            document.getElementById('profileShimmer').style.display = 'none';
+            document.getElementById('profileActualContent').innerHTML = getTabContentHTML(tabName);
+            document.getElementById('profileActualContent').style.display = 'block';
+        }, 800);
     }
 
-    function closeProfileTab(instant = false) { document.getElementById('profileTabContent').style.display = 'none'; document.getElementById('profileMainContent').style.display = 'block'; document.getElementById('profileBackBtn').style.display = 'none'; document.getElementById('profileModalTitle').innerText = 'Profile Dashboard'; }
+    function closeProfileTab(instant = false) {
+        document.getElementById('profileTabContent').style.display = 'none';
+        document.getElementById('profileMainContent').style.display = 'block';
+        document.getElementById('profileBackBtn').style.display = 'none';
+        document.getElementById('profileModalTitle').innerText = 'Profile Dashboard';
+    }
 
     function getTabContentHTML(tabName) {
         switch(tabName) {
@@ -1272,13 +1550,32 @@
         }
     }
 
-    function toggleSocial(event, element) { event.stopPropagation(); const isCurrentlyExpanded = element.classList.contains('expanded'); document.querySelectorAll('.social-icon').forEach(icon => icon.classList.remove('expanded')); if (!isCurrentlyExpanded) { element.classList.add('expanded'); } }
-    document.addEventListener('click', (event) => { const isClickInsideSocialIcon = event.target.closest('.social-icon'); if (!isClickInsideSocialIcon) { document.querySelectorAll('.social-icon').forEach(icon => icon.classList.remove('expanded')); } });
+    function toggleSocial(event, element) {
+        event.stopPropagation();
+        const isCurrentlyExpanded = element.classList.contains('expanded');
+        document.querySelectorAll('.social-icon').forEach(icon => icon.classList.remove('expanded'));
+        if (!isCurrentlyExpanded) { element.classList.add('expanded'); }
+    }
+
+    document.addEventListener('click', (event) => {
+        const isClickInsideSocialIcon = event.target.closest('.social-icon');
+        if (!isClickInsideSocialIcon) { document.querySelectorAll('.social-icon').forEach(icon => icon.classList.remove('expanded')); }
+    });
 
     document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('skeletonContainer').style.display = 'grid'; document.getElementById('productGrid').style.display = 'none'; renderCategories(); renderSkeletons(); renderProducts(); typeWriterEffect(); updateUIForAuth();
-        setTimeout(() => { document.getElementById('skeletonContainer').style.display = 'none'; document.getElementById('productGrid').style.display = 'grid'; }, 1500);
+        document.getElementById('skeletonContainer').style.display = 'grid';
+        document.getElementById('productGrid').style.display = 'none';
+        renderCategories(); 
+        renderSkeletons();
+        renderProducts();
+        typeWriterEffect(); 
+        updateUIForAuth();
+        setTimeout(() => {
+            document.getElementById('skeletonContainer').style.display = 'none';
+            document.getElementById('productGrid').style.display = 'grid';
+        }, 1500);
     });
+
 </script>
 </body>
 </html>
