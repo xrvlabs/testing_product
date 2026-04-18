@@ -2130,7 +2130,6 @@
         if(!catList) return;
         catList.innerHTML = categoriesData.map((cat, index) => `
             <li class="${index === 0 ? 'active' : ''}" 
-                onmouseenter="if(window.innerWidth >= 1024) handleCatInteraction('${cat.id}', this)" 
                 onclick="handleCatInteraction('${cat.id}', this)">
                 <i class="fa-solid ${cat.icon} icon"></i> ${cat.title} 
                 <i class="fa-solid fa-chevron-right arrow"></i>
@@ -2147,9 +2146,7 @@
     }
 
     function renderSubcategories(cat) {
-        // Sirf category ka title show hoga, count hata diya gaya hai
         document.getElementById('mmContentTitle').innerHTML = cat.title;
-        
         if(cat.items) {
             document.getElementById('mmContentGrid').innerHTML = cat.items.map(item => `
                 <div class="subcat-card" onclick="openProduct(${item.prodId || 1})">
@@ -2788,7 +2785,6 @@
         const megamenu = document.getElementById('megamenu');
         const catBtn = document.getElementById('catDropdownBtn');
         if (window.innerWidth < 1024 && megamenu && megamenu.classList.contains('active')) {
-            // Agar click megamenu ke andar nahi hai aur category button par bhi nahi hai
             if (!megamenu.contains(event.target) && (!catBtn || !catBtn.contains(event.target))) {
                 closeMegamenu();
             }
