@@ -1121,22 +1121,65 @@
         .faq-a { font-size: 13px; color: var(--text-muted); margin-top: 10px; display: none; line-height: 1.6; }
         .faq-item.active .faq-a { display: block; }
         .faq-item.active .faq-q i { transform: rotate(180deg); }
-/* Sabhi cards se hover lift aur shadow effect hatane ke liye */
-.product-card:hover, 
-.promo-card:hover, 
-.subcat-card:hover, 
-.event-card:hover, 
-.contact-info-card:hover, 
-.dash-card:hover {
-    transform: none !important;
-    box-shadow: none !important;
-    border-color: var(--border-color) !important;
-}
+        /* Sabhi cards se hover lift aur shadow effect hatane ke liye */
+        .product-card:hover, 
+        .promo-card:hover, 
+        .subcat-card:hover, 
+        .event-card:hover, 
+        .contact-info-card:hover, 
+        .dash-card:hover {
+            transform: none !important;
+            box-shadow: none !important;
+            border-color: var(--border-color) !important;
+        }
 
-/* Product card ke andar jo ADD button lift hota tha, use bhi disable karne ke liye */
-.product-card:hover .add-btn {
-    transform: none !important;
-}
+        /* Product card ke andar jo ADD button lift hota tha, use bhi disable karne ke liye */
+        .product-card:hover .add-btn {
+            transform: none !important;
+        }
+
+        /* CART MODAL / BOTTOM SHEET SYSTEM */
+        #cartOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 2000;
+            display: none; opacity: 0; transition: opacity 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        #cartComponent {
+            position: fixed; z-index: 2001; background: white;
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease;
+            display: flex; flex-direction: column;
+            will-change: transform, opacity;
+        }
+
+        /* Desktop Cart Drawer (Right Side) */
+        @media (min-width: 1024px) {
+            #cartComponent {
+                width: 450px; height: 100vh;
+                top: 0; right: 0; transform: translateX(100%);
+                box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+                padding: 0; opacity: 1; pointer-events: none;
+            }
+            #cartComponent.active { transform: translateX(0); pointer-events: auto; }
+        }
+
+        /* Mobile Cart Bottom Sheet */
+        @media (max-width: 1023px) {
+            #cartComponent {
+                width: 100%; bottom: 0; left: 0; height: 85dvh;
+                border-radius: 20px 20px 0 0; transform: translateY(100%);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            #cartComponent.active { transform: translateY(0); }
+        }
+
+        .cart-scroll-content {
+            overflow-y: auto; flex: 1; padding: 10px 16px 24px; 
+            display: flex; flex-direction: column;
+        }
+        
+     
     </style>
 </head>
 <body>
@@ -1169,7 +1212,7 @@
                     <input type="text" id="mainSearchInput" placeholder="SEARCH ">
                     <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted); cursor: pointer; font-size: 18px;"></i>
                 </div>
-                <div class="cart-wrapper" id="mainCartIcon" onclick="switchView('cartView')" style="display: none;">
+                <div class="cart-wrapper" id="mainCartIcon" onclick="openCartModal()" style="display: none;">
                     <i class="fa-solid fa-cart-shopping" style="font-size: 20px; color: var(--text-dark);"></i>
                     <div class="cart-badge" id="mainCartBadge">0</div>
                 </div>
@@ -1339,7 +1382,7 @@
                 <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">Starting at</span>
                 <div class="bottom-price" id="bottom-price-mobile">₹1,499</div>
             </div>
-            <button class="bottom-btn" onclick="addToCart(currentSelectedProduct ? currentSelectedProduct.id : 1)">BUY</button>
+            <button class="bottom-btn" onclick="handleBuyNow(currentSelectedProduct ? currentSelectedProduct.id : 1)">BUY</button>
         </div>
 
     </div>
@@ -1461,29 +1504,6 @@
 
     <div class="floating-actions">
         <div class="talk-agent-btn">Talk to Agent</div>
-    </div>
-
-
-    <div id="cartView" class="view-section">
-        <div style="display: flex; align-items: center; padding: 16px 10px; background: white; border-bottom: 1px solid var(--border-color); font-size: 16px; font-weight: 700; gap: 16px; text-transform: uppercase;">
-            <i class="fa-solid fa-arrow-left" style="cursor: pointer;" onclick="switchView('homeView')"></i>
-            <span>MY CART</span>
-        </div>
-        <div class="cart-wrapper-main">
-            <div id="cartItemsList">
-                </div>
-            <div class="empty-state" id="emptyCartState" style="display: none;">
-                <i class="fa-solid fa-cart-shopping" style="font-size: 40px; color:#e0e0e0; margin-bottom: 16px; display: block; text-align: center;"></i>
-                <div style="text-align: center; font-weight: 700; color: var(--text-muted);">YOUR CART IS EMPTY</div>
-            </div>
-            
-            <div class="cart-summary" id="cartSummaryBlock">
-                <div class="summary-row"><span>SUBTOTAL</span> <span id="cartSubtotal">₹0</span></div>
-                <div class="summary-row"><span>SHIPPING</span> <span style="color:var(--green-accent);">FREE</span></div>
-                <div class="summary-total"><span>TOTAL</span> <span id="cartTotal">₹0</span></div>
-                <button class="checkout-btn" onclick="placeOrder()">PLACE ORDER NOW</button>
-            </div>
-        </div>
     </div>
 
 
@@ -1745,6 +1765,40 @@
         
         <div id="profileActualContent" style="display:none;">
             </div>
+    </div>
+</div>
+
+<div id="cartOverlay" onclick="closeCartModal()"></div>
+<div id="cartComponent">
+    <div class="drag-handle"></div>
+    <div class="profile-header">
+        <div style="display:flex; align-items:center;">
+            <h2 style="margin:0; font-size:16px; font-weight:800;"><i class="fa-solid fa-cart-shopping" style="margin-right:8px;"></i> MY CART</h2>
+        </div>
+        <i class="fa-solid fa-xmark close-profile" onclick="closeCartModal()"></i>
+    </div>
+    <div class="cart-scroll-content">
+        <div id="cartItemsList"></div>
+        <div class="empty-state" id="emptyCartState" style="display: none; margin: auto; padding-top: 40px;">
+            <i class="fa-solid fa-cart-shopping" style="font-size: 40px; color:#e0e0e0; margin-bottom: 16px; display: block; text-align: center;"></i>
+            <div style="text-align: center; font-weight: 700; color: var(--text-muted);">YOUR CART IS EMPTY</div>
+        </div>
+
+        <div class="apply-coins-box" id="applyCoinsBoxModal" style="display: none; background: #fff8eb; border: 1px solid #fde68a; border-radius: var(--card-radius); padding: 12px; margin-top: 12px; margin-bottom: 12px; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 13px; font-weight: 800; color: #d97706;"><i class="fa-solid fa-coins"></i> <span id="availableCoinsTextModal">0 OracoCoins</span></div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Save ₹<span id="coinSavingsTextModal">0</span> on this order</div>
+            </div>
+            <button id="applyCoinsBtnModal" onclick="toggleCoins()" style="background: #d97706; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 12px; cursor: pointer; transition: 0.2s;">APPLY</button>
+        </div>
+
+        <div class="cart-summary" id="cartSummaryBlock" style="margin-top: auto;">
+            <div class="summary-row" id="coinDiscountRow" style="display: none; color: #d97706;"><span>DISCOUNT</span> <span id="cartCoinDiscount">-₹0</span></div>
+            <div class="summary-row"><span>SHIPPING</span> <span style="color:var(--green-accent);">FREE</span></div>
+            <div class="summary-row"><span>SUBTOTAL</span> <span id="cartSubtotal">₹0</span></div>
+            <div class="summary-total"><span>TOTAL</span> <span id="cartTotal">₹0</span></div>
+            <button class="checkout-btn" onclick="placeOrder()">MAKE PAYMENT</button>
+        </div>
     </div>
 </div>
 
@@ -2109,16 +2163,17 @@
     let eventTimeout;
     let currentEventTab = 'live'; 
     let mmTimeout;
+    let isCoinsApplied = false;
+    let previousCartTotal = 0; // For animation tracking
 
     const views = {
         homeView: document.getElementById('homeView'),
         productView: document.getElementById('productView'),
         authView: document.getElementById('authView'),
-        cartView: document.getElementById('cartView'),
         eventsView: document.getElementById('eventsView'),
         contactView: document.getElementById('contactView')
     };
-function trackUniqueVisitor() {
+    function trackUniqueVisitor() {
         const today = new Date().toISOString().split('T')[0]; // Aaj ki date: 2026-04-18
         const storageKey = 'oraco_visit_' + today;
 
@@ -2155,7 +2210,6 @@ function trackUniqueVisitor() {
                     mockPastEvents = allEvents.filter(e => e.status === 'past');
                 }
 
-                // 👇 NAYA CODE YAHAN ADD KARNA HAI 👇
                 const bannerSnap = await get(child(dbRef, 'banners'));
                 if(bannerSnap.exists()) {
                     bannersData = Object.values(bannerSnap.val() || {});
@@ -2169,7 +2223,7 @@ function trackUniqueVisitor() {
         document.getElementById('productGrid').style.display = 'grid';
         
         // UI update calls
-        renderBanners(); // 👈 Banner render call add kardi
+        renderBanners(); 
         renderProducts();
         updateEventTabCounts();
         filterEvents();
@@ -2179,10 +2233,6 @@ function trackUniqueVisitor() {
     function switchView(targetViewId) {
         closeMegamenu(); 
         
-        if (!currentUser && (targetViewId === 'cartView')) {
-            targetViewId = 'authView';
-        }
-
         Object.values(views).forEach(view => { if(view) view.classList.remove('active'); });
         if(views[targetViewId]) views[targetViewId].classList.add('active');
         
@@ -2210,10 +2260,6 @@ function trackUniqueVisitor() {
         }
 
         window.scrollTo(0, 0);
-
-        if(targetViewId === 'cartView') {
-            renderCart();
-        }
         
         if(targetViewId === 'eventsView') {
             document.getElementById('eventSearchInput').value = '';
@@ -2739,19 +2785,46 @@ function trackUniqueVisitor() {
     async function removeFromCart(index) {
         cart.splice(index, 1);
         updateCartBadges();
-        renderCart();
+        renderCart(true);
         await syncCartToFirebase();
     }
 
-    function renderCart() {
+   window.toggleCoins = function() {
+        isCoinsApplied = !isCoinsApplied;
+        renderCart(true); // 'true' keeps the smooth number rolling animation for the total
+    }
+
+   
+
+    function animateValue(obj, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            const currentVal = Math.floor(easeOut * (end - start) + start);
+            obj.innerText = `₹${currentVal.toLocaleString('en-IN')}`;
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                obj.innerText = `₹${end.toLocaleString('en-IN')}`;
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    function renderCart(animate = false) {
         const listContainer = document.getElementById('cartItemsList');
         const emptyState = document.getElementById('emptyCartState');
         const summaryBlock = document.getElementById('cartSummaryBlock');
+        const applyCoinsBox = document.getElementById('applyCoinsBoxModal');
 
         if(cart.length === 0) {
             listContainer.innerHTML = '';
             emptyState.style.display = 'block';
             summaryBlock.style.display = 'none';
+            if(applyCoinsBox) applyCoinsBox.style.display = 'none';
+            previousCartTotal = 0;
             return;
         }
 
@@ -2759,9 +2832,10 @@ function trackUniqueVisitor() {
         summaryBlock.style.display = 'block';
 
         let html = '';
-        let total = 0;
+        let subtotal = 0;
         cart.forEach((item, index) => {
-            total += item.priceNum;
+            let itemPrice = item.priceNum || parseInt(item.price.replace(/,/g, ''));
+            subtotal += itemPrice;
             html += `
                 <div class="cart-item">
                     <div class="cart-item-img"><img src="${item.img}"></div>
@@ -2774,18 +2848,74 @@ function trackUniqueVisitor() {
             `;
         });
         listContainer.innerHTML = html;
-        document.getElementById('cartSubtotal').innerText = `₹${total.toLocaleString()}`;
-        document.getElementById('cartTotal').innerText = `₹${total.toLocaleString()}`;
+
+        let userCoins = (currentUser && currentUser.coins) ? currentUser.coins : 0;
+        let usableCoins = Math.min(userCoins, subtotal * 10); 
+        let discount = usableCoins * 0.1;
+        let finalTotal = subtotal;
+
+        if(applyCoinsBox) {
+            if(usableCoins > 0) {
+                applyCoinsBox.style.display = 'flex';
+                document.getElementById('availableCoinsTextModal').innerText = `${userCoins} OracoCoins`;
+                document.getElementById('coinSavingsTextModal').innerText = discount.toFixed(2);
+                
+                const applyBtn = document.getElementById('applyCoinsBtnModal');
+                if(isCoinsApplied) {
+                    applyBtn.innerText = 'REMOVE';
+                    applyBtn.style.background = 'var(--text-muted)';
+                    finalTotal = subtotal - discount;
+                    document.getElementById('coinDiscountRow').style.display = 'flex';
+                    document.getElementById('cartCoinDiscount').innerText = `-₹${discount.toFixed(2)}`;
+                } else {
+                    applyBtn.innerText = 'APPLY';
+                    applyBtn.style.background = '#d97706';
+                    document.getElementById('coinDiscountRow').style.display = 'none';
+                }
+            } else {
+                applyCoinsBox.style.display = 'none';
+                document.getElementById('coinDiscountRow').style.display = 'none';
+                isCoinsApplied = false;
+            }
+        }
+
+        document.getElementById('cartSubtotal').innerText = `₹${subtotal.toLocaleString('en-IN')}`;
+        
+        const totalEl = document.getElementById('cartTotal');
+        if (animate && previousCartTotal !== finalTotal) {
+            animateValue(totalEl, previousCartTotal, finalTotal, 800);
+        } else {
+            totalEl.innerText = `₹${finalTotal.toLocaleString('en-IN')}`;
+        }
+        
+        previousCartTotal = finalTotal;
     }
 
-    async function placeOrder() {
+    window.placeOrder = async function() {
         if(cart.length === 0 || !currentUser) return;
         
-        let total = cart.reduce((sum, item) => sum + item.priceNum, 0);
+        const btn = document.querySelector('.checkout-btn');
+        if (btn) btn.innerText = "PROCESSING...";
+
+        let subtotal = 0;
+        cart.forEach(item => {
+            subtotal += item.priceNum || parseInt(item.price.replace(/,/g, ''));
+        });
+
+        let userCoins = currentUser.coins || 0;
+        let usableCoins = isCoinsApplied ? Math.min(userCoins, subtotal * 10) : 0;
+        let discount = usableCoins * 0.1;
+        let finalTotal = subtotal - discount;
         
+        let earnedCoins = Math.floor(finalTotal / 1000) * 100;
+
         const newOrder = {
             userId: currentUser.uid,
-            total: total,
+            subtotal: subtotal,
+            discount: discount,
+            total: finalTotal,
+            usedCoins: usableCoins,
+            earnedCoins: earnedCoins,
             date: new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}),
             status: "Processing",
             items: cart
@@ -2800,14 +2930,21 @@ function trackUniqueVisitor() {
                 ...newOrder
             });
 
+            currentUser.coins = userCoins - usableCoins + earnedCoins;
+            await set(ref(db, 'users/' + currentUser.uid + '/coins'), currentUser.coins);
+
             cart = [];
+            isCoinsApplied = false;
             updateCartBadges();
-            await syncCartToFirebase(); // Clear cart in DB as well
+            await syncCartToFirebase(); 
+            closeCartModal(); 
             triggerRain();
         } catch(e) {
             alert("Error placing order: " + e.message);
+        } finally {
+            if (btn) btn.innerText = "MAKE PAYMENT";
         }
-    }
+    };
 
     function renderProfileOrders() {
         const container = document.getElementById('profileOrderHistoryList');
@@ -2815,9 +2952,10 @@ function trackUniqueVisitor() {
 
         let html = '';
         orderHistory.forEach(order => {
+            let coinText = order.earnedCoins ? `<br><small style="color:#d97706;">+${order.earnedCoins} Coins Earned</small>` : '';
             html += `
                 <div class="order-row">
-                    <div><strong>#${order.id}</strong><br><small>${order.date}</small></div>
+                    <div><strong>#${order.id}</strong><br><small>${order.date}</small>${coinText}</div>
                     <div style="text-align:right; color:var(--text-muted);"><strong>${order.status}</strong><br>₹${order.total.toLocaleString()}</div>
                 </div>
             `;
@@ -2874,12 +3012,12 @@ function trackUniqueVisitor() {
                 const userRef = ref(db, 'users/' + user.uid);
                 const userSnap = await get(userRef);
                 
-                let userData = { name: "Dr. User", phone: "Update in Profile", cart: [], wishlist: {} };
+                let userData = { name: "Dr. User", phone: "Update in Profile", cart: [], wishlist: {}, coins: 0 };
                 if(userSnap.exists()) {
                     userData = userSnap.val();
                 }
                 
-                currentUser = { uid: user.uid, email: user.email, name: userData.name, phone: userData.phone };
+                currentUser = { uid: user.uid, email: user.email, name: userData.name, phone: userData.phone, coins: userData.coins || 0 };
                 
                 // Restore Cart from Firebase Profile
                 cart = userData.cart || [];
@@ -3026,7 +3164,8 @@ function trackUniqueVisitor() {
                 if(orderHistory.length === 0) return `<div class="tab-content-box" style="text-align:center;"><h4>No Orders Yet</h4></div>`;
                 let ordersHtml = '';
                 orderHistory.forEach(o => {
-                    ordersHtml += `<div class="tab-content-box"><h4>Order #${o.id}</h4><p>Placed on ${o.date}</p><p style="font-weight:700; color: ${o.status === 'Delivered' ? 'var(--green-accent)' : 'var(--text-muted)'};">Status: ${o.status}</p><p><strong>Total: ₹${o.total.toLocaleString()}</strong></p></div>`;
+                    let coinText = o.earnedCoins ? `<br><small style="color:#d97706;">+${o.earnedCoins} Coins Earned</small>` : '';
+                    ordersHtml += `<div class="tab-content-box"><h4>Order #${o.id}</h4><p>Placed on ${o.date}</p><p style="font-weight:700; color: ${o.status === 'Delivered' ? 'var(--green-accent)' : 'var(--text-muted)'};">Status: ${o.status}</p><p><strong>Total: ₹${o.total.toLocaleString()}</strong></p>${coinText}</div>`;
                 });
                 return ordersHtml;
             case 'Addresses':
@@ -3041,7 +3180,9 @@ function trackUniqueVisitor() {
                     return `<div class="tab-content-box" style="text-align:center;"><h4>You have ${wishCount} items in Wishlist</h4><button class="signout-btn" style="border-color:var(--blue-accent); color:var(--blue-accent); margin-top:12px;" onclick="switchView('homeView'); closeProfile();">Explore Now</button></div>`;
                 }
             case 'Rewards':
-                return `<div class="tab-content-box" style="text-align:center; padding: 32px 16px;"><i class="fa-solid fa-medal" style="font-size:48px; color:#d4af37; margin-bottom:16px;"></i><h4>Gold Tier Member</h4><p style="font-size:24px; font-weight:800; color:var(--text-dark); margin:12px 0;">1,500 Points</p><p>Equivalent to ₹150 discount on your next purchase.</p></div>`;
+                let coinVal = currentUser && currentUser.coins ? (currentUser.coins * 0.1).toFixed(2) : 0;
+                let coinCount = currentUser && currentUser.coins ? currentUser.coins : 0;
+                return `<div class="tab-content-box" style="text-align:center; padding: 32px 16px;"><i class="fa-solid fa-coins" style="font-size:48px; color:#d97706; margin-bottom:16px;"></i><h4>OracoCoins Balance</h4><p style="font-size:24px; font-weight:800; color:var(--text-dark); margin:12px 0;">${coinCount} Coins</p><p>Equivalent to <strong>₹${coinVal}</strong> discount on your next purchase.</p><p style="font-size: 11px; color: var(--text-muted); margin-top: 12px; background: #fff8eb; padding: 8px; border-radius: 4px; border: 1px dashed #fde68a;">Earn 100 OracoCoins for every ₹1000 spent on any order!</p></div>`;
             default:
                 return `<div class="tab-content-box" style="text-align:center; padding: 40px 16px;"><i class="fa-solid fa-screwdriver-wrench" style="font-size:40px; color:#ccc; margin-bottom:16px;"></i><h4>Under Construction</h4><p>This section is currently being updated.</p></div>`;
         }
@@ -3102,6 +3243,45 @@ function trackUniqueVisitor() {
 
     window.addEventListener('resize', evaluateTabHeights);
 
+    // --- CART MODAL LOGIC ---
+    function openCartModal() {
+        if (!currentUser) {
+            switchView('authView');
+            return;
+        }
+        renderCart();
+        document.getElementById('cartOverlay').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('cartOverlay').style.opacity = '1';
+            document.getElementById('cartComponent').classList.add('active');
+            document.body.classList.add('no-scroll');
+        }, 10);
+    }
+
+    function closeCartModal() {
+        document.getElementById('cartComponent').classList.remove('active');
+        document.getElementById('cartOverlay').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('cartOverlay').style.display = 'none';
+            document.body.classList.remove('no-scroll');
+        }, 300);
+    }
+
+    async function handleBuyNow(productId) {
+        if (!currentUser) {
+            switchView('authView');
+            return;
+        }
+        // Check if item is already in cart, if not add it
+        const exists = cart.find(item => item.id === productId);
+        if(!exists) {
+            await addToCart(productId);
+        } else {
+            // Already in cart, just open the modal
+            openCartModal();
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('skeletonContainer').style.display = 'grid';
         document.getElementById('productGrid').style.display = 'none';
@@ -3140,14 +3320,16 @@ function trackUniqueVisitor() {
     window.addToCart = addToCart;
     window.addToCartVariant = addToCartVariant;
     window.removeFromCart = removeFromCart;
-    window.placeOrder = placeOrder;
     window.openProfile = openProfile;
     window.closeProfile = closeProfile;
     window.openProfileTab = openProfileTab;
     window.closeProfileTab = closeProfileTab;
     window.toggleSocial = toggleSocial;
     window.submitContact = submitContact;
-
+    window.openCartModal = openCartModal;
+    window.closeCartModal = closeCartModal;
+    window.handleBuyNow = handleBuyNow;
+    window.toggleCoins = toggleCoins;
 </script>
 </body>
 </html>
