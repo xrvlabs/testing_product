@@ -1073,7 +1073,7 @@
                         <div class="zoom-lens" id="zoomLens"></div>
                         <div class="zoom-result" id="zoomResult"></div>
                         
-                        <i class="fa-regular fa-heart wishlist-btn-large" onclick="toggleWishlist(event, this)"></i>
+                        <i class="fa-regular fa-heart wishlist-btn-large" id="pdWishlistBtn" onclick="toggleWishlist(event, this, currentSelectedProduct ? currentSelectedProduct.id : null)"></i>
                         <img src="pro_1.jpg" alt="Product Image" id="pd-hero-img" class="pd-main-img">
                     </div>
                     <div class="pd-thumb-list">
@@ -1141,7 +1141,7 @@
                 <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">Starting at</span>
                 <div class="bottom-price" id="bottom-price-mobile">₹1,499</div>
             </div>
-            <button class="bottom-btn" onclick="addToCart(1)">BUY</button>
+            <button class="bottom-btn" onclick="addToCart(currentSelectedProduct ? currentSelectedProduct.id : 1)">BUY</button>
         </div>
 
     </div>
@@ -1854,6 +1854,7 @@
     // --- State ---
     let currentUser = null; 
     let cart = [];
+    window.userWishlist = {}; // Global Wishlist Object
     let orderHistory = [];
     let currentSelectedProduct = null;
     let eventTimeout;
@@ -2189,10 +2190,12 @@
     function renderProducts() {
         let prodHTML = '';
         mockProducts.forEach(prod => {
+            let isWished = window.userWishlist && window.userWishlist[prod.id] ? true : false;
+            let heartClass = isWished ? 'fa-solid active' : 'fa-regular';
             prodHTML += `
                 <div class="product-card" onclick="openProduct(${prod.id})">
                     <div class="product-image-container">
-                        <i class="fa-regular fa-heart wishlist-btn" onclick="toggleWishlist(event, this)"></i>
+                        <i class="${heartClass} fa-heart wishlist-btn" onclick="toggleWishlist(event, this, ${prod.id})"></i>
                         <img src="${prod.img}" alt="${prod.title}" loading="lazy">
                         <div class="add-btn" onclick="event.stopPropagation(); addToCart(${prod.id})">ADD</div>
                     </div>
@@ -2232,16 +2235,37 @@
         if(skelContainer) skelContainer.innerHTML = skelHTML;
     }
 
-    // --- HEART TOGGLE ANIMATION FUNCTION ---
-    function toggleWishlist(event, element) {
+    // --- HEART TOGGLE ANIMATION & FIREBASE SYNC ---
+    async function toggleWishlist(event, element, productId) {
         if(event) event.stopPropagation();
+
+        if (!currentUser) {
+            switchView('authView');
+            return;
+        }
+
         element.classList.toggle('active');
-        if (element.classList.contains('active')) {
+        let isAdded = element.classList.contains('active');
+
+        if (isAdded) {
             element.classList.remove('fa-regular');
             element.classList.add('fa-solid');
+            window.userWishlist[productId] = true;
         } else {
             element.classList.remove('fa-solid');
             element.classList.add('fa-regular');
+            delete window.userWishlist[productId];
+        }
+
+        try {
+            const wishlistRef = ref(db, `users/${currentUser.uid}/wishlist/${productId}`);
+            if (isAdded) {
+                await set(wishlistRef, true);
+            } else {
+                await set(wishlistRef, null);
+            }
+        } catch(e) {
+            console.error("Wishlist sync error:", e);
         }
     }
 
@@ -2286,6 +2310,13 @@
         currentSelectedProduct = mockProducts.find(p => p.id === id);
         if(!currentSelectedProduct) return;
         
+        // Update Wishlist Heart state for this specific product
+        let isWished = window.userWishlist && window.userWishlist[id] ? true : false;
+        const pdWishBtn = document.getElementById('pdWishlistBtn');
+        if (pdWishBtn) {
+            pdWishBtn.className = isWished ? 'fa-solid fa-heart wishlist-btn-large active' : 'fa-regular fa-heart wishlist-btn-large';
+        }
+
         document.getElementById('pd-hero-img').src = currentSelectedProduct.img;
         
         let thumbs = document.querySelectorAll('.pd-thumb');
@@ -2347,7 +2378,7 @@
                                     <input type="number" class="qty-input" value="1" min="1" readonly>
                                     <button class="qty-btn" onclick="updateVariantQty(event, this, 1)"><i class="fa-solid fa-plus"></i></button>
                                 </div>
-                                <button class="pd-vc-add-btn" onclick="addToCart(${currentSelectedProduct.id})">ADD</button>
+                                <button class="pd-vc-add-btn" onclick="addToCartVariant(event, ${currentSelectedProduct.id}, this)">ADD</button>
                             </div>
                         </div>
                     </div>
@@ -2400,30 +2431,6 @@
                         </div>
                     </div>
                 `;
-
-                rightColHTML += `
-                    <div class="pd-benefits-card">
-                        <div class="pd-benefits-header">ORACO BENEFITS</div>
-                        <div class="pd-benefits-grid">
-                            <div class="pd-benefit-box">
-                                <i class="fa-solid fa-truck-fast"></i>
-                                <span>Free Shipping over order of 3000</span>
-                            </div>
-                            <div class="pd-benefit-box">
-                                <i class="fa-solid fa-indian-rupee-sign"></i>
-                                <span>Hassle Free Cancellation</span>
-                            </div>
-                            <div class="pd-benefit-box">
-                                <i class="fa-solid fa-arrows-rotate"></i>
-                                <span>10 Days Replacement</span>
-                            </div>
-                            <div class="pd-benefit-box">
-                                <i class="fa-solid fa-circle-check"></i>
-                                <span>100% Genuine Products</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
             }
         }
 
@@ -2441,19 +2448,52 @@
         setTimeout(evaluateTabHeights, 100);
     }
 
-    // --- Cart & Orders Logic ---
-    function addToCart(productId) {
+    // --- Cart Firebase Sync & Orders Logic ---
+    async function syncCartToFirebase() {
+        if (!currentUser) return;
+        try {
+            await set(ref(db, `users/${currentUser.uid}/cart`), cart);
+        } catch (e) {
+            console.error("Cart sync error", e);
+        }
+    }
+
+    async function addToCart(productId) {
         if (!currentUser) {
             switchView('authView');
             return;
         }
         
-        const product = mockProducts.find(p => p.id === (currentSelectedProduct ? currentSelectedProduct.id : productId));
+        const product = mockProducts.find(p => p.id === productId);
         
         if(product) {
             cart.push(product);
             updateCartBadges();
             alert(`${product.title} added to cart!`);
+            await syncCartToFirebase();
+        }
+    }
+
+    async function addToCartVariant(event, productId, btnElement) {
+        if(event) event.stopPropagation();
+        if (!currentUser) {
+            switchView('authView');
+            return;
+        }
+
+        const product = mockProducts.find(p => p.id === productId);
+        if(product) {
+            const qtyInput = btnElement.parentElement.querySelector('.qty-input');
+            const qty = qtyInput ? parseInt(qtyInput.value) : 1;
+
+            // Push multiple items to array based on selected quantity
+            for(let i=0; i<qty; i++) {
+                cart.push(product);
+            }
+            
+            updateCartBadges();
+            alert(`${qty} x ${product.title} added to cart!`);
+            await syncCartToFirebase();
         }
     }
 
@@ -2464,10 +2504,11 @@
         if (pdBadge) pdBadge.innerText = count;
     }
 
-    function removeFromCart(index) {
+    async function removeFromCart(index) {
         cart.splice(index, 1);
         updateCartBadges();
         renderCart();
+        await syncCartToFirebase();
     }
 
     function renderCart() {
@@ -2529,6 +2570,7 @@
 
             cart = [];
             updateCartBadges();
+            await syncCartToFirebase(); // Clear cart in DB as well
             triggerRain();
         } catch(e) {
             alert("Error placing order: " + e.message);
@@ -2600,10 +2642,20 @@
                 const userRef = ref(db, 'users/' + user.uid);
                 const userSnap = await get(userRef);
                 
-                let userData = { name: "Dr. User", phone: "Update in Profile" };
-                if(userSnap.exists()) userData = userSnap.val();
+                let userData = { name: "Dr. User", phone: "Update in Profile", cart: [], wishlist: {} };
+                if(userSnap.exists()) {
+                    userData = userSnap.val();
+                }
                 
                 currentUser = { uid: user.uid, email: user.email, name: userData.name, phone: userData.phone };
+                
+                // Restore Cart from Firebase Profile
+                cart = userData.cart || [];
+                
+                // Restore Wishlist from Firebase Profile
+                window.userWishlist = userData.wishlist || {};
+                
+                updateCartBadges();
                 fetchUserOrders();
             } catch(e) {
                 console.error("Error fetching user profile:", e);
@@ -2611,10 +2663,12 @@
         } else {
             currentUser = null;
             cart = [];
+            window.userWishlist = {};
             orderHistory = [];
             updateCartBadges();
         }
         updateUIForAuth();
+        renderProducts(); // Re-render grid to reflect active wishlist hearts
     });
 
     function handleAuthClick() {
@@ -2675,7 +2729,9 @@
                     name: "Dr. " + email.split('@')[0],
                     phone: "Update in Profile",
                     role: "client",
-                    coins: 0
+                    coins: 0,
+                    cart: [],
+                    wishlist: {}
                 });
             } else {
                 await signInWithEmailAndPassword(auth, email, password);
@@ -2746,7 +2802,12 @@
             case 'Payments':
                 return `<div class="tab-content-box"><h4>Saved Methods</h4><p><i class="fa-brands fa-cc-visa" style="color:var(--blue-dark); font-size:20px; vertical-align:middle;"></i> **** **** **** 4242</p></div>`;
             case 'Wishlist':
-                return `<div class="tab-content-box" style="text-align:center;"><i class="fa-regular fa-heart" style="font-size:32px; color:#ccc; margin-bottom:12px;"></i><h4>Your Wishlist is Empty</h4><p>Explore our trending products to add items here.</p></div>`;
+                let wishCount = Object.keys(window.userWishlist).length;
+                if(wishCount === 0) {
+                    return `<div class="tab-content-box" style="text-align:center;"><i class="fa-regular fa-heart" style="font-size:32px; color:#ccc; margin-bottom:12px;"></i><h4>Your Wishlist is Empty</h4><p>Explore our trending products to add items here.</p></div>`;
+                } else {
+                    return `<div class="tab-content-box" style="text-align:center;"><h4>You have ${wishCount} items in Wishlist</h4><button class="signout-btn" style="border-color:var(--blue-accent); color:var(--blue-accent); margin-top:12px;" onclick="switchView('homeView'); closeProfile();">Explore Now</button></div>`;
+                }
             case 'Rewards':
                 return `<div class="tab-content-box" style="text-align:center; padding: 32px 16px;"><i class="fa-solid fa-medal" style="font-size:48px; color:#d4af37; margin-bottom:16px;"></i><h4>Gold Tier Member</h4><p style="font-size:24px; font-weight:800; color:var(--text-dark); margin:12px 0;">1,500 Points</p><p>Equivalent to ₹150 discount on your next purchase.</p></div>`;
             default:
@@ -2845,6 +2906,7 @@
     window.submitAuth = submitAuth;
     window.logoutUser = logoutUser;
     window.addToCart = addToCart;
+    window.addToCartVariant = addToCartVariant;
     window.removeFromCart = removeFromCart;
     window.placeOrder = placeOrder;
     window.openProfile = openProfile;
