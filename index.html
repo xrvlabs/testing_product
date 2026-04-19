@@ -2428,7 +2428,7 @@ window.addEventListener('load', function() {
     const loader = document.getElementById('pageLoader');
     if (loader) {
         const elapsedTime = Date.now() - loaderStartTime;
-        const minLoadingTime = 2800; // 2 Seconds (2000 ms)
+        const minLoadingTime = 700; // 2 Seconds (2000 ms)
         
         // Agar page 2 second se pehle load ho gaya, toh bacha hua time wait karega
         const delay = Math.max(0, minLoadingTime - elapsedTime);
