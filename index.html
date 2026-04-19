@@ -1167,12 +1167,46 @@
             display: flex; 
             flex-direction: column;
         }
-        
+        /* --- PAGE LOADER STYLES --- */
+.page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #ffffff; /* White background taaki clean dikhe */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999; /* Sabse upar rakhne ke liye */
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+}
+
+.loader-logo {
+    width: 150px; /* Image ko chota karne ke liye size (apne hisaab se adjust kar lein) */
+    height: auto;
+    animation: blinkLogo 1.5s infinite ease-in-out;
+}
+
+/* Blinking & Pulsing Animation */
+@keyframes blinkLogo {
+    0% { opacity: 0.2; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0.2; transform: scale(0.9); }
+}
+
+/* Hide class ke liye */
+.page-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
      
     </style>
 </head>
 <body>
-
+<div id="pageLoader" class="page-loader">
+    <img src="oraco_transparent.png" alt="Loading..." class="loader-logo">
+</div>
 <div class="app-container">
 
     <div class="sticky-header-container" id="globalHeader">
@@ -2381,7 +2415,16 @@
             showMegamenuShimmer();
         }
     }
-
+// --- PAGE LOADER LOGIC ---
+window.addEventListener('load', function() {
+    const loader = document.getElementById('pageLoader');
+    if (loader) {
+        // Page puri tarah load hone ke aadha second baad fade out hoga
+        setTimeout(() => {
+            loader.classList.add('hidden');
+        }, 500); 
+    }
+});
     function showMegamenuShimmer() {
         const catList = document.getElementById('mmCatList');
         const contentGrid = document.getElementById('mmContentGrid');
