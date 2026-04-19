@@ -104,7 +104,7 @@
         
         /* Cart Badges */
         .cart-wrapper { position: relative; cursor: pointer; }
-        .cart-badge { position: absolute; top: -8px; right: -8px; background: var(--red-accent); color: white; font-size: 10px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .cart-badge { position: absolute; top: -4px; right: -4px; background: var(--red-accent); color: white; font-size: 10px; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
 
         .nav-pills { display: flex; gap: 10px; padding: 12px 10px; overflow-x: auto; background: white; white-space: nowrap; }
         .pill { padding: 8px 16px; border: 1px solid var(--border-color); border-radius: var(--card-radius); font-size: 13px; font-weight: 700; color: var(--text-dark); cursor: pointer; text-transform: uppercase; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
@@ -1175,8 +1175,11 @@
         }
 
         .cart-scroll-content {
-            overflow-y: auto; flex: 1; padding: 10px 16px 24px; 
-            display: flex; flex-direction: column;
+            overflow-y: auto; 
+            flex: 1; 
+            padding: 10px; /* Ye sab taraf 10px ka gap apply karega */
+            display: flex; 
+            flex-direction: column;
         }
         
      
@@ -1212,13 +1215,14 @@
                     <input type="text" id="mainSearchInput" placeholder="SEARCH ">
                     <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted); cursor: pointer; font-size: 18px;"></i>
                 </div>
-                <div class="cart-wrapper" id="mainCartIcon" onclick="openCartModal()" style="display: none;">
-                    <i class="fa-solid fa-cart-shopping" style="font-size: 20px; color: var(--text-dark);"></i>
-                    <div class="cart-badge" id="mainCartBadge">0</div>
-                </div>
             </div>
 
-            <div class="header-actions">
+            <div class="header-actions" style="gap: 10px;">
+                <div class="cart-wrapper" id="mainCartIcon" onclick="openCartModal()" style="display: none; background: #f1f5f9; width: 42px; height: 42px; border-radius: var(--card-radius); display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; flex-shrink: 0;">
+                    <i class="fa-solid fa-cart-shopping" style="font-size: 16px; color: var(--text-dark);"></i>
+                    <div class="cart-badge" id="mainCartBadge">0</div>
+                </div>
+                
                 <div class="auth-trigger" id="topBarAuthBtn" onclick="handleAuthClick()">
                     <i class="fa-regular fa-circle-user" style="font-size: 18px;"></i> <span id="topBarAuthText">LOGIN</span>
                 </div>
@@ -3227,12 +3231,15 @@ function renderProfileOrders() {
         });
     }
 
-    function updateUIForAuth() {
+   function updateUIForAuth() {
         const mainCartIcon = document.getElementById('mainCartIcon');
         if (currentUser) {
             document.getElementById('topBarAuthText').innerText = "HI, " + currentUser.name.split(' ')[0].toUpperCase();
             document.getElementById('authForm').reset();
-            mainCartIcon.style.display = 'block';
+            
+            // YAHAN CHANGE KARNA HAI: 'block' ki jagah 'flex' likhein
+            mainCartIcon.style.display = 'flex'; 
+            
         } else {
             document.getElementById('topBarAuthText').innerText = "LOGIN";
             mainCartIcon.style.display = 'none';
