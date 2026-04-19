@@ -3016,34 +3016,22 @@ function renderProfileOrders() {
         container.innerHTML = html;
     }
     
-   function fetchUserOrders() {
+  async function fetchUserOrders() {
         if(!currentUser) return;
         try {
             const ordersQuery = query(ref(db, 'orders'), orderByChild('userId'), equalTo(currentUser.uid));
-            
-            // 'get' ki jagah 'onValue' use kiya taaki live sunta rahe
-            onValue(ordersQuery, (snap) => {
-                if(snap.exists()) {
-                    const ordersMap = snap.val();
-                    orderHistory = Object.keys(ordersMap).map(key => ({
-                        firebaseKey: key,
-                        orderId: ordersMap[key].orderId || ('ORD-' + key.substring(1, 7).toUpperCase()),
-                        ...ordersMap[key]
-                    })).reverse(); 
-                } else {
-                    orderHistory = [];
-                }
-                
-                // 1. Dashboard par recent orders update karein
+            const snap = await get(ordersQuery); // Firebase se latest status le raha hai
+            if(snap.exists()) {
+                const ordersMap = snap.val();
+                orderHistory = Object.keys(ordersMap).map(key => ({
+                    firebaseKey: key,
+                    orderId: ordersMap[key].orderId || ('ORD-' + key.substring(1, 7).toUpperCase()),
+                    ...ordersMap[key]
+                })).reverse(); 
                 renderProfileOrders();
-
-                // 2. Agar user current "Orders" tab ke andar hai, toh usko bhi live refresh karein
-                const activeTabTitle = document.getElementById('profileModalTitle');
-                const actualContent = document.getElementById('profileActualContent');
-                if (activeTabTitle && activeTabTitle.innerText === 'Orders' && actualContent) {
-                    actualContent.innerHTML = getTabContentHTML('Orders');
-                }
-            });
+            } else {
+                orderHistory = [];
+            }
         } catch(e) {
             console.error("Error fetching orders:", e);
         }
@@ -3202,7 +3190,7 @@ function renderProfileOrders() {
         }
     }
 
-    function openProfileTab(tabName) {
+   window.openProfileTab = async function(tabName) {
         document.getElementById('profileMainContent').style.display = 'none';
         document.getElementById('profileTabContent').style.display = 'block';
         document.getElementById('profileBackBtn').style.display = 'block';
@@ -3210,12 +3198,18 @@ function renderProfileOrders() {
         document.getElementById('profileShimmer').style.display = 'block';
         document.getElementById('profileActualContent').style.display = 'none';
 
+        // NAYA LOGIC: Agar user "Orders" tab open karta hai, toh pehle Firebase se fresh data fetch karo
+        if (tabName === 'Orders') {
+            await fetchUserOrders(); 
+        }
+
+        // Shimmer animation ke baad content show karna
         setTimeout(() => {
             document.getElementById('profileShimmer').style.display = 'none';
             document.getElementById('profileActualContent').innerHTML = getTabContentHTML(tabName);
             document.getElementById('profileActualContent').style.display = 'block';
-        }, 800);
-    }
+        }, 400); // Wait time thoda kam kar diya taaki jaldi open ho
+    };
 
     function closeProfileTab(instant = false) {
         document.getElementById('profileTabContent').style.display = 'none';
