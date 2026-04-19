@@ -2994,18 +2994,17 @@ function renderProfileOrders() {
         }
 
         let html = '';
-        // Sirf top 3 recent orders dashboard par dikhayenge
         orderHistory.slice(0, 3).forEach(order => {
             let coinText = order.earnedCoins ? `<br><small style="color:#d97706;">+${order.earnedCoins} Coins Earned</small>` : '';
             
-            // Dynamic Color for Status
-            let statusColor = 'var(--text-muted)'; // default Processing
-            if(order.status === 'Shipped') statusColor = 'var(--blue-accent)';
-            if(order.status === 'Delivered') statusColor = 'var(--green-accent)';
+            // Dynamic Status Colors
+            let statusColor = 'var(--blue-dark)'; 
+            if(order.status === 'Shipped') statusColor = '#ea580c'; // Orange
+            if(order.status === 'Delivered') statusColor = 'var(--green-accent)'; // Green
 
             html += `
                 <div class="order-row">
-                    <div><strong>#${order.orderId || order.id}</strong><br><small>${order.date}</small>${coinText}</div>
+                    <div><strong>#${order.orderId || order.id || order.firebaseKey}</strong><br><small>${order.date}</small>${coinText}</div>
                     <div style="text-align:right; color:${statusColor};">
                         <strong>${order.status.toUpperCase()}</strong><br>
                         <span style="color:var(--text-dark);">₹${(order.total||0).toLocaleString()}</span>
@@ -3228,14 +3227,20 @@ function renderProfileOrders() {
                 let ordersHtml = '';
                 orderHistory.forEach(o => {
                     let coinText = o.earnedCoins ? `<br><small style="color:#d97706;">+${o.earnedCoins} Coins Earned</small>` : '';
-                    let accentColor = o.status === 'Delivered' ? 'var(--green-accent)' : 'var(--blue-accent)';
+                    
+                    // Dynamic Status Colors & Borders
+                    let statusBg = 'var(--blue-dark)';
+                    let borderLeft = 'var(--blue-accent)';
+                    if(o.status === 'Shipped') { statusBg = '#ea580c'; borderLeft = '#ea580c'; }
+                    if(o.status === 'Delivered') { statusBg = 'var(--green-accent)'; borderLeft = 'var(--green-accent)'; }
+                    
                     let itemsPreview = o.items ? o.items.map(i => i.title).join(', ') : 'N/A';
                     
                     ordersHtml += `
-                        <div class="tab-content-box" style="border-left: 4px solid ${accentColor}; margin-bottom: 12px; padding: 16px;">
+                        <div class="tab-content-box" style="border-left: 4px solid ${borderLeft}; margin-bottom: 12px; padding: 16px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                                 <h4 style="margin:0; color:var(--text-dark);">#${o.orderId || o.firebaseKey}</h4>
-                                <span style="font-size:10px; font-weight:800; color:white; background:var(--blue-dark); padding:4px 8px; border-radius:4px; text-transform:uppercase;">${o.status}</span>
+                                <span style="font-size:10px; font-weight:800; color:white; background:${statusBg}; padding:4px 8px; border-radius:4px; text-transform:uppercase;">${o.status}</span>
                             </div>
                             <p style="margin-bottom:4px;">Date: ${o.date}</p>
                             <p style="margin-bottom:8px;"><strong>Total: ₹${(o.total || 0).toLocaleString()}</strong></p>
