@@ -1818,7 +1818,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-   import { getDatabase, ref, get, set, push, child, query, orderByChild, equalTo, runTransaction, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+   import { getDatabase, ref, get, set, push, child, query, orderByChild, equalTo, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -2938,7 +2938,11 @@
         
         let earnedCoins = Math.floor(finalTotal / 1000) * 100;
 
+        // Generate a clean, unique order ID (e.g., ORD65432101)
+        const cleanOrderId = "ORD" + Date.now().toString().slice(-5) + Math.floor(Math.random() * 1000);
+
         const newOrder = {
+            orderId: cleanOrderId,
             userId: currentUser.uid,
             subtotal: subtotal,
             discount: discount,
@@ -2961,7 +2965,7 @@
             await set(newOrderRef, newOrder);
             
             orderHistory.unshift({
-                id: 'ORD-' + newOrderRef.key.substring(1, 7).toUpperCase(),
+                firebaseKey: newOrderRef.key,
                 ...newOrder
             });
 
@@ -2998,7 +3002,7 @@
         container.innerHTML = html;
     }
     
-    async function fetchUserOrders() {
+   async function fetchUserOrders() {
         if(!currentUser) return;
         try {
             const ordersQuery = query(ref(db, 'orders'), orderByChild('userId'), equalTo(currentUser.uid));
@@ -3006,10 +3010,12 @@
             if(snap.exists()) {
                 const ordersMap = snap.val();
                 orderHistory = Object.keys(ordersMap).map(key => ({
-                    id: 'ORD-' + key.substring(1, 7).toUpperCase(),
+                    firebaseKey: key,
                     ...ordersMap[key]
                 })).reverse(); 
                 renderProfileOrders();
+            } else {
+                orderHistory = [];
             }
         } catch(e) {
             console.error("Error fetching orders:", e);
@@ -3195,18 +3201,37 @@
         switch(tabName) {
             case 'Account Info':
                 return `<div class="tab-content-box"><h4>Personal Details</h4><p><strong>Name:</strong> ${currentUser.name}</p><p><strong>Email:</strong> ${currentUser.email}</p><p><strong>Phone:</strong> ${currentUser.phone}</p></div><button class="signout-btn" style="border-color:var(--blue-accent); color:var(--blue-accent); margin-top:12px;">Edit Details</button>`;
+            
             case 'Orders':
                 if(orderHistory.length === 0) return `<div class="tab-content-box" style="text-align:center;"><h4>No Orders Yet</h4></div>`;
                 let ordersHtml = '';
                 orderHistory.forEach(o => {
                     let coinText = o.earnedCoins ? `<br><small style="color:#d97706;">+${o.earnedCoins} Coins Earned</small>` : '';
-                    ordersHtml += `<div class="tab-content-box"><h4>Order #${o.id}</h4><p>Placed on ${o.date}</p><p style="font-weight:700; color: ${o.status === 'Delivered' ? 'var(--green-accent)' : 'var(--text-muted)'};">Status: ${o.status}</p><p><strong>Total: ₹${o.total.toLocaleString()}</strong></p>${coinText}</div>`;
+                    let accentColor = o.status === 'Delivered' ? 'var(--green-accent)' : 'var(--blue-accent)';
+                    let itemsPreview = o.items ? o.items.map(i => i.title).join(', ') : 'N/A';
+                    
+                    ordersHtml += `
+                        <div class="tab-content-box" style="border-left: 4px solid ${accentColor}; margin-bottom: 12px; padding: 16px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <h4 style="margin:0; color:var(--text-dark);">#${o.orderId || o.firebaseKey}</h4>
+                                <span style="font-size:10px; font-weight:800; color:white; background:var(--blue-dark); padding:4px 8px; border-radius:4px; text-transform:uppercase;">${o.status}</span>
+                            </div>
+                            <p style="margin-bottom:4px;">Date: ${o.date}</p>
+                            <p style="margin-bottom:8px;"><strong>Total: ₹${(o.total || 0).toLocaleString()}</strong></p>
+                            <div style="font-size:11px; color:var(--text-muted); background:#f8fafc; padding:8px; border-radius:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                <i class="fa-solid fa-box" style="margin-right:4px;"></i> ${itemsPreview}
+                            </div>
+                            ${coinText}
+                        </div>`;
                 });
                 return ordersHtml;
+            
             case 'Addresses':
                 return `<div class="tab-content-box" style="border-left: 4px solid var(--blue-accent);"><h4>Clinic Address (Default)</h4><p>Oraco Dental Clinic</p><p>123 Health Street, Sector 4</p><p>New Delhi, India - 110074</p></div><button class="signout-btn" style="border-color:var(--blue-accent); color:var(--blue-accent); margin-top:12px;">+ Add New Address</button>`;
+            
             case 'Payments':
                 return `<div class="tab-content-box"><h4>Saved Methods</h4><p><i class="fa-brands fa-cc-visa" style="color:var(--blue-dark); font-size:20px; vertical-align:middle;"></i> **** **** **** 4242</p></div>`;
+            
             case 'Wishlist':
                 let wishCount = Object.keys(window.userWishlist).length;
                 if(wishCount === 0) {
@@ -3214,10 +3239,12 @@
                 } else {
                     return `<div class="tab-content-box" style="text-align:center;"><h4>You have ${wishCount} items in Wishlist</h4><button class="signout-btn" style="border-color:var(--blue-accent); color:var(--blue-accent); margin-top:12px;" onclick="switchView('homeView'); closeProfile();">Explore Now</button></div>`;
                 }
+            
             case 'Rewards':
                 let coinVal = currentUser && currentUser.coins ? (currentUser.coins * 0.1).toFixed(2) : 0;
                 let coinCount = currentUser && currentUser.coins ? currentUser.coins : 0;
                 return `<div class="tab-content-box" style="text-align:center; padding: 32px 16px;"><i class="fa-solid fa-coins" style="font-size:48px; color:#d97706; margin-bottom:16px;"></i><h4>OracoCoins Balance</h4><p style="font-size:24px; font-weight:800; color:var(--text-dark); margin:12px 0;">${coinCount} Coins</p><p>Equivalent to <strong>₹${coinVal}</strong> discount on your next purchase.</p><p style="font-size: 11px; color: var(--text-muted); margin-top: 12px; background: #fff8eb; padding: 8px; border-radius: 4px; border: 1px dashed #fde68a;">Earn 100 OracoCoins for every ₹1000 spent on any order!</p></div>`;
+            
             default:
                 return `<div class="tab-content-box" style="text-align:center; padding: 40px 16px;"><i class="fa-solid fa-screwdriver-wrench" style="font-size:40px; color:#ccc; margin-bottom:16px;"></i><h4>Under Construction</h4><p>This section is currently being updated.</p></div>`;
         }
