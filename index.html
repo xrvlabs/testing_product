@@ -1797,6 +1797,12 @@
             <div class="summary-row"><span>SHIPPING</span> <span style="color:var(--green-accent);">FREE</span></div>
             <div class="summary-row"><span>SUBTOTAL</span> <span id="cartSubtotal">₹0</span></div>
             <div class="summary-total"><span>TOTAL</span> <span id="cartTotal">₹0</span></div>
+
+            <div id="whatsappInputContainer" style="display: none; margin-top: 15px;">
+                <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 5px; display: block;">WHATSAPP NUMBER FOR UPDATES</label>
+                <input type="tel" id="cartWhatsappInput" class="form-input" placeholder="10-digit mobile number" maxlength="10" style="background: #f8fafc; padding: 10px;">
+            </div>
+
             <button class="checkout-btn" onclick="placeOrder()">MAKE PAYMENT</button>
         </div>
     </div>
@@ -2890,12 +2896,32 @@
         } else {
             totalEl.innerText = `₹${finalTotal.toLocaleString('en-IN')}`;
         }
-        
+        const waContainer = document.getElementById('whatsappInputContainer');
+        if (waContainer) {
+            if (currentUser && (!currentUser.phone || currentUser.phone === "Update in Profile" || currentUser.phone === "Undefined" || currentUser.phone === "")) {
+                waContainer.style.display = "block";
+            } else {
+                waContainer.style.display = "none";
+            }
+        }
         previousCartTotal = finalTotal;
     }
 
     window.placeOrder = async function() {
         if(cart.length === 0 || !currentUser) return;
+        
+        const waContainer = document.getElementById('whatsappInputContainer');
+        let updatedPhone = currentUser.phone;
+
+        // CHECK WHATSAPP NUMBER IF IT IS VISIBLE
+        if (waContainer && waContainer.style.display === 'block') {
+            const phoneInput = document.getElementById('cartWhatsappInput').value.trim();
+            if (phoneInput.length !== 10 || isNaN(phoneInput)) {
+                alert("Please enter a valid 10-digit WhatsApp number to receive order updates.");
+                return; // Stop checkout if invalid
+            }
+            updatedPhone = phoneInput;
+        }
         
         const btn = document.querySelector('.checkout-btn');
         if (btn) btn.innerText = "PROCESSING...";
@@ -2925,6 +2951,12 @@
         };
 
         try {
+            // UPDATE PHONE IN FIREBASE IF NEWLY ENTERED
+            if (updatedPhone !== currentUser.phone) {
+                await update(ref(db, 'users/' + currentUser.uid), { phone: updatedPhone });
+                currentUser.phone = updatedPhone; // Update local state
+            }
+
             const newOrderRef = push(ref(db, 'orders'));
             await set(newOrderRef, newOrder);
             
