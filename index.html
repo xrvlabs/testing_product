@@ -1797,7 +1797,6 @@
         </div>
 
         <div class="cart-summary" id="cartSummaryBlock" style="margin-top: 0; border-radius: 0 0 var(--card-radius) var(--card-radius);">
-            <div class="summary-row" id="coinDiscountRow" style="display: none; color: #d97706;"><span>DISCOUNT</span> <span id="cartCoinDiscount">-₹0</span></div>
             <div class="summary-row"><span>SHIPPING</span> <span style="color:var(--green-accent);">FREE</span></div>
             <div class="summary-row"><span>SUBTOTAL</span> <span id="cartSubtotal">₹0</span></div>
             <div class="summary-total"><span>TOTAL</span> <span id="cartTotal">₹0</span></div>
@@ -2968,20 +2967,21 @@
                 if(isCoinsApplied) {
                     applyBtn.innerText = 'REMOVE';
                     applyBtn.style.background = 'var(--text-muted)';
-                    finalTotal = subtotal - discount;
-                    document.getElementById('coinDiscountRow').style.display = 'flex';
-                    document.getElementById('cartCoinDiscount').innerText = `-₹${discount.toFixed(2)}`;
+                    finalTotal = subtotal - discount; // Calculation abhi bhi hogi
+                    // DISCOUNT ROW WALI LINE HATA DI GAYI HAI
                 } else {
                     applyBtn.innerText = 'APPLY';
                     applyBtn.style.background = '#d97706';
-                    document.getElementById('coinDiscountRow').style.display = 'none';
                 }
             } else {
                 applyCoinsBox.style.display = 'none';
-                document.getElementById('coinDiscountRow').style.display = 'none';
                 isCoinsApplied = false;
             }
         }
+        
+        // Ensure discount row is always hidden
+        const discRow = document.getElementById('coinDiscountRow');
+        if(discRow) discRow.style.display = 'none';
 
         document.getElementById('cartSubtotal').innerText = `₹${subtotal.toLocaleString('en-IN')}`;
         
