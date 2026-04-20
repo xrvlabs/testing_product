@@ -555,30 +555,36 @@
             .drag-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 12px auto; flex-shrink: 0; }
         }
 
-        .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 10px 16px; border-bottom: 1px solid var(--border-color); }
-        .profile-header h2 { font-size: 16px; font-weight: 800; text-transform: uppercase; margin: 0;}
-        .close-profile { font-size: 24px; cursor: pointer; color: var(--text-muted); }
-        .back-profile { font-size: 20px; cursor: pointer; color: var(--blue-accent); margin-right: 12px; transition: transform 0.2s;}
-        .back-profile:hover { transform: translateX(-3px); }
+   /* Profile Header side padding reduced to 10px */
+.profile-header { 
+    display: flex; justify-content: space-between; align-items: center; 
+    margin-bottom: 16px; padding: 10px 10px; 
+    border-bottom: 1px solid var(--border-color); 
+}
 
-        .profile-scroll-content { overflow-y: auto; flex: 1; padding: 10px 16px 24px; }
+.profile-header h2 { font-size: 16px; font-weight: 800; text-transform: uppercase; margin: 0; }
+.close-profile { font-size: 24px; cursor: pointer; color: var(--text-muted); }
+.back-profile { font-size: 20px; cursor: pointer; color: var(--blue-accent); margin-right: 12px; transition: transform 0.2s; }
+.back-profile:hover { transform: translateX(-3px); }
 
-        /* Dashboard Grid */
-        .dash-grid { 
-            display: grid; gap: 12px; margin-bottom: 24px;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-        }
-        @media (min-width: 1024px) { .dash-grid { grid-template-columns: repeat(4, 1fr); } }
+/* Main content container side padding reduced to 10px */
+.profile-scroll-content { overflow-y: auto; flex: 1; padding: 10px 10px 24px; }
 
-        .dash-card { 
-            border: 1px solid var(--border-color); border-radius: 8px; 
-            padding: 16px; background: #fafafa; text-align: center;
-            cursor: pointer; transition: var(--transition);
-        }
-        .dash-card:hover { border-color: var(--blue-accent); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transform: translateY(-2px);}
-        .dash-card i { font-size: 24px; color: var(--blue-accent); margin-bottom: 10px; display: block;}
-        .dash-card span { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-dark); }
+/* Dashboard Grid */
+.dash-grid { 
+    display: grid; gap: 10px; margin-bottom: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+}
+@media (min-width: 1024px) { .dash-grid { grid-template-columns: repeat(4, 1fr); } }
 
+.dash-card { 
+    border: 1px solid var(--border-color); border-radius: 8px; 
+    padding: 16px 8px; background: #fafafa; text-align: center;
+    cursor: pointer; transition: var(--transition);
+}
+.dash-card:hover { border-color: var(--blue-accent); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transform: translateY(-2px); }
+.dash-card i { font-size: 24px; color: var(--blue-accent); margin-bottom: 10px; display: block; }
+.dash-card span { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-dark); }
         .recent-orders { border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 24px; }
         .ro-head { background: #f1f5f9; padding: 12px; font-size: 13px; font-weight: 800; border-bottom: 1px solid var(--border-color); text-transform: uppercase;}
         .order-row { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid #eee; font-size: 13px;}
