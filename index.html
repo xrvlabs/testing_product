@@ -405,7 +405,10 @@
             content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 40px;
             background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1)); pointer-events: none;
         }
-
+.pd-tab-content, #pd-dummy-desc {
+    white-space: pre-line; /* Sabse important change */
+    word-wrap: break-word;
+}
         .pd-tab-content.expanded { max-height: 1000px; cursor: auto; }
         .pd-tab-content ul { padding-left: 0; list-style-type: none; margin: 0;}
         .pd-tab-content li { margin-bottom: 12px; color: var(--text-dark); position: relative; padding-left: 18px; display: block; line-height: 1.5; }
@@ -2326,10 +2329,12 @@ function populateSizesDropdown(variant) {
     function openProduct(id) {
     currentSelectedProduct = mockProducts.find(p => p.id === id);
     if(!currentSelectedProduct) return;
-window.currentSelectedProduct = currentSelectedProduct;
-    // 1. Variants ensure karna (Purana logic)
+    
+    window.currentSelectedProduct = currentSelectedProduct;
+
+    // 1. Variants ensure karna (Agar database mein variants na hon toh default banana)
     if (!currentSelectedProduct.variants || currentSelectedProduct.variants.length === 0) {
-        let basePriceNum = parseInt((currentSelectedProduct.price || "0").replace(/,/g, ''));
+        let basePriceNum = parseInt((currentSelectedProduct.price || "0").toString().replace(/,/g, ''));
         currentSelectedProduct.variants = [{ 
             name: "Standard", 
             sizes: ["Standard"],
@@ -2350,31 +2355,43 @@ window.currentSelectedProduct = currentSelectedProduct;
         pdWishBtn.className = isWished ? 'fa-solid fa-heart wishlist-btn-large active' : 'fa-regular fa-heart wishlist-btn-large';
     }
 
-    // --- RELEVANT CHANGE START: DYNAMIC IMAGE GALLERY ---
-
-    // Sabhi images ko ek array me jama karein (Main Image + Gallery Images)
+    // 3. Dynamic Image Gallery (Main Image + Additional Gallery Images)
     let allImages = [currentSelectedProduct.img];
     if (currentSelectedProduct.gallery && Array.isArray(currentSelectedProduct.gallery)) {
         allImages = allImages.concat(currentSelectedProduct.gallery);
     }
-    // Duplicate URLs hatane ke liye (just in case)
-    allImages = [...new Set(allImages)];
+    allImages = [...new Set(allImages)]; // Duplicates hatane ke liye
 
-    // Thumbnails container ko select karein aur dynamic HTML generate karein
     const thumbListContainer = document.querySelector('.pd-thumb-list');
-    thumbListContainer.innerHTML = allImages.map((imgUrl, index) => `
-        <img src="${imgUrl}" class="pd-thumb ${index === 0 ? 'active' : ''}" onclick="changeImage(this)">
-    `).join('');
-
-    // Hero image ko pehli image par set karein
+    if (thumbListContainer) {
+        thumbListContainer.innerHTML = allImages.map((imgUrl, index) => `
+            <img src="${imgUrl}" class="pd-thumb ${index === 0 ? 'active' : ''}" onclick="changeImage(this)">
+        `).join('');
+    }
     document.getElementById('pd-hero-img').src = allImages[0];
 
-    // --- RELEVANT CHANGE END ---
-
+    // 4. Set Titles and Dynamic Description
     document.getElementById('pd-title').innerText = currentSelectedProduct.title;
     document.getElementById('pd-subtitle').innerText = currentSelectedProduct.subtitle || "";
     
-    // Variant dropdown handle karna
+    // Naya Description Field (Jo Admin Panel se aayega)
+    const descBox = document.getElementById('pd-dummy-desc');
+    if (descBox) {
+        descBox.innerText = currentSelectedProduct.description || "High quality dental product designed for professional use.";
+    }
+
+    // 5. Set Features and Directions in Tabs
+    const featuresTab = document.getElementById('tab-features');
+    const directionsTab = document.getElementById('tab-desc');
+
+    if (featuresTab) {
+        featuresTab.innerText = currentSelectedProduct.features || "Features list not available for this product.";
+    }
+    if (directionsTab) {
+        directionsTab.innerText = currentSelectedProduct.directions || "Follow standard clinical procedures or refer to the packaging.";
+    }
+
+    // 6. Variant & Size Dropdowns handle karna
     const varSelect = document.getElementById('pdVariantSelect');
     const varWrapper = document.getElementById('variantSelectWrapper');
     const isOnlyStandard = currentSelectedProduct.variants.length === 1 && currentSelectedProduct.variants[0].name === 'Standard';
@@ -2391,7 +2408,10 @@ window.currentSelectedProduct = currentSelectedProduct;
     populateSizesDropdown(currentVariant);
     updateProductControlUI();
     
+    // 7. Final View Switch
     switchView('productView');
+    
+    // Height evaluate karna taaki "Read More" logic kaam kare
     setTimeout(evaluateTabHeights, 100);
 }
 
