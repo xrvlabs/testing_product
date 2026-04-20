@@ -2308,7 +2308,7 @@ function populateSizesDropdown(variant) {
     function openProduct(id) {
     currentSelectedProduct = mockProducts.find(p => p.id === id);
     if(!currentSelectedProduct) return;
-
+window.currentSelectedProduct = currentSelectedProduct;
     // 1. Variants ensure karna (Purana logic)
     if (!currentSelectedProduct.variants || currentSelectedProduct.variants.length === 0) {
         let basePriceNum = parseInt((currentSelectedProduct.price || "0").replace(/,/g, ''));
