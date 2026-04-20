@@ -2605,9 +2605,37 @@ function populateSizesDropdown(variant) {
                 currentUser.phone = updatedPhone; 
             }
 
+            // 1. Save the actual order
             const newOrderRef = push(ref(db, 'orders'));
             await set(newOrderRef, newOrder);
             
+            // ==========================================
+            // 🚀 NEW: UPDATE FIREBASE ANALYTICS COUNTERS
+            // ==========================================
+            const nowRaw = new Date();
+            const year = nowRaw.getFullYear();
+            const month = String(nowRaw.getMonth() + 1).padStart(2, '0');
+            const day = String(nowRaw.getDate()).padStart(2, '0');
+            
+            // Format: "2026-04-20" and "2026-04"
+            const dateKey = `${year}-${month}-${day}`; 
+            const monthKey = `${year}-${month}`;
+
+            const analyticsRef = ref(db, 'analytics/sales');
+            
+            // Increment Lifetime Totals
+            runTransaction(child(analyticsRef, 'total_orders'), (curr) => (curr || 0) + 1);
+            runTransaction(child(analyticsRef, 'total_revenue'), (curr) => (curr || 0) + finalTotal);
+            
+            // Increment Today's Counters
+            runTransaction(child(analyticsRef, `daily/${dateKey}/orders`), (curr) => (curr || 0) + 1);
+            runTransaction(child(analyticsRef, `daily/${dateKey}/revenue`), (curr) => (curr || 0) + finalTotal);
+            
+            // Increment Monthly Counters
+            runTransaction(child(analyticsRef, `monthly/${monthKey}/orders`), (curr) => (curr || 0) + 1);
+            runTransaction(child(analyticsRef, `monthly/${monthKey}/revenue`), (curr) => (curr || 0) + finalTotal);
+            // ==========================================
+
             orderHistory.unshift({
                 firebaseKey: newOrderRef.key,
                 ...newOrder
