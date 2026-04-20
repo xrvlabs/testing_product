@@ -2021,22 +2021,34 @@
         if(cat) renderSubcategories(cat);
     }
 
-    function renderSubcategories(cat) {
-        document.getElementById('mmContentTitle').innerHTML = cat.title;
-        let subcatKey = "subcat_" + cat.id.replace("cat_", "");
-        let items = cat[subcatKey];
+    window.renderSubcategories = function(cat) {
+    const titleEl = document.getElementById('mmContentTitle');
+    const gridEl = document.getElementById('mmContentGrid');
+    
+    if(!cat || !titleEl || !gridEl) return;
 
-        if(items && items.length > 0) {
-            document.getElementById('mmContentGrid').innerHTML = items.map(item =>`
-                <div class="subcat-card" onclick="openProduct(${item.prodId || 1})">
-                    <div class="subcat-img"><img src="${item.img}" alt="${item.name}"></div>
-                    <div class="subcat-title">${item.name}</div>
+    titleEl.innerHTML = cat.title;
+    
+    // Naya Logic: Global mockProducts se wo products filter karein jo is category ID ke hain
+    // Hum .filter(p => p) isliye use kar rahe hain taaki array ka null element (index 0) skip ho jaye
+    const items = mockProducts.filter(p => p && p.category === cat.id);
+
+    if(items && items.length > 0) {
+        gridEl.innerHTML = items.map(item => `
+            <div class="subcat-card" onclick="openProduct(${item.id})">
+                <div class="subcat-img">
+                    <img src="${item.img}" alt="${item.title}">
                 </div>
-            `).join('');
-        } else {
-            document.getElementById('mmContentGrid').innerHTML = '<div style="padding: 10px; color: var(--text-muted);">No items found.</div>';
-        }
+                <div class="subcat-title">${item.title}</div>
+            </div>
+        `).join('');
+    } else {
+        gridEl.innerHTML = `
+            <div style="padding: 20px; color: var(--text-muted); font-weight:700; width:100%; text-align:center;">
+                NO PRODUCTS FOUND IN THIS CATEGORY
+            </div>`;
     }
+};
 
     function closeMegamenu() {
         const megamenu = document.getElementById('megamenu');
