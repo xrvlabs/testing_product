@@ -416,9 +416,6 @@
         .bottom-price { font-size: 22px; font-weight: 800; color: var(--text-dark);}
         .bottom-btn { background: #336688; color: white; border: none; padding: 12px 40px; border-radius: var(--card-radius); font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; text-transform: uppercase;}
         
-        .floating-actions { position: fixed; bottom: 20px; right: 0; z-index: 100; display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
-        .talk-agent-btn { background: #336688; color: white; padding: 12px 8px; font-size: 13px; font-weight: 700; writing-mode: vertical-rl; text-orientation: mixed; border-radius: var(--card-radius) 0 0 var(--card-radius); cursor: pointer; box-shadow: -4px 0 10px rgba(0,0,0,0.1); letter-spacing: 1px;}
-
         /* Auth View */
         .auth-view-layout { display: flex; flex-direction: column; min-height: 100vh; position: relative; }
         @media (min-width: 1024px) {
@@ -1192,12 +1189,6 @@
 
         </div>
     </div>
-
-
-    <div class="floating-actions">
-        <div class="talk-agent-btn">Talk to Agent</div>
-    </div>
-
 
     <div id="authView" class="view-section">
         <div class="auth-view-layout">
@@ -2315,71 +2306,76 @@ function populateSizesDropdown(variant) {
 
 
     function openProduct(id) {
-        currentSelectedProduct = mockProducts.find(p => p.id === id);
-        if(!currentSelectedProduct) return;
+    currentSelectedProduct = mockProducts.find(p => p.id === id);
+    if(!currentSelectedProduct) return;
 
-        // Ensure variants structure exists properly
-        if (!currentSelectedProduct.variants || currentSelectedProduct.variants.length === 0) {
-            let basePriceNum = parseInt((currentSelectedProduct.price || "0").replace(/,/g, ''));
-            currentSelectedProduct.variants = [{ 
-                name: "Standard", 
-                sizes: ["Standard"],
-                img: currentSelectedProduct.img, 
-                price: currentSelectedProduct.price, 
-                mrp: currentSelectedProduct.mrp, 
-                priceNum: basePriceNum 
-            }];
-        }
-
-        window.currentSelectedVariantIndex = 0;
-        const currentVariant = currentSelectedProduct.variants[0];
-
-        let isWished = window.userWishlist && window.userWishlist[id] ? true : false;
-        const pdWishBtn = document.getElementById('pdWishlistBtn');
-        if (pdWishBtn) {
-            pdWishBtn.className = isWished ? 'fa-solid fa-heart wishlist-btn-large active' : 'fa-regular fa-heart wishlist-btn-large';
-        }
-
-        document.getElementById('pd-hero-img').src = currentVariant.img || currentSelectedProduct.img;
-        
-        let thumbs = document.querySelectorAll('.pd-thumb');
-        thumbs[0].src = currentSelectedProduct.img;
-        if(currentSelectedProduct.variants && currentSelectedProduct.variants.length > 1 && currentSelectedProduct.variants[1].img) {
-             thumbs[1].src = currentSelectedProduct.variants[1].img;
-             thumbs[1].style.display = 'block';
-        } else {
-             thumbs[1].style.display = 'none';
-        }
-        thumbs[2].style.display = 'none';
-        thumbs[0].click(); 
-        
-        document.getElementById('pd-title').innerText = currentSelectedProduct.title;
-        document.getElementById('pd-subtitle').innerText = currentSelectedProduct.subtitle || "";
-        
-        // Load Dynamic Variants
-        const varSelect = document.getElementById('pdVariantSelect');
-        const varWrapper = document.getElementById('variantSelectWrapper');
-        
-        // Agar sirf 1 hi variant hai aur uska naam 'Standard' hai to hide kar do
-        const isOnlyStandard = currentSelectedProduct.variants.length === 1 && currentSelectedProduct.variants[0].name === 'Standard';
-        
-        if (currentSelectedProduct.variants.length > 0 && !isOnlyStandard) {
-            varSelect.innerHTML = currentSelectedProduct.variants.map((v, i) => `<option value="${i}">${v.name}</option>`).join('');
-            varSelect.value = 0;
-            varWrapper.style.display = 'block';
-        } else {
-            varSelect.innerHTML = `<option value="0">Standard</option>`;
-            varWrapper.style.display = 'none';
-        }
-
-        // Load Dynamic Sizes based on the first variant
-        populateSizesDropdown(currentVariant);
-
-        updateProductControlUI();
-        
-        switchView('productView');
-        setTimeout(evaluateTabHeights, 100);
+    // 1. Variants ensure karna (Purana logic)
+    if (!currentSelectedProduct.variants || currentSelectedProduct.variants.length === 0) {
+        let basePriceNum = parseInt((currentSelectedProduct.price || "0").replace(/,/g, ''));
+        currentSelectedProduct.variants = [{ 
+            name: "Standard", 
+            sizes: ["Standard"],
+            img: currentSelectedProduct.img, 
+            price: currentSelectedProduct.price, 
+            mrp: currentSelectedProduct.mrp, 
+            priceNum: basePriceNum 
+        }];
     }
+
+    window.currentSelectedVariantIndex = 0;
+    const currentVariant = currentSelectedProduct.variants[0];
+
+    // 2. Wishlist handle karna
+    let isWished = window.userWishlist && window.userWishlist[id] ? true : false;
+    const pdWishBtn = document.getElementById('pdWishlistBtn');
+    if (pdWishBtn) {
+        pdWishBtn.className = isWished ? 'fa-solid fa-heart wishlist-btn-large active' : 'fa-regular fa-heart wishlist-btn-large';
+    }
+
+    // --- RELEVANT CHANGE START: DYNAMIC IMAGE GALLERY ---
+
+    // Sabhi images ko ek array me jama karein (Main Image + Gallery Images)
+    let allImages = [currentSelectedProduct.img];
+    if (currentSelectedProduct.gallery && Array.isArray(currentSelectedProduct.gallery)) {
+        allImages = allImages.concat(currentSelectedProduct.gallery);
+    }
+    // Duplicate URLs hatane ke liye (just in case)
+    allImages = [...new Set(allImages)];
+
+    // Thumbnails container ko select karein aur dynamic HTML generate karein
+    const thumbListContainer = document.querySelector('.pd-thumb-list');
+    thumbListContainer.innerHTML = allImages.map((imgUrl, index) => `
+        <img src="${imgUrl}" class="pd-thumb ${index === 0 ? 'active' : ''}" onclick="changeImage(this)">
+    `).join('');
+
+    // Hero image ko pehli image par set karein
+    document.getElementById('pd-hero-img').src = allImages[0];
+
+    // --- RELEVANT CHANGE END ---
+
+    document.getElementById('pd-title').innerText = currentSelectedProduct.title;
+    document.getElementById('pd-subtitle').innerText = currentSelectedProduct.subtitle || "";
+    
+    // Variant dropdown handle karna
+    const varSelect = document.getElementById('pdVariantSelect');
+    const varWrapper = document.getElementById('variantSelectWrapper');
+    const isOnlyStandard = currentSelectedProduct.variants.length === 1 && currentSelectedProduct.variants[0].name === 'Standard';
+    
+    if (currentSelectedProduct.variants.length > 0 && !isOnlyStandard) {
+        varSelect.innerHTML = currentSelectedProduct.variants.map((v, i) => `<option value="${i}">${v.name}</option>`).join('');
+        varSelect.value = 0;
+        varWrapper.style.display = 'block';
+    } else {
+        varSelect.innerHTML = `<option value="0">Standard</option>`;
+        varWrapper.style.display = 'none';
+    }
+
+    populateSizesDropdown(currentVariant);
+    updateProductControlUI();
+    
+    switchView('productView');
+    setTimeout(evaluateTabHeights, 100);
+}
 
     // --- Cart Firebase Sync & Orders Logic ---
     async function syncCartToFirebase() {
