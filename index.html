@@ -395,10 +395,12 @@
         
         .pd-tab-content { 
             padding: 20px 10px; font-size: 14px; color: var(--text-dark); line-height: 1.6; 
-            max-height: 120px; overflow: hidden; position: relative; transition: max-height 0.4s ease;
+            max-height: 160px; /* Update: Increased for ~5 lines */
+            overflow: hidden; position: relative; transition: max-height 0.4s ease;
         }
-        @media (min-width: 768px) { .pd-tab-content { padding: 24px 10px; line-height: 1.8; max-height: 140px; } }
-        
+        @media (min-width: 768px) { 
+            .pd-tab-content { padding: 24px 10px; line-height: 1.8; max-height: 180px; /* Update: Increased for desktop */ } 
+        }      
         .pd-tab-content.is-collapsible:not(.expanded) { cursor: pointer; }
 
         .pd-tab-content.is-collapsible:not(.expanded)::after {
@@ -1010,7 +1012,7 @@
                         </div>
                     </div>
 
-                    <div id="productControlBox" style="background: white; padding: 20px 15px; border-radius: var(--card-radius); border: 1px solid var(--border-color); width: 100%; box-sizing: border-box; margin-top: 10px;">
+                    <div id="productControlBox" style="background: white; padding: 20px 15px; border-radius: var(--card-radius); border: 1px solid var(--border-color); width: 100%; box-sizing: border-box;">
                         
                         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                             <div id="variantSelectWrapper" style="flex: 1; display: none;">
@@ -1049,7 +1051,7 @@
                         </div>
                     </div>
 
-                    <div class="pd-tabs-container" style="margin-top:10px;">
+                    <div class="pd-tabs-container">
                         <div class="pd-tabs-header">
                             <div class="pd-tab active" onclick="switchTab(this, 'tab-features')"><i class="fa-solid fa-certificate"></i> FEATURES</div>
                             <div class="pd-tab" onclick="switchTab(this, 'tab-desc')"><i class="fa-solid fa-book-open"></i> DIRECTION TO USE</div>
@@ -1687,7 +1689,7 @@
         btn.innerText = "SUBMIT";
     }
 
-    function evaluateTabHeights() {
+   function evaluateTabHeights() {
         document.querySelectorAll('.pd-tab-content').forEach(tc => {
             let isDisplayNone = (tc.style.display === 'none');
             if (isDisplayNone) tc.style.display = 'block'; 
@@ -1696,7 +1698,8 @@
             let actualHeight = tc.scrollHeight;
             tc.classList.remove('expanded');
 
-            let threshold = window.innerWidth >= 768 ? 140 : 120;
+            // Update: Threshold increased to match 5 lines criteria (180px desktop, 160px mobile)
+            let threshold = window.innerWidth >= 768 ? 180 : 160;
 
             if (actualHeight > threshold) {
                 tc.classList.add('is-collapsible');
