@@ -301,12 +301,17 @@
         .current-price { font-size: 16px; font-weight: 700; color: var(--text-dark); }
         .mrp-price { font-size: 12px; color: var(--text-muted); text-decoration: line-through; }
 
-        /* PRODUCT DETAIL UI */
-        .pd-wrapper { 
-            display: flex; flex-direction: column; 
-            gap: 10px; padding: 16px 10px 32px; 
-            width: 100%; box-sizing: border-box;
-        }
+        /* Base style: 32px ki jagah 10px */
+.pd-wrapper { 
+    display: flex; flex-direction: column; 
+    gap: 10px; padding: 16px 10px 10px; 
+    width: 100%; box-sizing: border-box;
+}
+
+/* Mobile/Tablet overlap fix: Yaha spacing zaroori hai */
+@media (max-width: 1023px) {
+    .pd-wrapper { padding-bottom: 90px; }
+}
 
         .pd-back-btn { 
             display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; 
