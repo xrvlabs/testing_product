@@ -149,7 +149,21 @@
         margin-top: 5px !important;
     }
 }
+/* =========================================================================
+   REMOVE HOVER EFFECT FROM CART WRAPPER
+========================================================================= */
+/* Desktop aur Mobile dono ke liye hover animations disable kiye */
+.cart-wrapper:hover {
+    border-color: var(--smoke) !important; /* Default border color hi rahega */
+    transform: none !important;            /* Upar uthna band */
+    box-shadow: none !important;           /* Shadow aana band */
+    color: var(--carbon) !important;       /* Text color change nahi hoga */
+}
 
+/* Icon ka color bhi static rakhne ke liye */
+.cart-wrapper:hover i {
+    color: var(--carbon) !important;
+}
 /* Desktop Safety Check */
 @media (min-width: 1024px) {
     .header-logo { justify-content: flex-start !important; flex: unset !important; }
