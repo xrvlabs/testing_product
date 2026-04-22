@@ -757,7 +757,12 @@ body, .app-container {
 .ig-icons { display: flex; gap: 8px; padding: 0 4px; font-size: 10px; color: var(--silver); }
 
 @media (min-width: 1200px) { .promo-img-wrap { width: 140px; right: -10px; bottom: -10px; } }
-
+@media (max-width: 767px) {
+    .pd-tab {
+        font-size: 10px !important; /* Mobile par text thoda chota taaki 3 tabs fit ho jayein */
+        padding: 15px 5px !important;
+    }
+}
         /* ===================== PRODUCTS GRID ===================== */
         @media (max-width: 767px) {
             .product-grid {
@@ -1480,6 +1485,122 @@ body, .app-container {
             #locationModal { top: auto; bottom: 0; left: 50%; transform: translate3d(-50%, 100%, 0) scale(1); }
             #locationModal.active { transform: translate3d(-50%, 0, 0) scale(1); }
         }
+@media (max-width: 1023px) {
+    /* Search Bar wale header container ke niche ka gap khatam kiya */
+    .header-master {
+        padding-bottom: 5px !important;
+    }
+
+    /* Nav Pills strip ke upar ka excessive space hataya */
+    .nav-pills {
+        padding-top: 5px !important;
+    }
+    
+    /* Global alignment fix: Sticky header height adjust */
+    .sticky-header-container {
+        gap: 0px !important;
+    }
+}
+/* =========================================================================
+   MOBILE/TABLET PRODUCT CARD: ALIGNMENT, WIDTH & CORNER FIX
+========================================================================= */
+@media (max-width: 1023px) {
+    /* 1. Main Card ke corners 5px kiye */
+    .pd-title-box {
+        border-radius: 5px !important;
+        padding: 24px 15px !important; /* Side padding adjust ki taaki alignment mile */
+    }
+
+    /* 2. Content ko Title ke saath align karne ke liye internal margins hataye */
+    #productControlBox {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    /* 3. Variant aur Size boxes ko side edge tak stretch kiya */
+    .pd-title-box select, 
+    #variantSelectWrapper, 
+    #sizeSelectWrapper {
+        width: 100% !important;
+        border-radius: 5px !important;
+    }
+/* =========================================================================
+   FINAL FIX: MAIN IMAGE & THUMBNAILS GAP (10PX LOCK)
+========================================================================= */
+/* 1. Pure column container ka gap 10px lock kiya */
+.pd-image-col {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important; /* Main Image aur List ke beech 10px space */
+}
+
+/* 2. Main image box ki koi bhi purani margin hatayi */
+.pd-main-img-box {
+    margin: 0 !important;
+}
+
+/* 3. Thumbnails list ki koi bhi extra padding/margin hatayi */
+.pd-thumb-list {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 4. Desktop par sticky alignment ke liye gap ensure kiya */
+@media (min-width: 1024px) {
+    .pd-image-col {
+        gap: 10px !important;
+    }
+}
+/* =========================================================================
+   MOBILE ONLY: SHRINK TABS TO FIT IN ONE ROW
+========================================================================= */
+@media (max-width: 600px) {
+    /* 1. Tabs ke container ko flex-wrap se rokna taaki wo niche na girein */
+    .pd-tabs-header {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: hidden !important; /* Agar screen bahut hi choti ho to side scroll na bane */
+    }
+
+    /* 2. Text size aur padding ko compact karna */
+    .pd-tab {
+        font-size: 10px !important;    /* Text size chota kiya */
+        padding: 12px 4px !important;  /* Side padding kam ki taaki jagah bane */
+        gap: 4px !important;           /* Icon aur text ke beech ka gap kam kiya */
+        flex: 1 !important;            /* Sabhi tabs ko barabar jagah di */
+        text-align: center !important;
+    }
+
+    /* 3. Icons ka size bhi thoda chota kiya balance ke liye */
+    .pd-tab i {
+        font-size: 12px !important;
+    }
+}
+    /* 4. Price aur Add to Cart ka container align kiya */
+    #productControlBox > div:last-child {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 10px !important;
+        margin-top: 20px !important;
+    }
+
+    /* 5. ADD TO CART button ki width SIZE box ke barabar fix ki */
+    .pd-dynamic-add {
+        flex: 0 0 48% !important; /* 48% isliye taaki side by side fit ho sake dropdowns ke ratio mein */
+        min-width: unset !important;
+        max-width: 50% !important;
+        border-radius: 5px !important;
+        height: 46px !important; /* Dropdown ki height se match kiya */
+    }
+
+    /* 6. Price display ko left edge par align kiya */
+    #productControlBox > div:last-child > div:first-child {
+        flex: 1 !important;
+        text-align: left !important;
+    }
+}
         /* =========================================================================
    STICKY SEARCH ON SCROLL (MOBILE)
 ========================================================================= */
@@ -1747,10 +1868,11 @@ body, .app-container {
                     </div>
 
                     <div class="pd-tabs-container">
-                        <div class="pd-tabs-header">
-                            <div class="pd-tab active" onclick="switchTab(this, 'tab-features')"><i class="fa-solid fa-certificate"></i> FEATURES</div>
-                            <div class="pd-tab" onclick="switchTab(this, 'tab-desc')"><i class="fa-solid fa-book-open"></i> DIRECTION TO USE</div>
-                        </div>
+                       <div class="pd-tabs-header">
+    <div class="pd-tab active" onclick="switchTab(this, 'tab-features')"><i class="fa-solid fa-certificate"></i> FEATURES</div>
+    <div class="pd-tab" onclick="switchTab(this, 'tab-benefits')"><i class="fa-solid fa-star"></i> BENEFITS</div> 
+    <div class="pd-tab" onclick="switchTab(this, 'tab-desc')"><i class="fa-solid fa-book-open"></i> HOW TO USE?</div>
+</div>
 
                         <div class="pd-tab-content is-collapsible" id="tab-features" onclick="if(this.classList.contains('is-collapsible')) this.classList.add('expanded')">
                             DUMMY FEATURE ENTRY 1<br>
@@ -1767,6 +1889,13 @@ body, .app-container {
                             DUMMY DIRECTION STEP 4<br>
                             DUMMY DIRECTION STEP 5
                         </div>
+<div class="pd-tab-content is-collapsible" id="tab-benefits" style="display: none;" onclick="if(this.classList.contains('is-collapsible')) this.classList.add('expanded')">
+    DUMMY BENEFIT 1: IMPROVES CLINICAL EFFICIENCY<br>
+    DUMMY BENEFIT 2: COST-EFFECTIVE SOLUTION FOR CLINICS<br>
+    DUMMY BENEFIT 3: HIGH DURABILITY AND LONG-LASTING MATERIAL<br>
+    DUMMY BENEFIT 4: ERGONOMIC DESIGN FOR EASY HANDLING<br>
+    DUMMY BENEFIT 5: UNIVERSAL COMPATIBILITY WITH STANDARD EQUIPMENT
+</div>
                     </div>
 
                 </div>
@@ -3040,7 +3169,10 @@ function renderPromoCards() {
 
         window.currentSelectedVariantIndex = 0;
         const currentVariant = currentSelectedProduct.variants[0];
-
+const benefitsTab = document.getElementById('tab-benefits');
+if (benefitsTab) {
+    benefitsTab.innerText = currentSelectedProduct.benefits || "DUMMY BENEFIT 1\nDUMMY BENEFIT 2\nDUMMY BENEFIT 3\nDUMMY BENEFIT 4\nDUMMY BENEFIT 5";
+}
         let isWished = window.userWishlist && window.userWishlist[id] ? true : false;
         const pdWishBtn = document.getElementById('pdWishlistBtn');
         if (pdWishBtn) {
