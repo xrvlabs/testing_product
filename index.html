@@ -59,7 +59,15 @@
             width: 100%; max-width: 100%; min-height: 100vh;
             position: relative; overflow-x: hidden; display: flex; flex-direction: column;
         }
+body, .app-container {
+    overflow-x: clip !important; 
+}
 
+.sticky-header-container {
+    position: -webkit-sticky !important; /* Safari support */
+    position: sticky !important;
+    top: -1px !important; /* Ek pixel ka buffer smooth sticking ke liye */
+}
         /* OPTIMIZED: Removed heavy backdrop-filter blur for smoother fading */
         .megamenu-overlay { 
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
@@ -417,7 +425,19 @@
         padding-right: 10px !important;
     }
 }
-
+@media (max-width: 1023px) {
+    .mm-search {
+        display: none !important;
+    }
+}
+/* =========================================================================
+   MOBILE MEGAMENU FIX: HIDE CATEGORY TITLE & ITEM COUNT
+========================================================================= */
+@media (max-width: 1023px) {
+    .mm-content-header {
+        display: none !important;
+    }
+}
 /* Mobile/Tablet alignment safety */
 @media (max-width: 1023px) {
     .header-master {
@@ -429,6 +449,7 @@
         gap: 10px !important;
     }
 }
+
         /* ===================== MEGAMENU ===================== */
         .megamenu { position: static; width: 100%; background: white; box-shadow: 0 4px 30px rgba(0,0,0,0.05); display: none; flex-direction: column; overflow: hidden; border-bottom: 1px solid var(--smoke); }
         .megamenu.active { display: flex; animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -457,7 +478,13 @@
     padding-bottom: 10px; 
     overflow-x: hidden; /* Scroller hata diya taaki niche grid bane */
 }
-
+@media (max-width: 1023px) {
+    /* Double padding hatane ke liye grid ka left/right padding zero kiya */
+    .mm-grid {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
 /* Tablet Portrait (768px and up): 3 cards per row */
 @media (min-width: 768px) {
     .mm-grid {
@@ -880,7 +907,83 @@
         .zoom-lens { position: absolute; border: 1.5px solid var(--ocean); background: rgba(0,102,255,0.1); width: 250px; height: 250px; display: none; pointer-events: none; z-index: 10; border-radius: 50%; box-shadow: 0 0 0 9999px rgba(255,255,255,0.4);}
         .zoom-result { position: absolute; top: 0; right: calc(100% + 24px); left: auto; width: 500px; height: 500px; background-color: white; background-repeat: no-repeat; display: none; z-index: 1000; border-radius: var(--card-radius); border: 1.5px solid var(--cloud); box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
         @media (max-width: 1023px) { .zoom-result, .zoom-lens { display: none !important; } .pd-main-img-box { cursor: default; } }
-        
+        @media (min-width: 1024px) {
+    /* Upar, niche, left aur right chaaro taraf exactly 10px padding */
+    .mm-content {
+        padding: 10px !important;
+    }
+    
+    /* Cards ke beech ka gap exactly 10px fix kiya */
+    .mm-grid {
+        gap: 10px !important;
+    }
+}
+.mm-cat-list li {
+    border-radius: 5px !important;
+}
+#mmCatList .skeleton,
+#mmContentGrid .skeleton {
+    border-radius: 5px !important;
+}
+.product-card {
+    border-radius: 5px !important;
+}
+.product-image-container {
+    border-radius: 5px 5px 0 0 !important; /* Sirf top corners round honge box ke andar */
+}
+
+/* 2. Skeleton Loading Cards aur unki fake images ke corners 5px karega */
+.skel-card {
+    border-radius: 5px !important;
+}
+.skel-img {
+    border-radius: 5px !important;
+}
+/* Skeleton wrapper card ki styling reset taaki 10px gap perfect dikhe */
+#mmContentGrid .subcat-card {
+    border-radius: 5px !important;
+    background: white !important; /* Transparent background hatane ke liye */
+    border: 1.5px solid var(--smoke) !important; 
+}
+@media (max-width: 1023px) {
+    /* Tabs ke upar aur niche (border tak) sirf 10px ka gap */
+    .mm-sidebar {
+        padding: 10px 0 !important;
+    }
+    
+    /* Border ke baad cards ke upar aur niche strictly 10px padding */
+    .mm-content {
+        padding: 10px !important;
+    }
+    
+    /* Grid ka koi extra hidden margin/padding na bache */
+    .mm-grid {
+        padding: 0 !important;
+        margin: 0 !important;
+        gap: 10px !important;
+    }
+}
+/* 2. Andar ke items (Cards) ke corners 5px karega */
+.subcat-card {
+    border-radius: 5px !important;
+    overflow: hidden !important;
+}
+
+/* 3. Card ke andar ki image area ke top corners ko 5px karega taaki border match ho */
+.subcat-img {
+    border-radius: 5px 5px 0 0 !important;
+}
+@media (min-width: 1024px) {
+    /* "CATEGORY" text ko hide karega */
+    .mm-sidebar-title {
+        display: none !important;
+    }
+
+    /* Category list (tabs) ko exactly upar se 10px ka gap dega */
+    .mm-cat-list {
+        padding-top: 10px !important;
+    }
+}
         /* ===================== GLOBAL MOBILE & TABLET 10px PADDING FIX ===================== */
         @media (max-width: 1023px) {
             .header-master, .nav-pills, .mm-search, .mm-cat-list, .mm-content,
@@ -899,15 +1002,17 @@
             .product-grid, .skel-grid, .promo-cards-side, .events-grid, .contact-grid {
                 gap: 10px !important;
             }
-            .nav-pills, .mm-cat-list, .mm-grid {
-                padding-left: 10px !important;
-                padding-right: 10px !important;
-            }
+            .nav-pills, .mm-cat-list {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
             .contact-form-col, .faq-section, .pd-title-box, #productControlBox {
                 border-radius: 16px !important;
             }
         }
-        
+        .mm-content-header {
+    display: none !important;
+}
         .pd-thumb-list { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; width: 100%;}
         .pd-thumb-list::-webkit-scrollbar { display: none; }
         .pd-thumb { width: 72px; height: 72px; flex-shrink: 0; border: 2px solid var(--cloud); border-radius: 16px; padding: 6px; object-fit: contain; cursor: pointer; background: white; transition: var(--transition);}
