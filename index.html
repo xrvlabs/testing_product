@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Oraco Dental Innovations | Future of Healthcare</title>
+    <title>Oraco Dental Innovation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -70,7 +70,64 @@
     margin-top: 2px !important;
     text-transform: uppercase !important;
 }
+/* =========================================================================
+   CART CORNERS & MOBILE LOGO HIDE FIX
+========================================================================= */
 
+/* 1. CART MODAL: 5px Corners (Mobile & Desktop) */
+#cartComponent, 
+.cart-item, 
+.checkout-btn, 
+.qty-pill, 
+.apply-coins-box {
+    border-radius: 5px !important;
+}
+
+/* Specific fix for mobile cart top corners */
+@media (max-width: 1023px) {
+    #cartComponent {
+        border-radius: 5px 5px 0 0 !important; /* Sirf upar ke corners round */
+    }
+}
+
+/* 2. MOBILE VIEW: Hide Entire Logo and Branded Title */
+@media (max-width: 1023px) {
+    /* Isse image logo aur ORACO wala text dono mobile se gayab ho jayenge */
+    .header-logo {
+        display: none !important;
+    }
+    
+    /* Header layout ko balance karne ke liye (agar gap zyada dikhe) */
+    .header-master {
+        justify-content: space-between !important;
+    }
+}
+/* =========================================================================
+   HEADER ELEMENTS: STRICT 5PX CORNERS (LOCATION, SEARCH, LOGIN, CART)
+========================================================================= */
+
+/* 1. Location Block, Search Input, Login Button, aur Cart Wrapper */
+.location-block, 
+.search-input-box, 
+.auth-trigger, 
+.cart-wrapper {
+    border-radius: 5px !important;
+}
+
+/* 2. Mobile par jab Auth trigger (Login) icon ban jata hai, tab bhi use 5px rakha */
+@media (max-width: 1023px) {
+    .auth-trigger {
+        border-radius: 5px !important;
+    }
+}
+
+/* 3. Dropdown icons aur internal elements ki alignment maintain karne ke liye */
+.location-icon-wrapper {
+    border-radius: 4px !important; /* Halka sa kam taaki parent ke andar fit lage */
+}
+
+/* 4. Cart Badge ko waisa hi rehne diya (Circular) kyunki wo standard hai, 
+   lekin agar use bhi square karna ho toh batana */
 /* 5. Mobile Adjustments (Screen size < 1024px) */
 @media (max-width: 1023px) {
     .site-logo-img {
@@ -1856,7 +1913,7 @@ body, .app-container {
     <div class="sticky-header-container" id="globalHeader">
        <div class="header-master">
     <div class="header-logo" onclick="switchView('homeView')">
-        <img src="./oraco_transparent.png" alt="" class="site-logo-img">
+        <img src="./oraco_transparent.png" alt="ORACO LOGO" class="site-logo-img">
         <div class="logo-text-wrapper">
             <div class="logo-title">ORACO</div>
             <div class="logo-subtitle">DENTAL INNOVATION</div>
@@ -1875,14 +1932,6 @@ body, .app-container {
             </span>
         </div>
     </div>
-    
-    <div class="search-container">
-        <div class="search-input-box">
-            <i class="fa-solid fa-tooth" style="color: var(--ocean);"></i>
-            <input type="text" id="mainSearchInput" placeholder="SEARCH ">
-            <i class="fa-solid fa-magnifying-glass" style="color: var(--silver); cursor: pointer; font-size: 16px;"></i>
-        </div>
-    </div>
 
     <div class="header-actions">
         <div class="cart-wrapper" id="mainCartIcon" onclick="openCartModal()" style="display: none; height: 42px; align-items: center; justify-content: center;">
@@ -1893,6 +1942,14 @@ body, .app-container {
         <div class="auth-trigger" id="topBarAuthBtn" onclick="handleAuthClick()">
             <i class="fa-solid fa-user" style="font-size: 16px;"></i> 
             <span id="topBarAuthText">LOGIN</span>
+        </div>
+    </div>
+    
+    <div class="search-container">
+        <div class="search-input-box">
+            <i class="fa-solid fa-tooth" style="color: var(--ocean);"></i>
+            <input type="text" id="mainSearchInput" placeholder="SEARCH ">
+            <i class="fa-solid fa-magnifying-glass" style="color: var(--silver); cursor: pointer; font-size: 16px;"></i>
         </div>
     </div>
 </div>
@@ -2345,7 +2402,7 @@ body, .app-container {
         </div>
         
         <div class="foot-line">
-            2024-2026, ORACO DENTAL INNOVATION PVT. LTD. | CRAFTED WITH <i class="fa-solid fa-heart" style="color:var(--coral); margin: 0 4px;"></i> IN INDIA BY GRIDLABS PROD.
+            2024-2026, ORACO DENTAL INNOVATION PVT. LTD. | CRAFTED WITH <i class="fa-solid fa-heart" style="color:var(--coral); margin: 0 4px;"></i> BY GRIDLABS PROD.
         </div>
     </footer>
 
