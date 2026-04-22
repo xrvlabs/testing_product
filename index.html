@@ -150,6 +150,28 @@
     }
 }
 /* =========================================================================
+   MOBILE/TABLET FOOTER: HIDE CONNECT & LINKS, SHOW ONLY FOOT LINE
+========================================================================= */
+@media (max-width: 1023px) {
+    /* 1. Footer ke upar wala poora section (Connect With Us, App Buttons) hataya */
+    .footer-top-bar, 
+    .footer-main-grid {
+        display: none !important;
+    }
+
+    /* 2. Mega Footer ki extra padding kam ki */
+    .mega-footer {
+        padding: 15px 0 !important;
+    }
+
+    /* 3. Footer line ke upar ka border hataya alignment ke liye */
+    .foot-line {
+        border-top: none !important;
+        margin-top: 0 !important;
+        padding: 10px !important;
+    }
+}
+/* =========================================================================
    REMOVE HOVER EFFECT FROM CART WRAPPER
 ========================================================================= */
 /* Desktop aur Mobile dono ke liye hover animations disable kiye */
