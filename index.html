@@ -537,7 +537,62 @@
             .home-top-container { padding: 24px 10px 0 10px !important; }
             .skel-grid, .product-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 24px 10px 60px 10px !important; }
         }
+/* ===================== ULTRA-WIDE DESKTOP FIX FOR PROMO CARD (REFINED) ===================== */
 
+/* Large Laptops (1280px+) */
+@media (min-width: 1280px) {
+    .home-top-container {
+        grid-template-columns: minmax(0, 1fr) 360px !important; 
+    }
+}
+
+/* Ultra-Wide Monitors (1440px+) */
+@media (min-width: 1440px) {
+    .home-top-container {
+        grid-template-columns: minmax(0, 1fr) 380px !important; 
+    }
+    
+    .promo-card .promo-title { 
+        font-size: 24px !important; 
+    }
+    .promo-card .promo-subtitle { 
+        font-size: 12px !important; 
+        margin-bottom: 18px !important;
+    }
+    .promo-card .promo-btn { 
+        font-size: 11px !important; 
+        padding: 10px 20px !important; 
+    }
+    
+    /* Niche se upar kiya (bottom value change ki) */
+    .promo-card .promo-img-wrap { 
+        width: 150px !important; 
+        right: -15px !important; 
+        bottom: -5px !important; /* Pehle -15px tha, ab upar ho jayega */
+    }
+}
+
+/* Extra Ultra-Wide Monitors (1600px+) */
+@media (min-width: 1600px) {
+    .home-top-container {
+        grid-template-columns: minmax(0, 1fr) 420px !important; 
+    }
+    
+    .promo-card .promo-title { 
+        font-size: 28px !important; 
+    }
+    .promo-card .promo-subtitle { 
+        font-size: 13px !important; 
+        margin-bottom: 22px !important;
+    }
+    
+    /* Niche se upar kiya (bottom value change ki) */
+    .promo-card .promo-img-wrap { 
+        width: 175px !important; 
+        right: -20px !important; 
+        bottom: -10px !important; /* Pehle -20px tha, ab upar ho jayega */
+    }
+}
         /* Desktop Strict Alignment (Grid Locking with 10px Margin) */
         @media (min-width: 1024px) {
             .home-top-container { 
