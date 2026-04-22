@@ -82,7 +82,79 @@
 .apply-coins-box {
     border-radius: 5px !important;
 }
+/* =========================================================================
+   MOBILE HEADER: 3-ROW PERFECT ALIGNMENT
+========================================================================= */
+@media (max-width: 1023px) {
+    .header-master {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 10px !important;
+    }
 
+    /* 1. TOP ROW: Logo Left, Title Right */
+    .header-logo {
+        flex: 0 0 100% !important; /* Full row wrapper */
+        display: flex !important;
+        justify-content: space-between !important; /* Image Left, Text Right */
+        align-items: center !important;
+        margin-bottom: 5px !important;
+        order: 1 !important;
+    }
+
+    .site-logo-img {
+        height: 32px !important; /* Chota logo */
+        margin-right: auto !important; /* Push everything else right */
+    }
+
+    .logo-text-wrapper {
+        text-align: right !important;
+        align-items: flex-end !important;
+    }
+
+    .logo-title {
+        font-size: 18px !important;
+        letter-spacing: 2px !important; /* Mobile par spacing thodi kam taaki fit ho jaye */
+        margin-right: 0 !important;
+    }
+
+    .logo-subtitle {
+        font-size: 6px !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    /* 2. MIDDLE ROW: Pincode Left, Actions Right */
+    .location-block {
+        flex: 1 !important; /* Space cover karega */
+        order: 2 !important;
+        max-width: 60% !important;
+        margin: 0 !important;
+    }
+
+    .header-actions {
+        flex: 0 0 auto !important;
+        order: 3 !important;
+        display: flex !important;
+        gap: 8px !important;
+    }
+
+    /* 3. BOTTOM ROW: Search Bar */
+    .search-container {
+        flex: 0 0 100% !important; /* Full width base row */
+        order: 4 !important;
+        margin-top: 5px !important;
+    }
+}
+
+/* Desktop Safety Check */
+@media (min-width: 1024px) {
+    .header-logo { justify-content: flex-start !important; flex: unset !important; }
+    .logo-text-wrapper { align-items: center !important; text-align: center !important; }
+}
 /* Specific fix for mobile cart top corners */
 @media (max-width: 1023px) {
     #cartComponent {
@@ -1913,7 +1985,7 @@ body, .app-container {
     <div class="sticky-header-container" id="globalHeader">
        <div class="header-master">
     <div class="header-logo" onclick="switchView('homeView')">
-        <img src="./oraco_transparent.png" alt="ORACO LOGO" class="site-logo-img">
+        <img src="./oraco_transparent.png" alt="Oraco Logo" class="site-logo-img">
         <div class="logo-text-wrapper">
             <div class="logo-title">ORACO</div>
             <div class="logo-subtitle">DENTAL INNOVATION</div>
