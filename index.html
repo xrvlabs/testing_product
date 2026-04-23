@@ -3462,7 +3462,7 @@ function renderBanners() {
             sliderContainer.innerHTML = `
                 <div class="hero-slide active">
                     <div class="skeleton banner-skeleton"></div>
-                    <img src="banner_1.jpg" alt="Default" onload="this.classList.add('loaded'); this.previousElementSibling.style.display='none'">
+                    <img src="banner_1.jpg" alt="" onload="this.classList.add('loaded'); this.previousElementSibling.style.display='none'">
                 </div>`;
         } else {
             sliderContainer.innerHTML = bannersData.map((banner, index) => `
