@@ -982,7 +982,47 @@ body, .app-container {
 .pill.active i {
     color: #000000 !important;
 }
+/* =========================================================================
+   STRICT 5PX CORNERS FOR CATEGORY SCREEN & CLEAN TABS
+========================================================================= */
 
+/* 1. Category Screen Main Box & Internal Components */
+.megamenu, 
+.mm-sidebar, 
+.mm-content, 
+.mm-cat-list li, 
+.subcat-card, 
+.subcat-img,
+#megamenu .skeleton {
+    border-radius: 5px !important;
+}
+
+/* 2. Tabs (Pills) se background aur hover strictly remove */
+.pill {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    color: var(--muted) !important;
+    cursor: pointer;
+}
+
+/* Hover par koi shape nahi dikhegi */
+.pill:hover {
+    background: transparent !important;
+    color: #000000 !important; /* Sirf text color dark hoga */
+}
+
+/* Active State: Sirf Text aur Icon pure Black */
+.pill.active {
+    background: transparent !important;
+    color: #000000 !important;
+    border-radius: 0 !important;
+}
+
+.pill.active i {
+    color: #000000 !important;
+}
         @media (min-width: 1024px) {
             .header-master { flex-wrap: nowrap; padding: 16px 40px; gap: 20px; border-bottom: none; }
             .header-logo { display: flex; order: 1; margin-right: 0; }
@@ -3629,15 +3669,15 @@ function renderPromoCards() {
     const headerMaster = document.querySelector('.header-master'); 
     const footer = document.getElementById('globalFooter');
     
-    // 2. Tab Highlighting Logic (Fixed Indices)
+    // 2. Correct Tab Highlighting (Pills index fix)
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     
     if(targetViewId === 'homeView') {
         document.querySelector('.pill:nth-child(1)').classList.add('active'); // Home
     } else if(targetViewId === 'eventsView') {
-        document.querySelector('.pill:nth-child(3)').classList.add('active'); // Events (3rd Child)
+        document.querySelector('.pill:nth-child(3)').classList.add('active'); // Events is 3rd child
     } else if(targetViewId === 'contactView') {
-        document.querySelector('.pill:nth-child(4)').classList.add('active'); // Contact Us (4th Child)
+        document.querySelector('.pill:nth-child(4)').classList.add('active'); // Contact Us is 4th child
     }
 
     // 3. Header/Footer Visibility Logic
@@ -3660,7 +3700,7 @@ function renderPromoCards() {
 
     window.scrollTo(0, 0);
     
-    // 4. Events View Reset Logic
+    // 4. Events View Auto-Reset
     if(targetViewId === 'eventsView') {
         const searchInput = document.getElementById('eventSearchInput');
         const catFilter = document.getElementById('eventCatFilter');
