@@ -827,28 +827,26 @@ body, .app-container {
         z-index: 1000 !important;
     }
 
-    /* 2. Cart Box Fix: Position, Size aur Rounding Category screen jaisi */
-    #cartComponent {
+   #cartComponent {
         position: fixed !important;
-        top: 140px !important; /* Header ke niche ki position */
+        top: 140px !important;
         left: 50% !important;
-        width: 1000px !important; /* Category box ki width */
-        height: 500px !important; /* Category box ki height */
+        width: 1000px !important;
+        height: 500px !important;
         background: white !important;
         z-index: 1001 !important;
         
-        /* Centering and Animation */
         transform: translate3d(-50%, -10px, 0) !important;
         opacity: 0 !important;
         visibility: hidden !important;
         pointer-events: none;
 
-        /* Styling matching the image */
-        border-radius: 32px !important; /* Extra rounded corners */
+        /* IS LINE KO UPDATE KAREIN */
+        border-radius: 5px !important; 
+        
         border: 1px solid var(--smoke) !important;
         box-shadow: 0 20px 50px rgba(0,0,0,0.1) !important;
         overflow: hidden;
-        
         transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease !important;
     }
 
@@ -872,6 +870,7 @@ body, .app-container {
         display: none !important;
     }
 }
+
         @media (min-width: 1024px) {
             ::-webkit-scrollbar { width: 8px; height: 8px; }
             ::-webkit-scrollbar-track { background: var(--snow); }
@@ -946,7 +945,21 @@ body, .app-container {
         .auth-trigger { font-size: 13px; font-weight: 700; display:flex; gap:8px; align-items:center; justify-content: center; cursor: pointer; color: var(--ocean); background: var(--ice); padding: 0 20px; border-radius: 50px; border: 1px solid rgba(0,102,255,.1); height: 42px; box-sizing: border-box; transition: var(--transition); }
         .auth-trigger:hover { background: var(--ocean); color: white; box-shadow: 0 4px 16px rgba(0,102,255,.2); }
         
-        .cart-wrapper { position: relative; cursor: pointer; background: var(--white); border: 1.5px solid var(--smoke); border-radius: 50px !important; width: 42px !important; transition: var(--transition); }
+        /* Purane styles ko replace karein ya ye add karein */
+.cart-wrapper {
+    position: relative;
+    cursor: pointer;
+    background: var(--white);
+    border: 1.5px solid var(--smoke);
+    /* 24px ya 50px se hata kar 5px karein */
+    border-radius: 5px !important; 
+    width: 42px !important;
+    height: 42px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
         .cart-wrapper:hover { border-color: var(--ocean); color: var(--ocean) !important; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,102,255,.1); }
         .cart-wrapper:hover i { color: var(--ocean) !important; }
         .cart-badge { position: absolute; top: -4px; right: -4px; background: var(--coral); color: white; font-size: 10px; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
@@ -1060,7 +1073,7 @@ body, .app-container {
 
     /* 4. Cart Wrapper ka border-radius sync kiya consistency ke liye */
     .cart-wrapper {
-        border-radius: var(--card-radius) !important;
+        border-radius: 5px !important; 
     }
     
     /* 5. Nav Pills ko bhi 10px padding par align kiya */
