@@ -816,103 +816,117 @@ body, .app-container {
     }
 }
 /* =========================================================================
-   CART: DESKTOP SIDE SHEET (SLIDE FROM RIGHT & OPTIMIZED ALIGNMENT)
+   FINAL REFINED DESKTOP CART: 10PX TOTAL & MERGED COINS
 ========================================================================= */
 @media (min-width: 1024px) {
-    /* Overlay */
     #cartOverlay {
         backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
         background: rgba(0, 0, 0, 0.4) !important; 
         z-index: 1000 !important;
     }
 
-    /* Side Sheet Container */
     #cartComponent {
         position: fixed !important;
         top: 0 !important;
-        right: 0 !important; /* Stick to the right edge */
-        left: auto !important; /* Override previous center alignment */
-        width: 450px !important; /* Optimal width for a side sheet */
-        height: 100vh !important; /* Full height of the screen */
+        right: 0 !important;
+        width: 450px !important;
+        height: 100vh !important;
         background: white !important;
         z-index: 1001 !important;
-        
-        /* Slide in from the right */
         transform: translate3d(100%, 0, 0) !important;
-        opacity: 1 !important; /* Keep opaque, just translate it */
         visibility: hidden !important;
-        pointer-events: none;
-
-        border-radius: 0 !important; /* Flat edges for side sheets */
-        border: none !important;
+        border-radius: 0 !important;
         border-left: 1px solid var(--smoke) !important;
         box-shadow: -15px 0 40px rgba(0,0,0,0.08) !important;
-        overflow: hidden;
-        
-        /* Smooth easing animation */
         transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s ease !important;
         display: flex !important;
         flex-direction: column !important;
     }
 
-    /* Active State (Slid In) */
     #cartComponent.active {
         transform: translate3d(0, 0, 0) !important;
         visibility: visible !important;
-        pointer-events: auto;
     }
 
- 
-
-    /* Internal Scroll Content */
     #cartComponent .modal-scroll-content {
-        height: auto !important;
-        flex: 1 !important; /* Take up available space */
-        padding: 24px 15px 10px 15px !important; /* Top padding adjusted so items don't stick to border */
+        flex: 1 !important;
+        padding: 10px !important; /* Top space and side alignment standardized */
         overflow-y: auto !important;
-        display: flex !important; 
-        flex-direction: column !important;
     }
 
-    /* Revert to 1-Column List for narrow Side Sheet */
     #cartItemsList {
         display: flex !important;
         flex-direction: column !important;
-        gap: 12px !important; /* Ensure items are properly stacked */
+        gap: 10px !important; 
     }
 
+    /* ITEM SECTION: Name, Price, Image ke beech 10px gap */
     .cart-item {
         width: 100% !important;
         margin: 0 !important;
-        flex: none !important; /* Prevents items from squishing vertically */
+        padding: 10px !important; 
+        gap: 10px !important; /* Strictly 10px gap between img and info */
+        min-height: unset !important;
+        height: auto !important;
+        display: flex !important;
+        align-items: center !important;
     }
 
-    /* Empty State Centering */
+    .cart-item-info {
+        padding: 0 !important; /* Extra padding removed for clean 10px gap */
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 5px !important;
+    }
+
+    /* COINS SECTION: Merged look (No box, No background) */
+    .apply-coins-box {
+        background: transparent !important;
+        border: none !important;
+        border-top: 1.5px dashed var(--smoke) !important; /* Divider for summary merge */
+        border-radius: 0 !important;
+        padding: 10px !important; /* Strict 10px padding */
+        margin: 0 !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    /* TOTAL SECTION: Strict 10px padding all around */
+    .cart-summary {
+        margin-top: 0 !important;
+        padding: 10px !important; /* Strict 10px from sides, top, and bottom */
+        border-top: 1.5px solid var(--smoke) !important;
+        background: white !important;
+    }
+
+    .summary-row {
+        margin-bottom: 8px !important;
+    }
+
+    .summary-total {
+        margin-top: 10px !important;
+        padding-top: 10px !important;
+        border-top: 1.5px dashed var(--smoke) !important;
+    }
+
     #emptyCartState {
-        display: none; /* Controlled by JS */
+        display: none;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        flex: 1; /* Takes remaining height to perfectly center */
+        flex: 1;
         min-height: 50vh;
-        text-align: center;
     }
 
-    #emptyCartState i {
-        font-size: 50px !important;
-        margin-bottom: 20px !important;
-    }
-
-    /* Summary Section docked at bottom */
-    .cart-summary {
-        margin-top: auto !important;
-        border-top: 1px solid var(--smoke) !important;
-    }
-
-    /* Hide drag handle on desktop */
     #cartComponent .drag-handle {
         display: none !important;
+    }
+
+    /* Checkout Button Alignment */
+    .checkout-btn {
+        margin-top: 10px !important;
+        width: 100% !important;
     }
 }
         @media (min-width: 1024px) {
@@ -4342,103 +4356,112 @@ if (benefitsTab) {
     }
 
     function renderCart(animate = false) {
-    const listContainer = document.getElementById('cartItemsList');
-    const emptyState = document.getElementById('emptyCartState');
-    const summaryBlock = document.getElementById('cartSummaryBlock');
-    const applyCoinsBox = document.getElementById('applyCoinsBoxModal');
+        const listContainer = document.getElementById('cartItemsList');
+        const emptyState = document.getElementById('emptyCartState');
+        const summaryBlock = document.getElementById('cartSummaryBlock');
+        const applyCoinsBox = document.getElementById('applyCoinsBoxModal');
 
-    // SCENARIO 1: AGAR CART KHALI HAI
-    if(cart.length === 0) {
-        listContainer.innerHTML = '';
-        listContainer.style.display = 'none';
-        emptyState.style.display = 'flex';
-        summaryBlock.style.display = 'none';
-        if(applyCoinsBox) applyCoinsBox.style.display = 'none';
-        previousCartTotal = 0;
-        return;
-    }
+        if (cart.length === 0) {
+            listContainer.innerHTML = '';
+            listContainer.style.display = 'none';
+            emptyState.style.display = 'flex';
+            summaryBlock.style.display = 'none';
+            if (applyCoinsBox) applyCoinsBox.style.display = 'none';
+            previousCartTotal = 0;
+            return;
+        }
 
-    // SCENARIO 2: AGAR CART MEIN ITEMS HAIN
-    emptyState.style.display = 'none';
-    listContainer.style.display = 'flex';
-    summaryBlock.style.display = 'block';
+        emptyState.style.display = 'none';
+        listContainer.style.display = 'flex';
+        summaryBlock.style.display = 'block';
 
-    let html = '';
-    let subtotal = 0;
-    cart.forEach((item, index) => {
-        let qty = item.qty || 1; 
-        let itemPrice = item.priceNum || parseInt(item.price.replace(/,/g, ''));
-        subtotal += (itemPrice * qty); 
-        
-        html += `
-            <div class="cart-item" style="width: 100%; position: relative; padding: 15px 10px; border: none; border-bottom: 1.5px solid var(--cloud); box-sizing: border-box; background: white; display: flex; align-items: center; min-height: 100px; margin: 0;">
-                
-                <div class="cart-item-img" style="width: 70px; height: 70px; background: var(--snow); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <img src="${item.img}" alt="${item.title}" style="max-width: 90%; max-height: 90%; object-fit: contain;">
-                </div>
-                
-                <div class="cart-item-info" style="flex: 1; padding: 0 15px; display: flex; flex-direction: column; justify-content: center;">
-                    <div class="cart-item-title" style="font-size: 13px; font-weight: 800; color: var(--carbon); line-height: 1.4; margin-bottom: 4px; text-transform: uppercase;">${item.title}</div>
-                    <div class="cart-item-price" style="font-size: 16px; font-weight: 900; color: var(--ocean);">Rs. ${(itemPrice * qty).toLocaleString('en-IN')}</div>
-                </div>
-                
-                <div class="qty-pill" style="position: absolute; bottom: 0; right: 0; border-radius: 12px 0 0 0; height: 38px; width: 110px; background: #f0f9ff; border-left: 1.5px solid var(--smoke); border-top: 1.5px solid var(--smoke); display: flex; align-items: center; justify-content: space-between; overflow: hidden; z-index: 10;">
-                    <button onclick="updateCartItemQty(${index}, -1)" style="border:none; background:transparent; cursor:pointer; width:35px; height:100%; color: var(--ocean); font-size: 18px; font-weight: bold;">-</button>
-                    <div style="font-size: 14px; font-weight: 900; color: var(--carbon);">${qty}</div>
-                    <button onclick="updateCartItemQty(${index}, 1)" style="border:none; background:transparent; cursor:pointer; width:35px; height:100%; color: var(--ocean); font-size: 18px; font-weight: bold;">+</button>
-                </div>
-            </div>`;
-    });
-    listContainer.innerHTML = html;
+        let html = '';
+        let subtotal = 0;
 
-    // Coins Logic
-    let userCoins = (currentUser && currentUser.coins) ? currentUser.coins : 0;
-    let usableCoins = Math.min(userCoins, subtotal * 10); 
-    let discount = usableCoins * 0.1;
-    let finalTotal = subtotal;
+        // 1. Items Section: 10px Gap logic
+        cart.forEach((item, index) => {
+            let qty = item.qty || 1;
+            let itemPrice = item.priceNum || parseInt(item.price.replace(/,/g, ''));
+            subtotal += (itemPrice * qty);
 
-    if(applyCoinsBox) {
-        if(usableCoins > 0) {
-            applyCoinsBox.style.display = 'flex';
-            document.getElementById('availableCoinsTextModal').innerText = `${userCoins} ORACOCOINS`;
-            document.getElementById('coinSavingsTextModal').innerText = discount.toFixed(2);
-            
-            const applyBtn = document.getElementById('applyCoinsBtnModal');
-            if(isCoinsApplied) {
-                applyBtn.innerText = 'REMOVE';
-                applyBtn.style.background = 'var(--slate)';
-                finalTotal = subtotal - discount; 
+            html += `
+                <div class="cart-item" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1.5px solid var(--cloud); background: white; position: relative;">
+                    <div class="cart-item-img" style="width: 60px; height: 60px; background: var(--snow); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <img src="${item.img}" alt="${item.title}" style="max-width: 90%; max-height: 90%; object-fit: contain;">
+                    </div>
+                    
+                    <div class="cart-item-info" style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                        <div class="cart-item-title" style="font-size: 12px; font-weight: 800; color: var(--carbon); line-height: 1.2; text-transform: uppercase;">${item.title}</div>
+                        <div class="cart-item-price" style="font-size: 15px; font-weight: 900; color: var(--ocean);">Rs. ${(itemPrice * qty).toLocaleString('en-IN')}</div>
+                    </div>
+                    
+                    <div class="qty-pill" style="display: flex; align-items: center; background: #f0f9ff; border: 1px solid var(--smoke); border-radius: 5px; height: 30px; overflow: hidden;">
+                        <button onclick="updateCartItemQty(${index}, -1)" style="border:none; background:transparent; width:25px; color:var(--ocean); font-weight:bold; cursor:pointer;">-</button>
+                        <div style="width:25px; text-align:center; font-size:12px; font-weight:900;">${qty}</div>
+                        <button onclick="updateCartItemQty(${index}, 1)" style="border:none; background:transparent; width:25px; color:var(--ocean); font-weight:bold; cursor:pointer;">+</button>
+                    </div>
+                </div>`;
+        });
+        listContainer.innerHTML = html;
+
+        // 2. Coins & Summary Merge Logic
+        let userCoins = (currentUser && currentUser.coins) ? currentUser.coins : 0;
+        let usableCoins = Math.min(userCoins, subtotal * 10);
+        let discount = usableCoins * 0.1;
+        let finalTotal = subtotal;
+
+        if (applyCoinsBox) {
+            if (usableCoins > 0) {
+                // Styling specifically to merge it visually
+                applyCoinsBox.style.display = 'flex';
+                applyCoinsBox.style.background = 'transparent';
+                applyCoinsBox.style.border = 'none';
+                applyCoinsBox.style.borderBottom = '1.5px dashed var(--smoke)';
+                applyCoinsBox.style.borderRadius = '0';
+                applyCoinsBox.style.padding = '10px 0';
+                applyCoinsBox.style.margin = '0 10px';
+
+                document.getElementById('availableCoinsTextModal').innerText = `${userCoins} ORACOCOINS`;
+                document.getElementById('coinSavingsTextModal').innerText = discount.toFixed(2);
+
+                const applyBtn = document.getElementById('applyCoinsBtnModal');
+                if (isCoinsApplied) {
+                    applyBtn.innerText = 'REMOVE';
+                    applyBtn.style.background = 'var(--slate)';
+                    finalTotal = subtotal - discount;
+                } else {
+                    applyBtn.innerText = 'APPLY';
+                    applyBtn.style.background = 'var(--ocean)';
+                }
             } else {
-                applyBtn.innerText = 'APPLY';
-                applyBtn.style.background = 'var(--ocean)';
+                applyCoinsBox.style.display = 'none';
+                isCoinsApplied = false;
             }
-        } else {
-            applyCoinsBox.style.display = 'none';
-            isCoinsApplied = false;
         }
-    }
-    
-    // Summary Updates
-    document.getElementById('cartSubtotal').innerText = `Rs. ${subtotal.toLocaleString('en-IN')}`;
-    const totalEl = document.getElementById('cartTotal');
-    if (animate && previousCartTotal !== finalTotal) {
-        animateValue(totalEl, previousCartTotal, finalTotal, 800);
-    } else {
-        totalEl.innerText = `Rs. ${finalTotal.toLocaleString('en-IN')}`;
-    }
-    
-    // Mobile Updates (WhatsApp)
-    const waContainer = document.getElementById('whatsappInputContainer');
-    if (waContainer) {
-        if (currentUser && (!currentUser.phone || currentUser.phone.includes("Update") || currentUser.phone === "Undefined" || currentUser.phone === "")) {
-            waContainer.style.display = "block";
-        } else {
-            waContainer.style.display = "none";
-        }
-    }
-    previousCartTotal = finalTotal;
-}
 
+        // 3. Summary Section: Strict 10px padding
+        summaryBlock.style.padding = '10px';
+        
+        document.getElementById('cartSubtotal').innerText = `Rs. ${subtotal.toLocaleString('en-IN')}`;
+        const totalEl = document.getElementById('cartTotal');
+        
+        if (animate && previousCartTotal !== finalTotal) {
+            animateValue(totalEl, previousCartTotal, finalTotal, 800);
+        } else {
+            totalEl.innerText = `Rs. ${finalTotal.toLocaleString('en-IN')}`;
+        }
+
+        const waContainer = document.getElementById('whatsappInputContainer');
+        if (waContainer) {
+            if (currentUser && (!currentUser.phone || currentUser.phone === "" || currentUser.phone.includes("Update"))) {
+                waContainer.style.display = "block";
+                waContainer.style.padding = "0 10px 10px 10px"; // Align with summary
+            } else {
+                waContainer.style.display = "none";
+            }
+        }
+        previousCartTotal = finalTotal;
+    }
     window.placeOrder = async function() {
         if(cart.length === 0 || !currentUser) return;
         
