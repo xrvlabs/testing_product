@@ -4200,31 +4200,12 @@ input[type="email"],
 
         <div class="profile-tab-content" id="ptab-wishlist">
             <div class="profile-header-flex"><h2>Wishlist</h2></div>
-            <div class="help-box">
-                <i class="fa-regular fa-heart" style="color: var(--silver);"></i>
-                <h3 style="color: var(--silver);">Your Wishlist is Empty</h3>
-                <button class="pm-shop-btn" style="margin-top: 10px;" onclick="switchView('homeView')">EXPLORE PRODUCTS</button>
-            </div>
+            <div id="wishlistContentArea"></div> 
         </div>
 
         <div class="profile-tab-content" id="ptab-orders">
             <div class="profile-header-flex"><h2>My Orders</h2></div>
-            <div class="pf-grid">
-                <div class="pf-data-card order-card delivered">
-                    <div class="order-header">
-                        <span class="order-id">#ORD-58493</span>
-                        <span class="order-status success">DELIVERED</span>
-                    </div>
-                    <div class="order-body">
-                        <div class="order-img"><i class="fa-solid fa-box" style="font-size: 24px; color: var(--silver);"></i></div>
-                        <div class="order-info">
-                            <h5>Labodent DentWERK HD Model Resin</h5>
-                            <p>Qty: 1</p>
-                            <p class="order-total">Rs. 1,499</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="ordersContentArea"></div>
         </div>
 
         <div class="profile-tab-content" id="ptab-returns">
@@ -5459,34 +5440,35 @@ window.switchProfileTab = async function(tabId, element) {
     }
 
     async function toggleWishlist(event, element, productId) {
-        if(event) event.stopPropagation();
-        if (!currentUser) {
-            switchView('authView');
-            return;
-        }
-
-        element.classList.toggle('active');
-        let isAdded = element.classList.contains('active');
-
-        if (isAdded) {
-            element.classList.remove('fa-regular');
-            element.classList.add('fa-solid');
-            window.userWishlist[productId] = true;
-        } else {
-            element.classList.remove('fa-solid');
-            element.classList.add('fa-regular');
-            delete window.userWishlist[productId];
-        }
-
-        try {
-            const wishlistRef = ref(db, `users/${currentUser.uid}/wishlist/${productId}`);
-            if (isAdded) { await set(wishlistRef, true); } 
-            else { await set(wishlistRef, null); }
-        } catch(e) {
-            console.error("Wishlist sync error:", e);
-        }
+    if(event) event.stopPropagation();
+    if (!currentUser) {
+        switchView('authView');
+        return;
     }
 
+    element.classList.toggle('active');
+    let isAdded = element.classList.contains('active');
+
+    if (isAdded) {
+        element.classList.remove('fa-regular');
+        element.classList.add('fa-solid');
+        window.userWishlist[productId] = true;
+    } else {
+        element.classList.remove('fa-solid');
+        element.classList.add('fa-regular');
+        delete window.userWishlist[productId];
+    }
+
+    try {
+        const wishlistRef = ref(db, `users/${currentUser.uid}/wishlist/${productId}`);
+        if (isAdded) { await set(wishlistRef, true); } 
+        else { await set(wishlistRef, null); }
+        
+        renderWishlist(); // Live sync in background
+    } catch(e) {
+        console.error("Wishlist sync error:", e);
+    }
+}
     function changeImage(element) {
         document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
         element.classList.add('active');
@@ -5988,33 +5970,98 @@ if (benefitsTab) {
             if (btn) btn.innerText = "MAKE PAYMENT";
         }
     };
-
-    function renderProfileOrders() {
-    // Dashboard se section hatane ke baad is function ki 
-    // functionality dashboard ke liye zaroorat nahi hai.
-    return; 
-}
+window.renderWishlist = function() {
+    let wishIds = Object.keys(window.userWishlist);
+    let html = '';
     
-    async function fetchUserOrders() {
-        if(!currentUser) return;
-        try {
-            const ordersQuery = query(ref(db, 'orders'), orderByChild('userId'), equalTo(currentUser.uid));
-            const snap = await get(ordersQuery); 
-            if(snap.exists()) {
-                const ordersMap = snap.val();
-                orderHistory = Object.keys(ordersMap).map(key => ({
-                    firebaseKey: key,
-                    orderId: ordersMap[key].orderId || ('ORD-' + key.substring(1, 7).toUpperCase()),
-                    ...ordersMap[key]
-                })).reverse(); 
-                renderProfileOrders();
-            } else {
-                orderHistory = [];
-            }
-        } catch(e) {
-            console.error("Error fetching orders:", e);
-        }
+    if(wishIds.length === 0) {
+        html = `
+        <div class="help-box">
+            <i class="fa-regular fa-heart" style="color: var(--silver);"></i>
+            <h3 style="color: var(--silver);">Your Wishlist is Empty</h3>
+            <button class="pm-shop-btn" style="margin-top: 10px;" onclick="switchView('homeView')">EXPLORE PRODUCTS</button>
+        </div>`;
+    } else {
+        let wishedProducts = mockProducts.filter(p => window.userWishlist[p.id]);
+        html = `<div class="pf-grid">`;
+        wishedProducts.forEach(p => {
+            html += `
+            <div class="pf-data-card" style="display:flex; gap:15px; align-items:center; cursor:pointer;" onclick="openProduct(${p.id})">
+                <img src="${p.img}" style="width:70px; height:70px; object-fit:contain; background:var(--snow); border-radius:5px; border:1.5px solid var(--cloud);">
+                <div style="flex:1;">
+                    <h5 style="font-size:13px; margin:0 0 6px 0; color:var(--carbon); font-weight:800; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${p.title}</h5>
+                    <strong style="color:var(--ocean); font-size:14px; font-weight:900;">Rs. ${p.price}</strong>
+                </div>
+                <i class="fa-solid fa-trash" style="color:var(--coral); font-size:18px; padding:10px; transition:0.3s;" onclick="event.stopPropagation(); removeProfileWishlist(${p.id})"></i>
+            </div>`;
+        });
+        html += `</div>`;
     }
+
+    const container = document.getElementById('wishlistContentArea');
+    if (container) container.innerHTML = html;
+};
+   window.renderProfileOrders = function() {
+    let html = '';
+    
+    if(orderHistory.length === 0) {
+        html = `
+        <div class="help-box">
+            <i class="fa-solid fa-box-open" style="font-size:48px; color:var(--silver); margin-bottom:15px;"></i>
+            <h3 style="color: var(--silver);">No Orders Yet</h3>
+        </div>`;
+    } else {
+        html = `<div class="pf-grid">`;
+        orderHistory.forEach(o => {
+            let statusClass = '';
+            if(o.status.toUpperCase() === 'SHIPPED') statusClass = 'returned'; 
+            if(o.status.toUpperCase() === 'DELIVERED') statusClass = 'delivered';
+            
+            let itemsPreview = o.items ? o.items.map(i => i.title).join(', ') : 'N/A';
+            
+            html += `
+            <div class="pf-data-card order-card ${statusClass}">
+                <div class="order-header">
+                    <span class="order-id">#${o.orderId || o.firebaseKey}</span>
+                    <span class="order-status ${statusClass === 'delivered' ? 'success' : ''}">${o.status.toUpperCase()}</span>
+                </div>
+                <div class="order-body">
+                    <div class="order-img"><i class="fa-solid fa-box" style="font-size: 24px; color: var(--silver);"></i></div>
+                    <div class="order-info">
+                        <h5>${itemsPreview}</h5>
+                        <p>Date: ${o.date}</p>
+                        <p class="order-total">Rs. ${(o.total || 0).toLocaleString('en-IN')}</p>
+                    </div>
+                </div>
+            </div>`;
+        });
+        html += `</div>`;
+    }
+
+    const container = document.getElementById('ordersContentArea');
+    if (container) container.innerHTML = html;
+};
+    
+   async function fetchUserOrders() {
+    if(!currentUser) return;
+    try {
+        const ordersQuery = query(ref(db, 'orders'), orderByChild('userId'), equalTo(currentUser.uid));
+        const snap = await get(ordersQuery); 
+        if(snap.exists()) {
+            const ordersMap = snap.val();
+            orderHistory = Object.keys(ordersMap).map(key => ({
+                firebaseKey: key,
+                orderId: ordersMap[key].orderId || ('ORD-' + key.substring(1, 7).toUpperCase()),
+                ...ordersMap[key]
+            })).reverse(); 
+        } else {
+            orderHistory = [];
+        }
+        renderProfileOrders(); // Trigger real UI update
+    } catch(e) {
+        console.error("Error fetching orders:", e);
+    }
+}
 
     function triggerRain() {
         const overlay = document.getElementById('successOverlay');
@@ -6050,7 +6097,6 @@ if (benefitsTab) {
             cart = userData.cart || [];
             window.userWishlist = userData.wishlist || {};
             
-            // Populating the Main Profile Form dynamically
             document.getElementById('profInputName').value = userData.name || '';
             document.getElementById('profInputEmail').value = user.email || '';
             document.getElementById('profInputPhone').value = userData.phone || '';
@@ -6058,11 +6104,12 @@ if (benefitsTab) {
             document.getElementById('profInputSpeciality').value = userData.speciality || '';
             document.getElementById('profInputGender').value = userData.gender || '';
             document.getElementById('profInputBusiness').value = userData.business || '';
-            handleTypeChange(); // Speciality lock check
+            handleTypeChange();
 
             updateCartBadges();
             fetchUserOrders();
             fetchUserAddresses();
+            renderWishlist(); // Call this here!
         } catch(e) { console.error(e); }
     } else {
         currentUser = null; cart = []; window.userWishlist = {}; orderHistory = []; updateCartBadges();
@@ -6444,18 +6491,24 @@ async function deleteAddress(id) {
     }
 }
 
-async function removeProfileWishlist(productId) {
+window.removeProfileWishlist = async function(productId) {
     if(!confirm("REMOVE THIS ITEM FROM WISHLIST?")) return;
     
     delete window.userWishlist[productId];
     try {
         await set(ref(db, `users/${currentUser.uid}/wishlist/${productId}`), null);
-        document.getElementById('profileActualContent').innerHTML = getTabContentHTML('Wishlist');
-        renderProducts(); 
+        
+        // Mobile Modal Update
+        const mobileContent = document.getElementById('profileActualContent');
+        if(mobileContent) mobileContent.innerHTML = getTabContentHTML('Wishlist');
+        
+        // Desktop Tab Update
+        renderWishlist();
+        renderProducts(); // Refresh heart icon on home grid
     } catch(e) { 
         console.error(e); 
     }
-}
+};
 
 
     function submitContact(e) {
