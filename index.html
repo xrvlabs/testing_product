@@ -257,7 +257,13 @@
     align-items: center !important;
     justify-content: center !important;
 }
-
+/* Mobile/Tablet par Product/Events page par search area ko force hide karne ke liye */
+@media (max-width: 1023px) {
+    /* Jab JS display none karega, tab ye rules gap aur padding handle karenge */
+    #globalHeader.scrolled .header-master {
+        border-bottom: none !important;
+    }
+}
 /* Desktop par thoda bada dikhega */
 @media (min-width: 1024px) {
     .qty-pill {
@@ -912,6 +918,52 @@ body, .app-container {
         border-radius: 50px !important;
         justify-content: center !important;
     }
+}
+/* Container to hold both views side-by-side */
+#profileComponent {
+    overflow: hidden !important; /* Hide the content sliding out */
+}
+
+.profile-slider-container {
+    display: flex;
+    width: 200%; /* Two pages wide */
+    height: 100%;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Slide to second page when active */
+.profile-slider-container.tab-active {
+    transform: translate3d(-50%, 0, 0);
+}
+
+/* Individual Page Wrappers */
+.profile-page {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px !important; /* Strict 10px Margin for all devices */
+    box-sizing: border-box;
+}
+
+/* Scrollable area within tabs */
+#profileTabContent {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 !important; /* Controlled by parent .profile-page */
+}
+
+/* Back button specific styling */
+.back-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--ice);
+    border-radius: 5px;
+    margin-right: 12px;
+    cursor: pointer;
 }
 @media (min-width: 1024px) {
     #profileComponent {
@@ -3720,33 +3772,37 @@ input[type="email"],
     <div class="drag-handle"></div>
     <div class="modal-header">
         <h2>
-            <div class="back-modal" id="profileBackBtn" style="display:none;" onclick="closeProfileTab()"><i class="fa-solid fa-arrow-left"></i></div>
+            <div class="back-modal" id="profileBackBtn" style="display:none;" onclick="closeProfileTab()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </div>
             <span id="profileModalTitle">PROFILE DASHBOARD</span>
         </h2>
         <div class="close-modal" onclick="closeProfile()"><i class="fa-solid fa-xmark"></i></div>
     </div>
     
-    <div class="modal-scroll-content" id="profileMainContent">
-        <div class="dash-grid">
-            <div class="dash-card" onclick="openProfileTab('Account Info')"><i class="fa-solid fa-id-card"></i><span>ACCOUNT INFO</span></div>
-            <div class="dash-card" onclick="openProfileTab('Orders')"><i class="fa-solid fa-box"></i><span>MY ORDERS</span></div>
-            <div class="dash-card" onclick="openProfileTab('Wishlist')"><i class="fa-solid fa-heart" style="color: var(--coral);"></i><span>WISHLIST</span></div>
-            <div class="dash-card" onclick="openProfileTab('Addresses')"><i class="fa-solid fa-map-location-dot"></i><span>ADDRESSES</span></div>
-            <div class="dash-card" onclick="openProfileTab('Payments')"><i class="fa-solid fa-credit-card"></i><span>PAYMENTS</span></div>
-            <div class="dash-card" onclick="openProfileTab('Rewards')"><i class="fa-solid fa-coins" style="color: var(--sun);"></i><span>REWARDS</span></div>
+    <div class="profile-slider-container" id="profileSlider">
+        
+        <div class="profile-page" id="profileMainContent">
+            <div class="dash-grid">
+                <div class="dash-card" onclick="openProfileTab('Account Info')"><i class="fa-solid fa-id-card"></i><span>ACCOUNT INFO</span></div>
+                <div class="dash-card" onclick="openProfileTab('Orders')"><i class="fa-solid fa-box"></i><span>MY ORDERS</span></div>
+                <div class="dash-card" onclick="openProfileTab('Wishlist')"><i class="fa-solid fa-heart" style="color: var(--coral);"></i><span>WISHLIST</span></div>
+                <div class="dash-card" onclick="openProfileTab('Addresses')"><i class="fa-solid fa-map-location-dot"></i><span>ADDRESSES</span></div>
+                <div class="dash-card" onclick="openProfileTab('Payments')"><i class="fa-solid fa-credit-card"></i><span>PAYMENTS</span></div>
+                <div class="dash-card" onclick="openProfileTab('Rewards')"><i class="fa-solid fa-coins" style="color: var(--sun);"></i><span>REWARDS</span></div>
+            </div>
+            <button class="signout-btn" onclick="logoutUser()">SIGN OUT</button>
         </div>
 
-   
-
-        <button class="signout-btn" onclick="logoutUser()">SIGN OUT</button>
-    </div>
-
-    <div class="modal-scroll-content" id="profileTabContent" style="display:none; background: var(--snow);">
-        <div id="profileShimmer">
-            <div class="skeleton" style="height: 120px; width: 100%; border-radius: 20px; margin-bottom: 16px;"></div>
-            <div class="skeleton" style="height: 60px; width: 100%; border-radius: 12px; margin-bottom: 12px;"></div>
+        <div class="profile-page" id="profileTabContent">
+            <div id="profileShimmer" style="display:none; padding:10px;">
+                <div class="skeleton" style="height: 100px; width: 100%; border-radius: 5px; margin-bottom: 10px;"></div>
+                <div class="skeleton" style="height: 60px; width: 100%; border-radius: 5px;"></div>
+            </div>
+            <div id="profileActualContent" style="padding: 0;">
+                </div>
         </div>
-        <div id="profileActualContent" style="display:none;"></div>
+
     </div>
 </div>
 
@@ -4274,60 +4330,41 @@ function renderPromoCards() {
     const headerMaster = document.querySelector('.header-master'); 
     const footer = document.getElementById('globalFooter');
     
-    // 2. Correct Tab Highlighting
+    // 2. Tab Highlighting
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-    
-    if(targetViewId === 'homeView') {
-        document.querySelector('.pill:nth-child(1)').classList.add('active');
-    } else if(targetViewId === 'blogsView') {
-        document.querySelector('.pill:nth-child(3)').classList.add('active');
-    } else if(targetViewId === 'eventsView') {
-        document.querySelector('.pill:nth-child(4)').classList.add('active');
-    } else if(targetViewId === 'contactView') {
-        document.querySelector('.pill:nth-child(5)').classList.add('active');
-    }
+    if(targetViewId === 'homeView') document.querySelector('.pill:nth-child(1)').classList.add('active');
+    else if(targetViewId === 'blogsView') document.querySelector('.pill:nth-child(3)').classList.add('active');
+    else if(targetViewId === 'eventsView') document.querySelector('.pill:nth-child(4)').classList.add('active');
+    else if(targetViewId === 'contactView') document.querySelector('.pill:nth-child(5)').classList.add('active');
 
-    // 3. Header/Footer Visibility & HeaderMaster Logic
-    if (targetViewId === 'homeView' || targetViewId === 'eventsView' || targetViewId === 'blogsView' || targetViewId === 'contactView') {
-        header.style.display = 'block';
-        footer.style.display = 'block';
-        
-        // UPDATED LOGIC: Ab Blogs, Events aur Contact teeno par Search Box hide rahega
-        if (targetViewId === 'eventsView' || targetViewId === 'contactView' || targetViewId === 'blogsView') {
-            headerMaster.style.display = 'none';
-        } else {
-            headerMaster.style.display = 'flex';
-        }
-    } 
-    // Product View logic
-    else if (targetViewId === 'productView') {
-        header.style.display = 'block';
-        headerMaster.style.display = 'flex';
-        footer.style.display = 'none'; 
-    } 
-    // Auth View hide logic
-    else {
+    // 3. Strict Visibility Logic for Phone/Tablet/Desktop
+    const hideHeaderPages = ['eventsView', 'contactView', 'blogsView', 'productView', 'blogDetailView'];
+
+    if (targetViewId === 'authView') {
         header.style.display = 'none';
         footer.style.display = 'none';
+    } else {
+        header.style.display = 'block';
+        footer.style.display = (targetViewId === 'productView') ? 'none' : 'block';
+
+        // Strict Hide with !important feel via JS
+        if (hideHeaderPages.includes(targetViewId)) {
+            headerMaster.style.setProperty('display', 'none', 'important');
+        } else {
+            headerMaster.style.setProperty('display', 'flex', 'important');
+        }
     }
 
     window.scrollTo(0, 0);
     
-    // 4. Events View Auto-Reset (Existing)
+    // 4. Sub-view rendering triggers
     if(targetViewId === 'eventsView') {
-        if(document.getElementById('eventSearchInput')) document.getElementById('eventSearchInput').value = '';
         const liveTab = document.getElementById('tabLiveEvents');
         if(liveTab) switchEventTab('live', liveTab);
     }
-
-    // 5. Blogs View Logic (Existing)
     if (targetViewId === 'blogsView') {
-        if (typeof renderBlogSkeletons === "function") {
-            renderBlogSkeletons(); 
-            setTimeout(() => {
-                renderBlogData(); 
-            }, 1200);
-        }
+        renderBlogSkeletons();
+        setTimeout(() => renderBlogData(), 1200);
     }
 }
 // 1. Shimmer Load karne wala function
@@ -5323,31 +5360,51 @@ async function submitAuth(e) {
         }
     }
 
-    window.openProfileTab = async function(tabName) {
-        document.getElementById('profileMainContent').style.display = 'none';
-        document.getElementById('profileTabContent').style.display = 'block';
-        document.getElementById('profileBackBtn').style.display = 'flex';
-        document.getElementById('profileModalTitle').innerText = tabName.toUpperCase();
-        document.getElementById('profileShimmer').style.display = 'block';
-        document.getElementById('profileActualContent').style.display = 'none';
+   window.openProfileTab = async function(tabName) {
+    const slider = document.getElementById('profileSlider');
+    const backBtn = document.getElementById('profileBackBtn');
+    const title = document.getElementById('profileModalTitle');
+    const shimmer = document.getElementById('profileShimmer');
+    const content = document.getElementById('profileActualContent');
 
-        if (tabName === 'Orders') {
-            await fetchUserOrders(); 
-        }
+    // 1. Show Back Button & Update Title
+    backBtn.style.display = 'flex';
+    title.innerText = tabName.toUpperCase();
 
-        setTimeout(() => {
-            document.getElementById('profileShimmer').style.display = 'none';
-            document.getElementById('profileActualContent').innerHTML = getTabContentHTML(tabName);
-            document.getElementById('profileActualContent').style.display = 'block';
-        }, 400); 
-    };
+    // 2. Trigger Slide Animation
+    slider.classList.add('tab-active');
 
-    function closeProfileTab(instant = false) {
-        document.getElementById('profileTabContent').style.display = 'none';
-        document.getElementById('profileMainContent').style.display = 'flex';
-        document.getElementById('profileBackBtn').style.display = 'none';
-        document.getElementById('profileModalTitle').innerText = 'PROFILE DASHBOARD';
+    // 3. Show Shimmer while fetching
+    content.style.display = 'none';
+    shimmer.style.display = 'block';
+
+    if (tabName === 'Orders') await fetchUserOrders();
+
+    // 4. Inject Content and Hide Shimmer
+    setTimeout(() => {
+        shimmer.style.display = 'none';
+        content.innerHTML = getTabContentHTML(tabName);
+        content.style.display = 'block';
+    }, 300); // Syncs with slide animation
+};
+
+window.closeProfileTab = function(instant = false) {
+    const slider = document.getElementById('profileSlider');
+    const backBtn = document.getElementById('profileBackBtn');
+    const title = document.getElementById('profileModalTitle');
+
+    if (instant) {
+        slider.style.transition = 'none';
+        slider.classList.remove('tab-active');
+        void slider.offsetWidth; // force reflow
+        slider.style.transition = '';
+    } else {
+        slider.classList.remove('tab-active');
     }
+
+    backBtn.style.display = 'none';
+    title.innerText = 'PROFILE DASHBOARD';
+};
 
     function getTabContentHTML(tabName) {
         switch(tabName) {
