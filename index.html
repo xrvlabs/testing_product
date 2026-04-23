@@ -2185,6 +2185,44 @@ body, .app-container {
 .loc-current:hover {
     border-color: #6ec9e6 !important;
 }
+@media (max-width: 1023px) {
+    /* Pincode text ko hide kiya */
+    .location-text {
+        display: none !important;
+    }
+
+    /* Width ko strictly compact (wrap-content) karne ke liye */
+    .location-block {
+        flex: none !important;      /* Extra space gherna band */
+        width: 42px !important;     /* Square shape for icon */
+        height: 42px !important;
+        padding: 0 !important;      /* Extra side padding khatam */
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        border-radius: 5px !important;
+        background: rgba(110, 201, 230, 0.1) !important;
+        border: 1px solid rgba(110, 201, 230, 0.2) !important;
+        margin: 0 !important;       /* Alignment fix */
+    }
+
+    .location-icon-wrapper {
+        background: transparent !important;
+        width: auto !important;
+        height: auto !important;
+    }
+    
+    .location-icon-wrapper i {
+        font-size: 18px !important;
+        color: #6ec9e6 !important;
+    }
+
+    /* Header alignment balance karne ke liye */
+    .header-master {
+        justify-content: space-between !important;
+        gap: 10px !important;
+    }
+}
         /* =========================================================================
    STICKY SEARCH ON SCROLL (MOBILE)
 ========================================================================= */
@@ -2273,18 +2311,18 @@ body, .app-container {
         </div>
     </div>
 
-    <div class="location-block" onclick="openLocationModal()">
-        <div class="location-icon-wrapper">
-            <i class="fa-solid fa-location-dot" style="font-size: 12px;"></i>
-        </div>
-        <div class="location-text">
-            <span class="label" id="globalLocLabel">DELIVERING TO..</span>
-            <span class="pincode">
-                <span id="globalLocValue">ENTER PINCODE</span> 
-                <i class="fa-solid fa-caret-down"></i>
-            </span>
-        </div>
+   <div class="location-block" onclick="openLocationModal()">
+    <div class="location-icon-wrapper">
+        <i class="fa-solid fa-location-dot"></i>
     </div>
+    <div class="location-text">
+        <span class="label" id="globalLocLabel">DELIVERING TO..</span>
+        <span class="pincode">
+            <span id="globalLocValue">ENTER PINCODE</span> 
+            <i class="fa-solid fa-caret-down"></i>
+        </span>
+    </div>
+</div>
 
     <div class="header-actions">
         <div class="cart-wrapper" id="mainCartIcon" onclick="openCartModal()" style="display: none; height: 42px; align-items: center; justify-content: center;">
