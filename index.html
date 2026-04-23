@@ -20,10 +20,15 @@
    FINAL BRANDED LOGO FIX (OVERRIDES ALL OLD LOGO CSS)
 ========================================================================= */
 
-/* 1. Font Load */
 @font-face {
     font-family: 'Nexa Regular';
     src: url('./Nexa-Book.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Nexa Bold';
+    src: url('./Nexa-Bold.ttf') format('truetype');
+    font-weight: bold;
 }
 
 /* 2. Parent Container Reset (Purani styles hatane ke liye) */
@@ -55,20 +60,29 @@
 }
 
 .logo-title {
-    font-size: 28px !important;
-    color: var(--carbon) !important;
-    letter-spacing: 0.5px !important;
-    margin: 0 !important;
+    /* Naya color apply kiya */
+    color: #6ec9e6 !important; 
+    
+    /* Nexa Bold font apply kiya */
+    font-family: 'Nexa Bold', sans-serif !important;
+    font-weight: bold !important;
+
+    /* Spacing logic (Jo humne pehle set ki thi) */
+    letter-spacing: 14px !important; 
+    margin-right: -14px !important; 
+    
+    font-size: 32px !important;
+    text-align: center !important;
+    line-height: 1 !important;
     text-transform: uppercase !important;
 }
 
 .logo-subtitle {
-    font-size: 9px !important;
-    font-weight: 700 !important;
     color: var(--muted) !important;
-    letter-spacing: 2.2px !important; /* Edge matching */
-    margin-top: 2px !important;
-    text-transform: uppercase !important;
+    font-family: 'Nexa Regular', sans-serif !important;
+    letter-spacing: 1.5px !important;
+    font-size: 10px !important;
+    margin-top: 4px !important;
 }
 /* =========================================================================
    CART CORNERS & MOBILE LOGO HIDE FIX
@@ -420,6 +434,13 @@ body, .app-container {
         letter-spacing: 2.2px !important; /* ORACO ke edges se match karne ke liye */
         text-transform: uppercase !important;
         margin-top: 2px !important;
+    }
+}
+@media (max-width: 1023px) {
+    .logo-title {
+        font-size: 20px !important;
+        letter-spacing: 4px !important;
+        margin-right: -4px !important;
     }
 }
 /* =========================================================================
