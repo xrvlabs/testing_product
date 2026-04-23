@@ -4194,16 +4194,9 @@ input[type="email"],
         </div>
 
         <div class="profile-tab-content" id="ptab-address">
-            <div class="profile-header-flex"><h2>Manage Address</h2></div>
-            <div class="pf-grid">
-                <div class="pf-data-card address-card">
-                    <h4>ORACO DENTAL CLINIC</h4>
-                    <p>123 Health Street, Sector 4<br>New Delhi, India - 110074</p>
-                    <div class="address-actions"><span>EDIT</span><span>DELETE</span></div>
-                </div>
-            </div>
-            <button class="pm-shop-btn" style="margin-top: 15px;">+ ADD NEW ADDRESS</button>
-        </div>
+    <div class="profile-header-flex"><h2>Manage Address</h2></div>
+    <div id="addressContentArea"></div> 
+</div>
 
         <div class="profile-tab-content" id="ptab-wishlist">
             <div class="profile-header-flex"><h2>Wishlist</h2></div>
@@ -4590,7 +4583,67 @@ let allBlogs = [
     let isCoinsApplied = false;
     let previousCartTotal = 0; 
     window.currentSelectedVariantIndex = 0;
+let userAddresses = [];
 
+window.renderAddresses = function() {
+    let addHtml = `<div id="addressListView"><div class="pf-grid" style="margin-bottom:15px;">`;
+    if(userAddresses.length === 0) {
+         addHtml += `<div style="grid-column:1/-1; text-align:center; padding:40px;"><i class="fa-solid fa-location-xmark" style="font-size:48px; color:var(--silver); margin-bottom:24px;"></i><h4 style="color: var(--silver);">NO SAVED ADDRESSES</h4></div>`;
+    } else {
+        userAddresses.forEach(a => {
+            addHtml += `
+            <div class="pf-data-card address-card">
+                <h4>${a.title}</h4>
+                <p>${a.address}<br>${a.city}, ${a.state} - ${a.pincode}<br>Ph: ${a.phone}</p>
+                <div class="address-actions">
+                    <span onclick="showAddressForm('${a.id}')"><i class="fa-solid fa-pen"></i> EDIT</span>
+                    <span onclick="deleteAddress('${a.id}')" style="color:var(--coral);"><i class="fa-solid fa-trash"></i> DELETE</span>
+                </div>
+            </div>`;
+        });
+    }
+    addHtml += `</div><button class="pm-shop-btn" style="width:100%; margin-top: 10px;" onclick="showAddressForm()">+ ADD NEW ADDRESS</button></div>`;
+
+    // Address Form HTML
+    addHtml += `
+    <div id="addressFormView" style="display:none; background:var(--snow); padding:24px; border-radius:5px; border:1.5px solid var(--smoke);">
+        <h4 style="margin-bottom:20px; font-size:16px; font-weight:900; color:var(--carbon);" id="addrFormTitle">ADD NEW ADDRESS</h4>
+        <input type="hidden" id="addrId">
+        <input type="text" id="addrTitle" class="form-input" placeholder="Title (e.g., Home, Clinic)" style="margin-bottom:15px; height:46px;">
+        <textarea id="addrFull" class="form-input" placeholder="Full Address (House, Street, Area)" style="margin-bottom:15px; height:80px; resize:none; padding:15px 20px; border-radius: 5px;"></textarea>
+        <div style="display:flex; gap:15px; margin-bottom:15px;">
+            <input type="text" id="addrCity" class="form-input" placeholder="City" style="flex:1; height:46px;">
+            <input type="text" id="addrState" class="form-input" placeholder="State" style="flex:1; height:46px;">
+        </div>
+        <div style="display:flex; gap:15px; margin-bottom:24px;">
+            <input type="text" id="addrPin" class="form-input" placeholder="Pincode" style="flex:1; height:46px;" maxlength="6">
+            <input type="text" id="addrPhone" class="form-input" placeholder="Phone" style="flex:1; height:46px;" maxlength="10">
+        </div>
+        <div style="display:flex; gap:15px;">
+            <button class="pm-shop-btn" style="flex:1; background:transparent; color:var(--carbon); border:1.5px solid var(--smoke);" onclick="hideAddressForm()">CANCEL</button>
+            <button class="pm-shop-btn" style="flex:1;" id="saveAddrBtn" onclick="saveAddress()">SAVE ADDRESS</button>
+        </div>
+    </div>`;
+    
+    // Injecting to Desktop Tab and Mobile Tab if active
+    const desktopContainer = document.getElementById('addressContentArea');
+    if (desktopContainer) desktopContainer.innerHTML = addHtml;
+    const mobileContainer = document.getElementById('profileActualContent');
+    if (mobileContainer && document.getElementById('profileModalTitle').innerText === 'ADDRESSES') mobileContainer.innerHTML = addHtml;
+};
+
+async function fetchUserAddresses() {
+    if(!currentUser) return;
+    try {
+        const snap = await get(ref(db, `users/${currentUser.uid}/addresses`));
+        if(snap.exists()) {
+            userAddresses = Object.entries(snap.val()).map(([key, val]) => ({ id: key, ...val }));
+        } else {
+            userAddresses = [];
+        }
+        renderAddresses();
+    } catch(e) { console.error(e); }
+}
    const views = {
     homeView: document.getElementById('homeView'),
     productView: document.getElementById('productView'),
@@ -4994,30 +5047,40 @@ window.toggleProfileEdit = function() {
     }
 };
 
-// Profile Save Function
-window.saveProfileUpdates = function() {
+window.saveProfileUpdates = async function() {
+    if(!currentUser) return;
     const updateBtn = document.getElementById('profUpdateBtn');
     const originalText = updateBtn.innerText;
-    
     updateBtn.innerText = "UPDATING...";
     
-    setTimeout(() => {
+    try {
+        let updatedData = {
+            name: document.getElementById('profInputName').value.trim(),
+            phone: document.getElementById('profInputPhone').value.trim(),
+            type: document.getElementById('profInputType').value,
+            speciality: document.getElementById('profInputSpeciality').value,
+            gender: document.getElementById('profInputGender').value,
+            business: document.getElementById('profInputBusiness').value.trim()
+        };
+        
+        await update(ref(db, 'users/' + currentUser.uid), updatedData);
+        
+        currentUser = { ...currentUser, ...updatedData };
+        document.getElementById('topBarAuthText').innerText = "HI, " + currentUser.name.split(' ')[0].toUpperCase();
+        
         updateBtn.innerText = "UPDATED SUCCESSFULLY!";
         updateBtn.style.background = "#00c9a7"; 
         
         setTimeout(() => {
-            // Wapas Lock karte waqt bhi Email ko ignore karenge
-            const inputs = document.querySelectorAll('.profile-content-area input:not(#profInputEmail)');
-            const selects = document.querySelectorAll('.profile-content-area select');
-            
-            inputs.forEach(input => input.setAttribute('readonly', 'true'));
-            selects.forEach(select => select.setAttribute('disabled', 'true'));
-            
-            updateBtn.style.display = 'none';
+            toggleProfileEdit(); // Relocks the fields smoothly
             updateBtn.innerText = originalText;
             updateBtn.style.background = ""; 
         }, 1500);
-    }, 1000);
+    } catch(e) {
+        console.error(e);
+        alert("Failed to update profile.");
+        updateBtn.innerText = originalText;
+    }
 };
     async function initFirebaseAndData() {
         try {
@@ -5264,31 +5327,22 @@ function renderBlogData() {
         if(mmTimeout) clearTimeout(mmTimeout);
         mmTimeout = setTimeout(() => { renderCategories(); }, 800);
     }
-// Function to switch between Profile Sidebar Tabs
-window.switchProfileTab = function(tabId, element) {
-    // 1. Sidebar items ke active class ko reset karna
+window.switchProfileTab = async function(tabId, element) {
     const sidebarItems = document.querySelectorAll('.profile-sidebar .ps-item');
     sidebarItems.forEach(item => item.classList.remove('active'));
-    
-    // 2. Clicked item ko active banana
     if(element) element.classList.add('active');
 
-    // 3. Saare tab contents ko hide karna
     const allTabs = document.querySelectorAll('.profile-tab-content');
-    allTabs.forEach(tab => {
-        tab.classList.remove('active');
-    });
+    allTabs.forEach(tab => tab.classList.remove('active'));
 
-    // 4. Target tab ko show karna
     const targetTab = document.getElementById(tabId);
-    if(targetTab) {
-        targetTab.classList.add('active');
-    }
+    if(targetTab) targetTab.classList.add('active');
 
-    // Optional: Mobile par tab click hone ke baad scroll top kar dena
-    if (window.innerWidth < 1024) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    // Load data fresh based on selected tab
+    if(tabId === 'ptab-address') await fetchUserAddresses();
+    if(tabId === 'ptab-orders') await fetchUserOrders();
+
+    if (window.innerWidth < 1024) window.scrollTo({ top: 0, behavior: 'smooth' });
 };
     function renderCategories() {
         const catList = document.getElementById('mmCatList');
@@ -5985,32 +6039,37 @@ if (benefitsTab) {
     }
 
     onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            try {
-                const userRef = ref(db, 'users/' + user.uid);
-                const userSnap = await get(userRef);
-                let userData = { name: "DR. USER", phone: "UPDATE IN PROFILE", cart: [], wishlist: {}, coins: 0 };
-                if(userSnap.exists()) {
-                    userData = userSnap.val();
-                }
-                currentUser = { uid: user.uid, email: user.email, name: userData.name, phone: userData.phone, coins: userData.coins || 0 };
-                cart = userData.cart || [];
-                window.userWishlist = userData.wishlist || {};
-                updateCartBadges();
-                fetchUserOrders();
-            } catch(e) {
-                console.error("Error fetching user profile:", e);
-            }
-        } else {
-            currentUser = null;
-            cart = [];
-            window.userWishlist = {};
-            orderHistory = [];
+    if (user) {
+        try {
+            const userRef = ref(db, 'users/' + user.uid);
+            const userSnap = await get(userRef);
+            let userData = { name: "DR. USER", phone: "UPDATE IN PROFILE", type: "DENTIST", cart: [], wishlist: {}, coins: 0 };
+            if(userSnap.exists()) userData = {...userData, ...userSnap.val()};
+            
+            currentUser = { uid: user.uid, email: user.email, ...userData };
+            cart = userData.cart || [];
+            window.userWishlist = userData.wishlist || {};
+            
+            // Populating the Main Profile Form dynamically
+            document.getElementById('profInputName').value = userData.name || '';
+            document.getElementById('profInputEmail').value = user.email || '';
+            document.getElementById('profInputPhone').value = userData.phone || '';
+            document.getElementById('profInputType').value = userData.type || 'DENTIST';
+            document.getElementById('profInputSpeciality').value = userData.speciality || '';
+            document.getElementById('profInputGender').value = userData.gender || '';
+            document.getElementById('profInputBusiness').value = userData.business || '';
+            handleTypeChange(); // Speciality lock check
+
             updateCartBadges();
-        }
-        updateUIForAuth();
-        renderProducts(); 
-    });
+            fetchUserOrders();
+            fetchUserAddresses();
+        } catch(e) { console.error(e); }
+    } else {
+        currentUser = null; cart = []; window.userWishlist = {}; orderHistory = []; updateCartBadges();
+    }
+    updateUIForAuth();
+    renderProducts(); 
+});
 
    function handleAuthClick() {
     if (currentUser) {
@@ -6151,25 +6210,22 @@ async function submitAuth(e) {
     const shimmer = document.getElementById('profileShimmer');
     const content = document.getElementById('profileActualContent');
 
-    // 1. Show Back Button & Update Title
     backBtn.style.display = 'flex';
     title.innerText = tabName.toUpperCase();
-
-    // 2. Trigger Slide Animation
     slider.classList.add('tab-active');
 
-    // 3. Show Shimmer while fetching
     content.style.display = 'none';
     shimmer.style.display = 'block';
 
+    // Firebase Fetches trigger karna based on Tab
     if (tabName === 'Orders') await fetchUserOrders();
+    if (tabName === 'Addresses') await fetchUserAddresses();
 
-    // 4. Inject Content and Hide Shimmer
     setTimeout(() => {
         shimmer.style.display = 'none';
         content.innerHTML = getTabContentHTML(tabName);
         content.style.display = 'block';
-    }, 300); // Syncs with slide animation
+    }, 300);
 };
 
 window.closeProfileTab = function(instant = false) {
@@ -6191,52 +6247,216 @@ window.closeProfileTab = function(instant = false) {
 };
 
     function getTabContentHTML(tabName) {
-        switch(tabName) {
-            case 'Account Info':
-                return `<div class="tab-content-box"><h4>PERSONAL DETAILS</h4><p><strong>NAME:</strong> ${currentUser.name}</p><p><strong>EMAIL:</strong> ${currentUser.email}</p><p><strong>PHONE:</strong> ${currentUser.phone}</p></div><button class="signout-btn" style="border-color:var(--ocean); color:var(--ocean); margin-top:16px;">EDIT DETAILS</button>`;
-            case 'Orders':
-                if(orderHistory.length === 0) return `<div class="tab-content-box" style="text-align:center;"><h4 style="color: var(--silver);">NO ORDERS YET</h4></div>`;
-                let ordersHtml = '';
-                orderHistory.forEach(o => {
-                    let coinText = o.earnedCoins ? `<br><span style="color:var(--mint); font-size: 10px; font-weight: 900;">+${o.earnedCoins} COINS EARNED</span>` : '';
-                    let statusBg = 'var(--ocean)';
-                    if(o.status.toUpperCase() === 'SHIPPED') { statusBg = 'var(--sun)'; }
-                    if(o.status.toUpperCase() === 'DELIVERED') { statusBg = 'var(--mint)'; }
-                    let itemsPreview = o.items ? o.items.map(i => i.title).join(', ') : 'N/A';
-                    ordersHtml += `
-                        <div class="tab-content-box" style="border-left: 6px solid ${statusBg}; padding: 24px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                                <h4 style="margin:0;">#${o.orderId || o.firebaseKey}</h4>
-                                <span style="font-size:10px; font-weight:900; color:white; background:${statusBg}; padding:6px 12px; border-radius:50px;">${o.status.toUpperCase()}</span>
-                            </div>
-                            <p style="margin-bottom:8px;">DATE: <span style="color: var(--carbon);">${o.date}</span></p>
-                            <p style="margin-bottom:16px;"><strong>TOTAL: Rs. ${(o.total || 0).toLocaleString('en-IN')}</strong></p>
-                            <div style="font-size:11px; font-weight:800; color:var(--silver); background:var(--snow); border: 1.5px solid var(--smoke); padding:12px; border-radius:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                                <i class="fa-solid fa-box" style="margin-right:8px; color: var(--ocean);"></i> ${itemsPreview}
-                            </div>
-                            ${coinText}
-                        </div>`;
+    switch(tabName) {
+        case 'Account Info':
+            return `<div class="tab-content-box"><h4>PERSONAL DETAILS</h4><p><strong>NAME:</strong> ${currentUser.name}</p><p><strong>EMAIL:</strong> ${currentUser.email}</p><p><strong>PHONE:</strong> ${currentUser.phone}</p></div><button class="signout-btn" style="border-color:var(--ocean); color:var(--ocean); margin-top:16px;" onclick="toggleProfileSidebar(); closeProfileTab(true)">EDIT DETAILS</button>`;
+        
+        case 'Orders':
+            if(orderHistory.length === 0) return `<div class="tab-content-box" style="text-align:center; padding: 40px;"><i class="fa-solid fa-box-open" style="font-size:48px; color:var(--silver); margin-bottom:24px;"></i><h4 style="color: var(--silver);">NO ORDERS YET</h4></div>`;
+            let ordersHtml = '';
+            orderHistory.forEach(o => {
+                let coinText = o.earnedCoins ? `<br><span style="color:var(--mint); font-size: 10px; font-weight: 900;">+${o.earnedCoins} COINS EARNED</span>` : '';
+                let statusBg = 'var(--ocean)';
+                if(o.status.toUpperCase() === 'SHIPPED') { statusBg = 'var(--sun)'; }
+                if(o.status.toUpperCase() === 'DELIVERED') { statusBg = 'var(--mint)'; }
+                let itemsPreview = o.items ? o.items.map(i => i.title).join(', ') : 'N/A';
+                ordersHtml += `
+                    <div class="tab-content-box" style="border-left: 6px solid ${statusBg}; padding: 24px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                            <h4 style="margin:0;">#${o.orderId || o.firebaseKey}</h4>
+                            <span style="font-size:10px; font-weight:900; color:white; background:${statusBg}; padding:6px 12px; border-radius:50px;">${o.status.toUpperCase()}</span>
+                        </div>
+                        <p style="margin-bottom:8px;">DATE: <span style="color: var(--carbon);">${o.date}</span></p>
+                        <p style="margin-bottom:16px;"><strong>TOTAL: Rs. ${(o.total || 0).toLocaleString('en-IN')}</strong></p>
+                        <div style="font-size:11px; font-weight:800; color:var(--silver); background:var(--snow); border: 1.5px solid var(--smoke); padding:12px; border-radius:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                            <i class="fa-solid fa-box" style="margin-right:8px; color: var(--ocean);"></i> ${itemsPreview}
+                        </div>
+                        ${coinText}
+                    </div>`;
+            });
+            return ordersHtml;
+        
+        case 'Addresses':
+            let addHtml = `<div id="addressListView"><div class="pf-grid" style="margin-bottom:15px;">`;
+            if(userAddresses.length === 0) {
+                 addHtml += `<div style="grid-column:1/-1; text-align:center; padding:40px;"><i class="fa-solid fa-location-xmark" style="font-size:48px; color:var(--silver); margin-bottom:24px;"></i><h4 style="color: var(--silver);">NO SAVED ADDRESSES</h4></div>`;
+            } else {
+                userAddresses.forEach(a => {
+                    addHtml += `
+                    <div class="pf-data-card address-card">
+                        <h4>${a.title}</h4>
+                        <p>${a.address}<br>${a.city}, ${a.state} - ${a.pincode}<br>Ph: ${a.phone}</p>
+                        <div class="address-actions">
+                            <span onclick="showAddressForm('${a.id}')"><i class="fa-solid fa-pen"></i> EDIT</span>
+                            <span onclick="deleteAddress('${a.id}')" style="color:var(--coral);"><i class="fa-solid fa-trash"></i> DELETE</span>
+                        </div>
+                    </div>`;
                 });
-                return ordersHtml;
-            case 'Addresses':
-                return `<div class="tab-content-box" style="border-left: 6px solid var(--ocean);"><h4>CLINIC ADDRESS (DEFAULT)</h4><p>ORACO DENTAL CLINIC</p><p>123 HEALTH STREET, SECTOR 4</p><p>NEW DELHI, INDIA - 110074</p></div><button class="signout-btn" style="border-color:var(--ocean); color:var(--ocean); margin-top:16px;">+ ADD NEW ADDRESS</button>`;
-            case 'Payments':
-                return `<div class="tab-content-box"><h4>SAVED METHODS</h4><p style="display: flex; align-items: center; gap: 12px; margin-top: 16px;"><i class="fa-brands fa-cc-visa" style="color:var(--ocean); font-size:32px;"></i> **** **** **** 4242</p></div>`;
-            case 'Wishlist':
-                let wishCount = Object.keys(window.userWishlist).length;
-                if(wishCount === 0) {
-                    return `<div class="tab-content-box" style="text-align:center; padding: 40px;"><i class="fa-regular fa-heart" style="font-size:48px; color:var(--silver); margin-bottom:24px;"></i><h4 style="color: var(--silver);">YOUR WISHLIST IS EMPTY</h4></div>`;
-                } else {
-                    return `<div class="tab-content-box" style="text-align:center; padding: 40px;"><h4>YOU HAVE ${wishCount} ITEMS IN WISHLIST</h4><button class="signout-btn" style="border-color:var(--ocean); color:white; background: var(--ocean); margin-top:24px;" onclick="switchView('homeView'); closeProfile();">EXPLORE NOW</button></div>`;
-                }
-            case 'Rewards':
-                let coinVal = currentUser && currentUser.coins ? (currentUser.coins * 0.1).toFixed(2) : 0;
-                let coinCount = currentUser && currentUser.coins ? currentUser.coins : 0;
-                return `<div class="tab-content-box" style="text-align:center; padding: 40px 24px;"><i class="fa-solid fa-coins" style="font-size:56px; color:var(--sun); margin-bottom:24px;"></i><h4>ORACOCOINS BALANCE</h4><p style="font-size:32px; font-weight:900; color:var(--carbon); margin:16px 0;">${coinCount} COINS</p><p>EQUIVALENT TO <strong>Rs. ${coinVal}</strong> DISCOUNT ON YOUR NEXT PURCHASE.</p><p style="font-size: 10px; font-weight: 800; color: var(--ocean); margin-top: 24px; background: var(--ice); padding: 12px; border-radius: 12px; border: 1.5px dashed rgba(0,102,255,.2);">EARN 100 ORACOCOINS FOR EVERY RS. 1000 SPENT ON ANY ORDER!</p></div>`;
-            default:
-                return `<div class="tab-content-box" style="text-align:center; padding: 40px;"><i class="fa-solid fa-screwdriver-wrench" style="font-size:48px; color:var(--silver); margin-bottom:24px;"></i><h4 style="color: var(--silver);">UNDER CONSTRUCTION</h4></div>`;
-        }
+            }
+            addHtml += `</div><button class="pm-shop-btn" style="width:100%; margin-top: 10px;" onclick="showAddressForm()">+ ADD NEW ADDRESS</button></div>`;
+
+            // Inline Form for Adding/Editing Address
+            addHtml += `
+            <div id="addressFormView" style="display:none; background:var(--snow); padding:24px; border-radius:5px; border:1.5px solid var(--smoke);">
+                <h4 style="margin-bottom:20px; font-size:16px; font-weight:900; color:var(--carbon);" id="addrFormTitle">ADD NEW ADDRESS</h4>
+                <input type="hidden" id="addrId">
+                <input type="text" id="addrTitle" class="form-input" placeholder="Title (e.g., Home, Clinic)" style="margin-bottom:15px; height:46px;">
+                <textarea id="addrFull" class="form-input" placeholder="Full Address (House, Street, Area)" style="margin-bottom:15px; height:80px; resize:none; padding:15px 20px; border-radius: 5px;"></textarea>
+                <div style="display:flex; gap:15px; margin-bottom:15px;">
+                    <input type="text" id="addrCity" class="form-input" placeholder="City" style="flex:1; height:46px;">
+                    <input type="text" id="addrState" class="form-input" placeholder="State" style="flex:1; height:46px;">
+                </div>
+                <div style="display:flex; gap:15px; margin-bottom:24px;">
+                    <input type="text" id="addrPin" class="form-input" placeholder="Pincode" style="flex:1; height:46px;" maxlength="6">
+                    <input type="text" id="addrPhone" class="form-input" placeholder="Phone" style="flex:1; height:46px;" maxlength="10">
+                </div>
+                <div style="display:flex; gap:15px;">
+                    <button class="pm-shop-btn" style="flex:1; background:transparent; color:var(--carbon); border:1.5px solid var(--smoke);" onclick="hideAddressForm()">CANCEL</button>
+                    <button class="pm-shop-btn" style="flex:1;" id="saveAddrBtn" onclick="saveAddress()">SAVE ADDRESS</button>
+                </div>
+            </div>`;
+            return addHtml;
+
+        case 'Wishlist':
+            let wishIds = Object.keys(window.userWishlist);
+            if(wishIds.length === 0) {
+                return `<div class="tab-content-box" style="text-align:center; padding: 40px;"><i class="fa-regular fa-heart" style="font-size:48px; color:var(--silver); margin-bottom:24px;"></i><h4 style="color: var(--silver);">YOUR WISHLIST IS EMPTY</h4><button class="signout-btn" style="border-color:var(--ocean); color:white; background: var(--ocean); margin-top:24px;" onclick="switchView('homeView'); closeProfile();">EXPLORE PRODUCTS</button></div>`;
+            }
+            
+            let wishedProducts = mockProducts.filter(p => window.userWishlist[p.id]);
+            let wHtml = `<div class="pf-grid" style="margin-bottom:15px;">`;
+            wishedProducts.forEach(p => {
+                wHtml += `
+                <div class="pf-data-card" style="display:flex; gap:15px; align-items:center; cursor:pointer;" onclick="openProduct(${p.id})">
+                    <img src="${p.img}" style="width:70px; height:70px; object-fit:contain; background:var(--snow); border-radius:5px; border:1px solid var(--cloud);">
+                    <div style="flex:1;">
+                        <h5 style="font-size:13px; margin:0 0 6px 0; color:var(--carbon); font-weight:800; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${p.title}</h5>
+                        <strong style="color:var(--ocean); font-size:14px; font-weight:900;">Rs. ${p.price}</strong>
+                    </div>
+                    <i class="fa-solid fa-trash" style="color:var(--coral); font-size:18px; padding:10px; transition:0.3s;" onclick="event.stopPropagation(); removeProfileWishlist(${p.id})"></i>
+                </div>`;
+            });
+            wHtml += `</div>`;
+            return wHtml;
+
+        case 'Rewards':
+            let coinCount = currentUser && currentUser.coins ? currentUser.coins : 0;
+            let coinVal = (coinCount * 0.1).toFixed(2);
+            return `<div class="tab-content-box" style="text-align:center; padding: 40px 24px;"><i class="fa-solid fa-coins" style="font-size:56px; color:var(--sun); margin-bottom:24px;"></i><h4>ORACOCOINS BALANCE</h4><p style="font-size:32px; font-weight:900; color:var(--carbon); margin:16px 0;">${coinCount} COINS</p><p>EQUIVALENT TO <strong>Rs. ${coinVal}</strong> DISCOUNT ON YOUR NEXT PURCHASE.</p><p style="font-size: 10px; font-weight: 800; color: var(--ocean); margin-top: 24px; background: var(--ice); padding: 12px; border-radius: 5px; border: 1.5px dashed rgba(0,102,255,.2);">EARN 100 ORACOCOINS FOR EVERY RS. 1000 SPENT ON ANY ORDER!</p></div>`;
+        
+        default:
+            return `<div class="tab-content-box" style="text-align:center; padding: 40px;"><i class="fa-solid fa-screwdriver-wrench" style="font-size:48px; color:var(--silver); margin-bottom:24px;"></i><h4 style="color: var(--silver);">UNDER CONSTRUCTION</h4></div>`;
     }
+}
+// --- Address Management Logic ---
+
+function showAddressForm(id = null) {
+    const listView = document.getElementById('addressListView');
+    const formView = document.getElementById('addressFormView');
+    
+    if(!listView || !formView) return;
+    
+    listView.style.display = 'none';
+    formView.style.display = 'block';
+    
+    if(id) {
+        let addr = userAddresses.find(a => a.id === id);
+        if(addr) {
+            document.getElementById('addrFormTitle').innerText = "EDIT ADDRESS";
+            document.getElementById('addrId').value = addr.id;
+            document.getElementById('addrTitle').value = addr.title;
+            document.getElementById('addrFull').value = addr.address;
+            document.getElementById('addrCity').value = addr.city;
+            document.getElementById('addrState').value = addr.state;
+            document.getElementById('addrPin').value = addr.pincode;
+            document.getElementById('addrPhone').value = addr.phone;
+        }
+    } else {
+        document.getElementById('addrFormTitle').innerText = "ADD NEW ADDRESS";
+        document.getElementById('addrId').value = "";
+        document.getElementById('addrTitle').value = "";
+        document.getElementById('addrFull').value = "";
+        document.getElementById('addrCity').value = "";
+        document.getElementById('addrState').value = "";
+        document.getElementById('addrPin').value = "";
+        document.getElementById('addrPhone').value = "";
+    }
+}
+
+function hideAddressForm() {
+    document.getElementById('addressListView').style.display = 'block';
+    document.getElementById('addressFormView').style.display = 'none';
+}
+
+async function saveAddress() {
+    if(!currentUser) {
+        alert("Please login to save address.");
+        return;
+    }
+
+    let id = document.getElementById('addrId').value;
+    let title = document.getElementById('addrTitle').value.trim().toUpperCase();
+    let address = document.getElementById('addrFull').value.trim();
+    let city = document.getElementById('addrCity').value.trim().toUpperCase();
+    let state = document.getElementById('addrState').value.trim().toUpperCase();
+    let pincode = document.getElementById('addrPin').value.trim();
+    let phone = document.getElementById('addrPhone').value.trim();
+
+    if(!title || !address || !city || !state || !pincode || !phone) {
+        alert("PLEASE FILL ALL REQUIRED FIELDS!"); 
+        return;
+    }
+
+    const btn = document.getElementById('saveAddrBtn');
+    const originalText = btn.innerText;
+    btn.innerText = "SAVING...";
+
+    let addrObj = { title, address, city, state, pincode, phone };
+
+    try {
+        if(id) {
+            await update(ref(db, `users/${currentUser.uid}/addresses/${id}`), addrObj);
+        } else {
+            const newAddrRef = push(ref(db, `users/${currentUser.uid}/addresses`));
+            await set(newAddrRef, addrObj);
+        }
+        
+        await fetchUserAddresses(); 
+        document.getElementById('profileActualContent').innerHTML = getTabContentHTML('Addresses');
+    } catch(e) {
+        console.error("Error saving address: ", e);
+        alert("FAILED TO SAVE ADDRESS.");
+        btn.innerText = originalText;
+    }
+}
+
+async function deleteAddress(id) {
+    if(!currentUser) return;
+    if(!confirm("ARE YOU SURE YOU WANT TO DELETE THIS ADDRESS?")) return;
+    
+    try {
+        await set(ref(db, `users/${currentUser.uid}/addresses/${id}`), null);
+        await fetchUserAddresses();
+        document.getElementById('profileActualContent').innerHTML = getTabContentHTML('Addresses');
+    } catch(e) {
+        console.error("Error deleting address: ", e);
+        alert("FAILED TO DELETE ADDRESS.");
+    }
+}
+
+async function removeProfileWishlist(productId) {
+    if(!confirm("REMOVE THIS ITEM FROM WISHLIST?")) return;
+    
+    delete window.userWishlist[productId];
+    try {
+        await set(ref(db, `users/${currentUser.uid}/wishlist/${productId}`), null);
+        document.getElementById('profileActualContent').innerHTML = getTabContentHTML('Wishlist');
+        renderProducts(); 
+    } catch(e) { 
+        console.error(e); 
+    }
+}
+
 
     function submitContact(e) {
         e.preventDefault();
@@ -6357,6 +6577,11 @@ window.closeProfileTab = function(instant = false) {
     window.toggleCoins = toggleCoins;
     window.placeOrder = placeOrder;
     window.openProfileTab = openProfileTab;
+window.showAddressForm = showAddressForm;
+    window.hideAddressForm = hideAddressForm;
+    window.saveAddress = saveAddress;
+    window.deleteAddress = deleteAddress;
+    window.removeProfileWishlist = removeProfileWishlist;
 </script>
 </body>
 </html>
