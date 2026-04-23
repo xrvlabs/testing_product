@@ -257,6 +257,239 @@
     align-items: center !important;
     justify-content: center !important;
 }
+/* =========================================================================
+   NEW PROFILE PAGE VIEW (10PX STRICT SYNC & BACK BUTTON)
+========================================================================= */
+.profile-page-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1560px;
+    margin: 0 auto;
+    padding: 10px !important; /* Strict 10px margin/padding */
+    box-sizing: border-box;
+}
+
+/* Back button ke baad wale 3 columns ka layout */
+.profile-layout-split {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px !important; /* Strict 10px gap sabhi components ke beech */
+}
+/* =========================================================================
+   PROFILE PAGE: BACK BUTTON HOVER REMOVAL & 5PX CORNER SYNC
+========================================================================= */
+#profilePageView .pd-back-btn:hover {
+    transform: none !important;            /* Movement band */
+    border-color: var(--smoke) !important; /* Border static */
+    color: var(--muted) !important;        /* Text color static */
+    background: white !important;          /* Background static */
+    box-shadow: none !important;           /* Shadow band */
+}
+@media(min-width: 1024px) {
+    .profile-layout-split {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+/* Sidebar Navigation */
+.profile-sidebar {
+    width: 100%;
+    background: #eaf3fc; 
+    border-radius: 5px;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: row;
+    scrollbar-width: none;
+}
+.profile-sidebar::-webkit-scrollbar { display: none; }
+
+@media(min-width: 1024px) {
+    .profile-sidebar {
+        width: 260px;
+        flex-direction: column;
+        flex-shrink: 0;
+        overflow-x: visible;
+        padding-top: 10px;
+    }
+}
+
+.ps-item {
+    padding: 16px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1c5271;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    white-space: nowrap;
+    transition: var(--transition);
+    border-radius: 5px; /* Sidebar items par bhi 5px sync */
+}
+.ps-item i { width: 20px; text-align: center; font-size: 16px; }
+.ps-item:hover { background: rgba(255,255,255,0.4); }
+.ps-item.active {
+    background: white;
+    font-weight: 900;
+    border-left: 4px solid var(--carbon);
+    border-radius: 0 5px 5px 0;
+}
+@media(max-width: 1023px) {
+    .ps-item.active { 
+        border-left: none; 
+        border-bottom: 4px solid var(--carbon); 
+        border-radius: 5px 5px 0 0;
+    }
+}
+
+/* Main Form Area */
+.profile-content-area {
+    flex: 1;
+    background: white;
+    border-radius: 5px;
+    min-width: 0;
+    padding: 10px; /* Internal content padding bhi 10px lock */
+    border: 1.5px solid var(--cloud); /* Halka border clean look ke liye */
+}
+@media(min-width: 1024px) {
+    .profile-content-area { padding: 20px; }
+}
+
+.profile-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.profile-header-flex h2 {
+    font-size: 20px;
+    font-weight: 900;
+    color: #1c5271;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.profile-completion {
+    font-size: 11px;
+    background: #e6f9f0;
+    color: #00c9a7;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-weight: 800;
+}
+
+.pf-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    gap: 8px;
+}
+@media(min-width: 768px) {
+    .pf-row { flex-direction: row; align-items: center; gap: 15px; }
+}
+
+.pf-label {
+    width: 140px;
+    font-size: 12px;
+    font-weight: 900;
+    color: #1c5271;
+    flex-shrink: 0;
+}
+.pf-input-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--smoke);
+    border-radius: 5px !important; /* Strictly 5px */
+    background: white;
+    height: 46px;
+    padding: 0 15px;
+    gap: 10px;
+    transition: var(--transition);
+}
+.pf-input-wrap:focus-within { border-color: #6ec9e6; }
+.pf-input-wrap i { color: var(--silver); font-size: 15px; }
+.pf-input-wrap input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Quantico', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--carbon);
+    width: 100%;
+}
+
+.pf-multi-col {
+    display: flex;
+    flex: 1;
+    gap: 10px !important; /* Internal columns ke beech bhi 10px gap */
+    flex-direction: column;
+}
+@media(min-width: 768px) {
+    .pf-multi-col { flex-direction: row; }
+}
+
+.pf-sub-col {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 10px !important;
+}
+
+/* Right Side Card */
+.profile-right-panel { width: 100%; }
+@media(min-width: 1024px) {
+    .profile-right-panel { width: 280px; flex-shrink: 0; }
+}
+
+.pm-card {
+    border: 1.5px solid var(--smoke);
+    border-radius: 5px !important;
+    padding: 10px;
+    background: white;
+}
+.pm-card-top {
+    background: #fdf5f4; 
+    padding: 20px;
+    border-radius: 5px !important;
+    margin-bottom: 10px;
+    text-align: center;
+    position: relative;
+}
+.pm-card-top h4 {
+    font-size: 12px;
+    color: var(--slate);
+    margin-bottom: 14px;
+    font-weight: 800;
+}
+.pm-shop-btn {
+    background: #1c5271;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 5px !important;
+    font-weight: 900;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Quantico', sans-serif;
+    transition: var(--transition);
+}
+.pm-shop-btn:hover { background: var(--carbon); }
+
+.pm-coins {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #1c5271;
+    padding: 8px 10px;
+}
 /* Mobile/Tablet par Product/Events page par search area ko force hide karne ke liye */
 @media (max-width: 1023px) {
     /* Jab JS display none karega, tab ye rules gap aur padding handle karenge */
@@ -3584,7 +3817,125 @@ input[type="email"],
             </div>
         </div>
     </div>
+<div id="profilePageView" class="view-section">
+    <div class="profile-page-wrapper">
+        
+        <div class="pd-back-btn" onclick="switchView('homeView')" style="margin: 5px 0 !important; align-self: flex-start; border-radius: 5px !important;">
+    <i class="fa-solid fa-arrow-left"></i> BACK TO HOME
+</div>
+        <div class="profile-layout-split">
+            <div class="profile-sidebar">
+                <div class="ps-item active"><i class="fa-solid fa-user"></i> Profile</div>
+                <div class="ps-item"><i class="fa-solid fa-location-dot"></i> Manage Address</div>
+                <div class="ps-item"><i class="fa-solid fa-clock-rotate-left"></i> Reward History</div>
+                <div class="ps-item"><i class="fa-solid fa-star"></i> Reward zone</div>
+                <div class="ps-item"><i class="fa-regular fa-heart"></i> Wishlist</div>
+                <div class="ps-item"><i class="fa-solid fa-box"></i> My orders</div>
+                <div class="ps-item"><i class="fa-solid fa-rotate-left"></i> Returns</div>
+                <div class="ps-item"><i class="fa-solid fa-ticket"></i> My Coupons</div>
+                <div class="ps-item"><i class="fa-regular fa-gem"></i> My Membership</div>
+                <div class="ps-item"><i class="fa-solid fa-bullhorn"></i> Refer and earn</div>
+                <div class="ps-item"><i class="fa-solid fa-headset"></i> Help</div>
+                <div class="ps-item" onclick="logoutUser()"><i class="fa-solid fa-power-off"></i> Logout</div>
+            </div>
 
+            <div class="profile-content-area">
+                <div class="profile-header-flex">
+                    <h2>Profile <span class="profile-completion">22% Complete</span></h2>
+                    <i class="fa-solid fa-pen" style="cursor:pointer; color:var(--carbon); font-size:16px;"></i>
+                </div>
+
+                <div class="pf-row">
+                    <div class="pf-label">Full Name</div>
+                    <div class="pf-input-wrap">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" id="profInputName" value="Full Name">
+                    </div>
+                </div>
+
+                <div class="pf-row">
+                    <div class="pf-label">Type</div>
+                    <div class="pf-multi-col">
+                        <div class="pf-input-wrap">
+                            <i class="fa-solid fa-stethoscope"></i>
+                            <input type="text" value="Type">
+                        </div>
+                        <div class="pf-sub-col">
+                            <div class="pf-label" style="width: auto; color:var(--silver);">Speciality</div>
+                            <div class="pf-input-wrap" style="background:var(--snow);">
+                                <i class="fa-solid fa-plus-minus"></i>
+                                <input type="text" value="Speciality" disabled style="color:var(--muted);">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pf-row">
+                    <div class="pf-label">Gender</div>
+                    <div class="pf-multi-col">
+                        <div class="pf-input-wrap">
+                            <i class="fa-solid fa-venus-mars"></i>
+                            <input type="text" value="Gender">
+                        </div>
+                        <div class="pf-sub-col">
+                            <div class="pf-label" style="width: auto;">Business Name</div>
+                            <div class="pf-input-wrap">
+                                <i class="fa-solid fa-briefcase"></i>
+                                <input type="text" value="Business name">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pf-row">
+                    <div class="pf-label">Date Of Birth</div>
+                    <div class="pf-input-wrap">
+                        <i class="fa-solid fa-cake-candles"></i>
+                        <input type="text" placeholder="YYYY-MM-DD">
+                    </div>
+                </div>
+
+                <div class="pf-row">
+                    <div class="pf-label">Anniversary</div>
+                    <div class="pf-input-wrap">
+                        <i class="fa-regular fa-calendar"></i>
+                        <input type="text" placeholder="YYYY-MM-DD">
+                    </div>
+                </div>
+
+                <div class="pf-row">
+                    <div class="pf-label">Email Address</div>
+                    <div class="pf-input-wrap">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input type="email" id="profInputEmail" readonly>
+                    </div>
+                </div>
+
+                <div class="pf-row">
+                    <div class="pf-label">Mobile Number</div>
+                    <div class="pf-input-wrap">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="profInputPhone" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-right-panel">
+                <div class="pm-card">
+                    <div class="pm-card-top">
+                        <h4>No active membership plan.</h4>
+                        <button class="pm-shop-btn">Shop Now</button>
+                    </div>
+                    <div class="pm-coins">
+                        <span>Total Coins</span>
+                        <span><strong id="profDisplayCoins" style="font-size: 16px;">500</strong> <i class="fa-solid fa-coins" style="color:#eab308;"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
     <div id="authView" class="view-section">
         <div class="auth-view-layout">
             <div class="mobile-auth-close" onclick="switchView('homeView')"><i class="fa-solid fa-xmark"></i></div>
@@ -3919,14 +4270,15 @@ let allBlogs = [
     let previousCartTotal = 0; 
     window.currentSelectedVariantIndex = 0;
 
-    const views = {
+   const views = {
     homeView: document.getElementById('homeView'),
     productView: document.getElementById('productView'),
     authView: document.getElementById('authView'),
     eventsView: document.getElementById('eventsView'),
     blogsView: document.getElementById('blogsView'),
-    blogDetailView: document.getElementById('blogDetailView'), // 👈 Ye line check karein
-    contactView: document.getElementById('contactView')
+    blogDetailView: document.getElementById('blogDetailView'),
+    contactView: document.getElementById('contactView'),
+    profilePageView: document.getElementById('profilePageView') // YEH NAYI LINE ADD KI HAI
 };
 window.openFullBlog = function(blogTitle) {
     const blog = allBlogs.find(b => b.title === blogTitle);
@@ -5235,14 +5587,21 @@ if (benefitsTab) {
         renderProducts(); 
     });
 
-    function handleAuthClick() {
-        if (currentUser) {
-            openProfile();
-        } else {
-            switchView('authView');
-            toggleAuthMode('login');
-        }
+   function handleAuthClick() {
+    if (currentUser) {
+        // Modal ki jagah naya view switch karein
+        switchView('profilePageView');
+        
+        // Data auto-fill karna (Basic example)
+        document.getElementById('profInputName').value = currentUser.name || '';
+        document.getElementById('profInputEmail').value = currentUser.email || '';
+        document.getElementById('profInputPhone').value = currentUser.phone || '';
+        document.getElementById('profDisplayCoins').innerText = currentUser.coins || '0';
+    } else {
+        switchView('authView');
+        toggleAuthMode('login');
     }
+}
 
     function openProfile() {
         const overlay = document.getElementById('profileOverlay');
