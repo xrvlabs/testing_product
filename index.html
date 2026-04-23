@@ -150,6 +150,29 @@
     flex-direction: column;
     gap: 10px;
 }
+@media (max-width: 1023px) {
+        .events-tabs {
+            width: 100% !important;
+            max-width: 100% !important;
+            display: flex !important;
+            margin: 5px 0 !important; 
+            border-radius: 5px !important; 
+        }
+
+        .events-tab {
+            flex: 1 !important;
+            max-width: none !important; 
+            padding: 12px 5px !important;
+            font-size: 11px !important; 
+            border-radius: 5px !important;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .events-tabs {
+            margin: 10px 0 !important;
+        }
+    }
 /* =========================================================================
    BLOGS PAGE: 5PX CORNERS & 10PX MARGIN SYNC
 ========================================================================= */
@@ -2148,24 +2171,56 @@ body, .app-container {
         gap: 10px !important;
     }
 }
-        /* ===================== EVENTS VIEW ===================== */
-        .events-wrapper { display: flex; flex-direction: column; width: 100%; padding: 20px; box-sizing: border-box; gap: 24px; max-width: 1560px; margin: 0 auto; }
-        .events-tabs { display: flex; justify-content: center; border-bottom: 1.5px solid var(--smoke); background: var(--snow); border-radius: 50px; overflow: hidden; padding: 4px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);}
-        .events-tab { flex: 1; max-width: 250px; text-align: center; padding: 14px 24px; font-size: 13px; font-weight: 800; color: var(--muted); cursor: pointer; border-radius: 50px; transition: var(--transition); text-transform: uppercase;}
-        .events-tab.active { color: var(--ocean); background: white; box-shadow: 0 4px 16px rgba(0,102,255,.1); }
+       /* ===================== EVENTS VIEW (CLEANED) ===================== */
+.events-wrapper { 
+    display: flex; 
+    flex-direction: column; 
+    width: 100%; 
+    padding: 10px; /* GridLabs 10px sync */
+    box-sizing: border-box; 
+    gap: 10px; /* Tabs aur Grid ke beech gap */
+    max-width: 1560px; 
+    margin: 0 auto; 
+}
 
-        .events-filters { display: flex; flex-direction: column; gap: 16px; width: 100%; box-sizing: border-box; }
-        @media (min-width: 768px) { .events-filters { flex-direction: row; align-items: center; justify-content: space-between; } }
-        .event-search-box { display: flex; align-items: center; border: 1.5px solid var(--smoke); border-radius: 50px; padding: 0 20px; background: white; height: 46px; width: 100%; box-sizing: border-box; transition: var(--transition); }
-        .event-search-box:focus-within { border-color: var(--ocean); box-shadow: 0 4px 16px rgba(0,102,255,.08); }
-        @media (min-width: 768px) { .event-search-box { flex: 1; min-width: 300px; width: auto; } }
-        .event-search-box input { border: none; outline: none; font-size: 13px; font-family: 'Quantico', sans-serif; width: 100%; margin-left: 10px; color: var(--carbon);}
+/* TABS: Mobile/Tablet par Full Width & 5px Margin */
+.events-tabs { 
+    display: flex; 
+    justify-content: center; 
+    background: var(--snow); 
+    border-radius: 5px; /* 5px corner sync */
+    overflow: hidden; 
+    padding: 4px; 
+    margin: 5px 0; /* Strictly 5px Top/Bottom margin */
+    border: 1.5px solid var(--smoke);
+}
 
-        .event-dropdowns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
-        @media (min-width: 768px) { .event-dropdowns { display: flex; width: auto; overflow-x: visible; } }
-        .event-select { border: 1.5px solid var(--smoke); border-radius: 50px; padding: 0 20px; height: 46px; font-size: 12px; font-family: 'Quantico', sans-serif; font-weight: 700; background: white; color: var(--carbon); outline: none; width: 100%; cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%236B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); background-repeat: no-repeat; background-position: right 16px center; padding-right: 36px; transition: var(--transition);}
-        .event-select:hover { border-color: var(--silver); }
-        @media (min-width: 768px) { .event-select { width: auto; min-width: 160px; } }
+.events-tab { 
+    flex: 1; 
+    text-align: center; 
+    padding: 12px 10px; 
+    font-size: 13px; 
+    font-weight: 800; 
+    color: var(--muted); 
+    cursor: pointer; 
+    border-radius: 5px; 
+    transition: var(--transition); 
+    text-transform: uppercase;
+}
+
+.events-tab.active { 
+    color: #6ec9e6; /* Brand Blue */
+    background: white; 
+    box-shadow: 0 4px 12px rgba(110, 201, 230, 0.15); 
+}
+
+/* Tablet/Phone adjustment for Tabs */
+@media (max-width: 1023px) {
+    .events-tab {
+        font-size: 11px;
+        padding: 14px 5px;
+    }
+}
 /* =========================================================================
    EVENTS PAGE: REMOVE HOVER EFFECTS (STATIC CARDS)
 ========================================================================= */
@@ -3219,38 +3274,20 @@ input[type="email"],
     </div>
 
     <div id="eventsView" class="view-section">
-        <div class="events-wrapper">
-            <div class="events-tabs">
-                <div class="events-tab active" id="tabLiveEvents" onclick="switchEventTab('live', this)">Live Events (6)</div>
-                <div class="events-tab" id="tabPastEvents" onclick="switchEventTab('past', this)">Past Events (4)</div>
-            </div>
-
-            <div class="events-filters">
-                <div class="event-search-box">
-                    <i class="fa-solid fa-magnifying-glass" style="color: var(--silver);"></i>
-                    <input type="text" id="eventSearchInput" placeholder="SEARCH EVENTS..." oninput="filterEvents()">
-                </div>
-                <div class="event-dropdowns">
-                    <select class="event-select" id="eventCatFilter" onchange="filterEvents()">
-                        <option value="ALL">ALL CATEGORIES</option>
-                        <option value="HEALTH & MEDICINE">HEALTH & MEDICINE</option>
-                        <option value="EDUCATION">EDUCATION</option>
-                    </select>
-                    <select class="event-select" id="eventTypeFilter" onchange="filterEvents()">
-                        <option value="ALL">ALL EVENT TYPES</option>
-                        <option value="VIRTUAL">VIRTUAL</option>
-                        <option value="IN-PERSON">IN-PERSON</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="events-grid" id="eventsSkeletonContainer" style="display: none;"></div>
-            <div class="events-grid" id="eventsGridContent" style="display: none;"></div>
+    <div class="events-wrapper">
+        <div class="events-tabs">
+            <div class="events-tab active" id="tabLiveEvents" onclick="switchEventTab('live', this)">LIVE EVENTS (6)</div>
+            <div class="events-tab" id="tabPastEvents" onclick="switchEventTab('past', this)">PAST EVENTS (4)</div>
         </div>
+
+        <div class="events-grid" id="eventsSkeletonContainer" style="display: none;"></div>
+        <div class="events-grid" id="eventsGridContent" style="display: none;"></div>
     </div>
+</div>
 <div id="blogsView" class="view-section">
     <div class="blogs-wrapper">
-        <div class="blogs-grid" id="blogsGrid"></div>
+        <div class="blogs-grid" id="blogsGrid" style="margin-top: 10px;">
+            </div>
     </div>
 </div>
     <div id="contactView" class="view-section">
@@ -3615,7 +3652,29 @@ input[type="email"],
         messagingSenderId: "1002653789384",
         appId: "1:1002653789384:web:ba855faa4ad4def8f209fd"
     };
-
+let allBlogs = [
+    {
+        title: "LATEST TRENDS IN DIGITAL DENTISTRY",
+        date: "24 APR 2026",
+        excerpt: "Discover how AI and 3D printing are revolutionizing modern dental clinics...",
+        tag: "TECHNOLOGY",
+        img: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?w=500&q=80"
+    },
+    {
+        title: "ESSENTIAL ORAL HYGIENE TIPS",
+        date: "20 APR 2026",
+        excerpt: "Professional advice for maintaining a healthy smile for your patients...",
+        tag: "EDUCATION",
+        img: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=500&q=80"
+    },
+    {
+        title: "CHOOSING THE RIGHT COMPOSITE",
+        date: "15 APR 2026",
+        excerpt: "A comprehensive guide to selecting materials for aesthetic restorations...",
+        tag: "CLINICAL",
+        img: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=500&q=80"
+    }
+];
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
@@ -3758,6 +3817,25 @@ window.formatEmail = function(input) {
         if(pastTab) pastTab.innerText = `PAST EVENTS (${mockPastEvents.length})`;
     }
 
+
+function renderBlogList(data) {
+    const grid = document.getElementById('blogsGrid');
+    if(!grid) return;
+
+    grid.innerHTML = data.map(b => `
+        <div class="blog-card">
+            <div class="blog-img-wrap">
+                <img src="${b.img}" alt="${b.title}" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div class="blog-content">
+                <div class="blog-date"><i class="fa-solid fa-calendar-days"></i> ${b.date}</div>
+                <div class="blog-title">${b.title}</div>
+                <div class="blog-excerpt">${b.excerpt}</div>
+                <div class="blog-tag">${b.tag}</div>
+            </div>
+        </div>
+    `).join('');
+}
     // ===================== OPTIMIZED MODAL JS =====================
     // Using synchronous reflows via void offsetWidth for zero lag
     function openLocationModal() {
@@ -4013,39 +4091,38 @@ function renderPromoCards() {
     const headerMaster = document.querySelector('.header-master'); 
     const footer = document.getElementById('globalFooter');
     
-    // 2. Correct Tab Highlighting (Sequence: Home, Category, Blogs, Events, Contact)
+    // 2. Correct Tab Highlighting
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     
     if(targetViewId === 'homeView') {
         document.querySelector('.pill:nth-child(1)').classList.add('active');
     } else if(targetViewId === 'blogsView') {
-        document.querySelector('.pill:nth-child(3)').classList.add('active'); // Blogs 3rd pill hai
+        document.querySelector('.pill:nth-child(3)').classList.add('active');
     } else if(targetViewId === 'eventsView') {
-        document.querySelector('.pill:nth-child(4)').classList.add('active'); // Events 4th pill ho gaya
+        document.querySelector('.pill:nth-child(4)').classList.add('active');
     } else if(targetViewId === 'contactView') {
-        document.querySelector('.pill:nth-child(5)').classList.add('active'); // Contact 5th pill
+        document.querySelector('.pill:nth-child(5)').classList.add('active');
     }
 
     // 3. Header/Footer Visibility & HeaderMaster Logic
-    // In views mein Header aur Footer dono dikhenge
     if (targetViewId === 'homeView' || targetViewId === 'eventsView' || targetViewId === 'blogsView' || targetViewId === 'contactView') {
         header.style.display = 'block';
         footer.style.display = 'block';
         
-        // Sirf Home aur Blogs mein Top Logo/Search (HeaderMaster) dikhega, baki mein clean look
-        if (targetViewId === 'eventsView' || targetViewId === 'contactView') {
+        // UPDATED LOGIC: Ab Blogs, Events aur Contact teeno par Search Box hide rahega
+        if (targetViewId === 'eventsView' || targetViewId === 'contactView' || targetViewId === 'blogsView') {
             headerMaster.style.display = 'none';
         } else {
             headerMaster.style.display = 'flex';
         }
     } 
-    // Product View mein Footer hide rahega
+    // Product View logic
     else if (targetViewId === 'productView') {
         header.style.display = 'block';
         headerMaster.style.display = 'flex';
         footer.style.display = 'none'; 
     } 
-    // Auth View ya kisi aur view mein sab hide
+    // Auth View hide logic
     else {
         header.style.display = 'none';
         footer.style.display = 'none';
@@ -4053,26 +4130,19 @@ function renderPromoCards() {
 
     window.scrollTo(0, 0);
     
-    // 4. Events View Logic (Auto-Reset)
+    // 4. Events View Auto-Reset (Existing)
     if(targetViewId === 'eventsView') {
-        const searchInput = document.getElementById('eventSearchInput');
-        const catFilter = document.getElementById('eventCatFilter');
-        const typeFilter = document.getElementById('eventTypeFilter');
-        
-        if(searchInput) searchInput.value = '';
-        if(catFilter) catFilter.value = 'ALL';
-        if(typeFilter) typeFilter.value = 'ALL';
-        
+        if(document.getElementById('eventSearchInput')) document.getElementById('eventSearchInput').value = '';
         const liveTab = document.getElementById('tabLiveEvents');
         if(liveTab) switchEventTab('live', liveTab);
     }
 
-    // 5. Blogs View Logic (Shimmer + Data Loading)
+    // 5. Blogs View Logic (Existing)
     if (targetViewId === 'blogsView') {
         if (typeof renderBlogSkeletons === "function") {
-            renderBlogSkeletons(); // Pehle shimmer dikhao
+            renderBlogSkeletons(); 
             setTimeout(() => {
-                renderBlogData(); // 1.2s baad dummy data load karo
+                renderBlogData(); 
             }, 1200);
         }
     }
@@ -4098,48 +4168,10 @@ function renderBlogSkeletons() {
     grid.innerHTML = html;
 }
 
-// 2. Actual Data load karne wala function
 function renderBlogData() {
-    const blogs = [
-        {
-            title: "LATEST TRENDS IN DIGITAL DENTISTRY",
-            date: "24 APR 2026",
-            excerpt: "Discover how AI and 3D printing are revolutionizing modern dental clinics...",
-            tag: "TECHNOLOGY",
-            img: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?w=500&q=80"
-        },
-        {
-            title: "ESSENTIAL ORAL HYGIENE TIPS",
-            date: "20 APR 2026",
-            excerpt: "Professional advice for maintaining a healthy smile for your patients...",
-            tag: "EDUCATION",
-            img: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=500&q=80"
-        },
-        {
-            title: "CHOOSING THE RIGHT COMPOSITE",
-            date: "15 APR 2026",
-            excerpt: "A comprehensive guide to selecting materials for aesthetic restorations...",
-            tag: "CLINICAL",
-            img: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=500&q=80"
-        }
-    ];
-
-    const grid = document.getElementById('blogsGrid');
-    if(!grid) return;
-
-    grid.innerHTML = blogs.map(b => `
-        <div class="blog-card">
-            <div class="blog-img-wrap">
-                <img src="${b.img}" alt="${b.title}" style="width:100%; height:100%; object-fit:cover;">
-            </div>
-            <div class="blog-content">
-                <div class="blog-date"><i class="fa-solid fa-calendar-days"></i> ${b.date}</div>
-                <div class="blog-title">${b.title}</div>
-                <div class="blog-excerpt">${b.excerpt}</div>
-                <div class="blog-tag">${b.tag}</div>
-            </div>
-        </div>
-    `).join('');
+    // Ab search aur dropdown exist nahi karte, 
+    // isliye direct renderBlogList call karenge saare data ke saath.
+    renderBlogList(allBlogs); 
 }
     function switchEventTab(type, element) {
         document.querySelectorAll('.events-tab').forEach(t => t.classList.remove('active'));
@@ -4162,20 +4194,12 @@ function renderBlogData() {
     }
 
     function filterEvents() {
-        const searchText = (document.getElementById('eventSearchInput').value || '').toLowerCase();
-        const catFilter = document.getElementById('eventCatFilter').value;
-        const typeFilter = document.getElementById('eventTypeFilter').value;
-        const sourceData = currentEventTab === 'live' ? mockLiveEvents : mockPastEvents;
+    // Search aur filters ki values lene ki zaroorat nahi hai
+    const sourceData = currentEventTab === 'live' ? mockLiveEvents : mockPastEvents;
 
-        const filteredData = sourceData.filter(ev => {
-            const matchesSearch = ev.title.toLowerCase().includes(searchText) || ev.date.toLowerCase().includes(searchText);
-            const matchesCat = catFilter === 'ALL' || ev.cat.toUpperCase() === catFilter;
-            const matchesType = typeFilter === 'ALL' || ev.type.toUpperCase() === typeFilter;
-            return matchesSearch && matchesCat && matchesType;
-        });
-
-        renderEventsData(filteredData, currentEventTab);
-    }
+    // Direct render function ko poora data bhej rahe hain
+    renderEventsData(sourceData, currentEventTab);
+}
 
     function renderEventsData(data, type) {
         let html = '';
