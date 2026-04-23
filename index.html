@@ -515,6 +515,7 @@ body, .app-container {
 .mm-cat-list li:hover {
     color: #6ec9e6 !important;
 }
+
 /* =========================================================================
    SCROLL HIDE: NAV PILLS (CATEGORY STRIP) ON MOBILE/TABLET
 ========================================================================= */
@@ -1984,6 +1985,7 @@ body, .app-container {
             #locationModal { top: auto; bottom: 0; left: 50%; transform: translate3d(-50%, 100%, 0) scale(1); }
             #locationModal.active { transform: translate3d(-50%, 0, 0) scale(1); }
         }
+
 @media (max-width: 1023px) {
     /* Search Bar wale header container ke niche ka gap khatam kiya */
     .header-master {
@@ -2051,6 +2053,7 @@ body, .app-container {
         gap: 10px !important;
     }
 }
+
 /* =========================================================================
    MOBILE ONLY: SHRINK TABS TO FIT IN ONE ROW
 ========================================================================= */
@@ -2099,6 +2102,88 @@ body, .app-container {
         flex: 1 !important;
         text-align: left !important;
     }
+}
+/* =========================================================================
+   STRICT TABLET COMPACT PINCODE & BRAND COLOR SYNC (#6ec9e6)
+========================================================================= */
+
+/* 1. TABLET SPECIFIC (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .header-master {
+        justify-content: space-between !important;
+        flex-wrap: nowrap !important; /* Items ko ek hi line mein force karega */
+        gap: 15px !important;
+    }
+
+    /* Pincode Section ko wide hone se roka */
+    .location-block {
+        flex: none !important; /* Strictly wide hone se rokega */
+        width: fit-content !important; 
+        padding: 0 12px !important;
+        margin-top: 0 !important;
+    }
+
+    .header-logo {
+        flex: none !important;
+        width: auto !important;
+    }
+
+    .header-actions {
+        margin-top: 0 !important;
+        flex: none !important;
+    }
+    
+    /* Search Bar ko manage karne ke liye (agar header master mein hai) */
+    .search-container {
+        flex: 1 !important; /* Search bar bachi hui jagah lega, pincode nahi */
+    }
+}
+
+/* 2. PHONE SPECIFIC (Gap adjustment) */
+@media (max-width: 767px) {
+    .header-actions, .location-block {
+        margin-top: 10px !important;
+    }
+}
+
+/* 3. BRAND COLOR SYNC (#6ec9e6) - Icons, Buttons, & Backgrounds */
+.auth-trigger, 
+.cart-wrapper i, 
+.location-text .pincode, 
+.search-input-box i.fa-tooth,
+.loc-icon,
+.mm-cat-list li:hover,
+.pill.active,
+.pill:hover {
+    color: #6ec9e6 !important;
+}
+
+/* Auth/Login Button Background */
+.auth-trigger {
+    background: rgba(110, 201, 230, 0.1) !important;
+    border: 1px solid rgba(110, 201, 230, 0.2) !important;
+}
+.auth-trigger:hover {
+    background: #6ec9e6 !important;
+    color: white !important;
+}
+
+/* Location Icon & Gradient elements */
+.location-icon-wrapper, 
+.loc-submit-btn,
+.promo-card {
+    background: linear-gradient(135deg, #6ec9e6, #a2e1f3) !important;
+}
+
+/* 4. PINCODE MODAL (5px Corners & Blue Sync) */
+#locationModal, .loc-current, .loc-input-wrapper, .loc-submit-btn {
+    border-radius: 5px !important;
+}
+#locationModal h2 i, .loc-input-wrapper i {
+    color: #6ec9e6 !important;
+}
+.loc-current:hover {
+    border-color: #6ec9e6 !important;
 }
         /* =========================================================================
    STICKY SEARCH ON SCROLL (MOBILE)
@@ -2181,7 +2266,7 @@ body, .app-container {
     <div class="sticky-header-container" id="globalHeader">
        <div class="header-master">
     <div class="header-logo" onclick="switchView('homeView')">
-        <img src="./oraco_transparent.png" alt="Oraco Logo" class="site-logo-img">
+        <img src="./oraco_transparent.png" alt="" class="site-logo-img">
         <div class="logo-text-wrapper">
             <div class="logo-title">ORACO</div>
             <div class="logo-subtitle">DENTAL INNOVATION</div>
