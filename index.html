@@ -444,6 +444,144 @@ body, .app-container {
     }
 }
 /* =========================================================================
+   UI SYNC: MATCH HEADER ICONS & BUTTONS WITH ORACO BLUE (#6ec9e6)
+========================================================================= */
+
+/* 1. Login/Profile Button (auth-trigger) styling */
+.auth-trigger {
+    color: #6ec9e6 !important; /* Text color */
+    background: rgba(110, 201, 230, 0.1) !important; /* Halka blue background base */
+    border: 1px solid rgba(110, 201, 230, 0.2) !important;
+}
+
+.auth-trigger:hover {
+    background: #6ec9e6 !important; /* Solid blue on hover */
+    color: white !important;
+    box-shadow: 0 4px 16px rgba(110, 201, 230, 0.3) !important;
+}
+
+/* 2. Cart Icon & Hover styling */
+.cart-wrapper i {
+    color: #6ec9e6 !important; /* Icon color */
+}
+
+.cart-wrapper:hover {
+    border-color: #6ec9e6 !important;
+}
+
+/* 3. Location icon sync (Consistency ke liye) */
+.location-icon-wrapper {
+    background: linear-gradient(135deg, #6ec9e6, var(--mint)) !important;
+}
+
+.location-text .pincode {
+    color: #6ec9e6 !important;
+}
+/* =========================================================================
+   BRAND SYNC: SEARCH, CATEGORY TABS & PROMO CARD (#6ec9e6)
+========================================================================= */
+
+/* 1. Search Box Teeth Icon Color */
+.search-input-box i.fa-tooth {
+    color: #6ec9e6 !important;
+}
+
+/* 2. Category Tabs (Nav Pills) Text & Active State */
+.pill:hover, .pill.active {
+    background: rgba(110, 201, 230, 0.1) !important; /* Light branded tint */
+    color: #6ec9e6 !important;
+}
+
+/* 3. Product Launch Promo Card Gradient Match */
+.promo-card {
+    /* Branded Blue to Halka Mint Gradient */
+    background: linear-gradient(135deg, #6ec9e6 0%, #a2e1f3 100%) !important;
+    border: none !important;
+}
+
+/* 4. Promo Card Button Sync */
+.promo-btn {
+    color: #6ec9e6 !important;
+    background: white !important;
+    font-weight: 900 !important;
+}
+
+/* 5. Megamenu Active Category Sync */
+.mm-cat-list li.active {
+    background: linear-gradient(135deg, #6ec9e6, #a2e1f3) !important;
+    color: white !important;
+}
+
+.mm-cat-list li:hover {
+    color: #6ec9e6 !important;
+}
+/* =========================================================================
+   SCROLL HIDE: NAV PILLS (CATEGORY STRIP) ON MOBILE/TABLET
+========================================================================= */
+@media (max-width: 1023px) {
+    /* 1. Base setup animation ke liye (Nav Pills) */
+    .nav-pills {
+        max-height: 50px;
+        opacity: 1;
+        transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+        overflow: hidden;
+    }
+
+    /* 2. Scrolled State: Category strip ko smoothly hide karo */
+    #globalHeader.scrolled .nav-pills {
+        max-height: 0 !important;
+        opacity: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin: 0 !important;
+        pointer-events: none; /* Hide hone par clicks disable */
+    }
+
+    /* 3. Search box aur Header ke beech ka space adjust kiya taaki clean lage */
+    #globalHeader.scrolled .header-master {
+        border-bottom: 1px solid var(--smoke) !important; /* Halka divider niche ke content ke liye */
+        padding-bottom: 12px !important;
+    }
+}
+/* =========================================================================
+   MEGAMENU CATEGORY HOVER: WHITE TEXT FIX
+========================================================================= */
+
+/* Jab kisi category tab par hover karein, toh text aur icon dono white rahenge */
+.mm-cat-list li:hover {
+    background: #6ec9e6 !important; /* Branded Blue Background */
+    color: white !important;         /* Text Color strictly White */
+}
+
+/* Hover ke waqt icons ka color bhi white karne ke liye */
+.mm-cat-list li:hover i.icon, 
+.mm-cat-list li:hover i.arrow {
+    color: white !important;
+}
+
+/* Active state (jo pehle se selected hai) wo bhi white hi rahega */
+.mm-cat-list li.active {
+    background: linear-gradient(135deg, #6ec9e6, #a2e1f3) !important;
+    color: white !important;
+}
+
+.mm-cat-list li.active i.icon, 
+.mm-cat-list li.active i.arrow {
+    color: white !important;
+}
+/* 6. Search Bar Focus Border Sync */
+.search-input-box:focus-within {
+    border-color: #6ec9e6 !important;
+    box-shadow: 0 4px 16px rgba(110, 201, 230, 0.15) !important;
+}
+/* 4. Mobile view Profile Icon circle sync */
+@media (max-width: 1023px) {
+    .auth-trigger {
+        background: rgba(110, 201, 230, 0.1) !important;
+        color: #6ec9e6 !important;
+    }
+}
+/* =========================================================================
    MOBILE HEADER FIX: HIDE LOGIN TEXT & SHOW ICON ONLY
 ========================================================================= */
 @media (max-width: 1023px) {
