@@ -4350,18 +4350,18 @@ if (benefitsTab) {
     // SCENARIO 1: AGAR CART KHALI HAI
     if(cart.length === 0) {
         listContainer.innerHTML = '';
-        listContainer.style.display = 'none'; // Items list chhupao
-        emptyState.style.display = 'flex';    // Empty icon dikhao
-        summaryBlock.style.display = 'none';  // Bill chhupao
+        listContainer.style.display = 'none';
+        emptyState.style.display = 'flex';
+        summaryBlock.style.display = 'none';
         if(applyCoinsBox) applyCoinsBox.style.display = 'none';
         previousCartTotal = 0;
         return;
     }
 
     // SCENARIO 2: AGAR CART MEIN ITEMS HAIN
-    emptyState.style.display = 'none';        // STRICTLY HIDE EMPTY STATE
-    listContainer.style.display = 'flex';     // ITEM LIST DIKHAO
-    summaryBlock.style.display = 'block';     // BILL DIKHAO
+    emptyState.style.display = 'none';
+    listContainer.style.display = 'flex';
+    summaryBlock.style.display = 'block';
 
     let html = '';
     let subtotal = 0;
@@ -4369,25 +4369,29 @@ if (benefitsTab) {
         let qty = item.qty || 1; 
         let itemPrice = item.priceNum || parseInt(item.price.replace(/,/g, ''));
         subtotal += (itemPrice * qty); 
+        
         html += `
-            <div class="cart-item">
-                <div class="cart-item-img"><img src="${item.img}" alt="${item.title}"></div>
-                <div class="cart-item-info">
-                    <div class="cart-item-title">${item.title}</div>
-                    <div class="cart-item-price">Rs. ${(itemPrice * qty).toLocaleString('en-IN')}</div>
+            <div class="cart-item" style="width: 100%; position: relative; padding: 15px 10px; border: none; border-bottom: 1.5px solid var(--cloud); box-sizing: border-box; background: white; display: flex; align-items: center; min-height: 100px; margin: 0;">
+                
+                <div class="cart-item-img" style="width: 70px; height: 70px; background: var(--snow); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <img src="${item.img}" alt="${item.title}" style="max-width: 90%; max-height: 90%; object-fit: contain;">
                 </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; height: 100%;">
-                    <i class="fa-regular fa-trash-can remove-btn" onclick="removeFromCart(${index})"></i>
-                    <div class="qty-pill">
-                        <button onclick="updateCartItemQty(${index}, -1)"><i class="fa-solid fa-minus"></i></button>
-                        <div>${qty}</div>
-                        <button onclick="updateCartItemQty(${index}, 1)"><i class="fa-solid fa-plus"></i></button>
-                    </div>
+                
+                <div class="cart-item-info" style="flex: 1; padding: 0 15px; display: flex; flex-direction: column; justify-content: center;">
+                    <div class="cart-item-title" style="font-size: 13px; font-weight: 800; color: var(--carbon); line-height: 1.4; margin-bottom: 4px; text-transform: uppercase;">${item.title}</div>
+                    <div class="cart-item-price" style="font-size: 16px; font-weight: 900; color: var(--ocean);">Rs. ${(itemPrice * qty).toLocaleString('en-IN')}</div>
+                </div>
+                
+                <div class="qty-pill" style="position: absolute; bottom: 0; right: 0; border-radius: 12px 0 0 0; height: 38px; width: 110px; background: #f0f9ff; border-left: 1.5px solid var(--smoke); border-top: 1.5px solid var(--smoke); display: flex; align-items: center; justify-content: space-between; overflow: hidden; z-index: 10;">
+                    <button onclick="updateCartItemQty(${index}, -1)" style="border:none; background:transparent; cursor:pointer; width:35px; height:100%; color: var(--ocean); font-size: 18px; font-weight: bold;">-</button>
+                    <div style="font-size: 14px; font-weight: 900; color: var(--carbon);">${qty}</div>
+                    <button onclick="updateCartItemQty(${index}, 1)" style="border:none; background:transparent; cursor:pointer; width:35px; height:100%; color: var(--ocean); font-size: 18px; font-weight: bold;">+</button>
                 </div>
             </div>`;
     });
     listContainer.innerHTML = html;
 
+    // Coins Logic
     let userCoins = (currentUser && currentUser.coins) ? currentUser.coins : 0;
     let usableCoins = Math.min(userCoins, subtotal * 10); 
     let discount = usableCoins * 0.1;
@@ -4414,8 +4418,8 @@ if (benefitsTab) {
         }
     }
     
+    // Summary Updates
     document.getElementById('cartSubtotal').innerText = `Rs. ${subtotal.toLocaleString('en-IN')}`;
-    
     const totalEl = document.getElementById('cartTotal');
     if (animate && previousCartTotal !== finalTotal) {
         animateValue(totalEl, previousCartTotal, finalTotal, 800);
@@ -4423,6 +4427,7 @@ if (benefitsTab) {
         totalEl.innerText = `Rs. ${finalTotal.toLocaleString('en-IN')}`;
     }
     
+    // Mobile Updates (WhatsApp)
     const waContainer = document.getElementById('whatsappInputContainer');
     if (waContainer) {
         if (currentUser && (!currentUser.phone || currentUser.phone.includes("Update") || currentUser.phone === "Undefined" || currentUser.phone === "")) {
