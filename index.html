@@ -2659,7 +2659,27 @@ body, .app-container {
             #locationModal { top: auto; bottom: 0; left: 50%; transform: translate3d(-50%, 100%, 0) scale(1); }
             #locationModal.active { transform: translate3d(-50%, 0, 0) scale(1); }
         }
+/* =========================================================================
+   MOBILE/TABLET: MERGE COINS BOX WITH TOTAL SECTION
+========================================================================= */
+@media (max-width: 1023px) {
+    /* 1. Gap khatam karne ke liye margin 0 kiya */
+    .apply-coins-box {
+        margin-bottom: 0 !important;
+        border-radius: 0 !important; /* Merged look ke liye corners flat */
+        background: white !important; /* Total section jaisa same background */
+        border-top: 1.5px dashed var(--smoke) !important;
+        border-bottom: 1.5px solid var(--cloud) !important;
+        padding: 15px 10px !important; /* Grid Labs sync */
+    }
 
+    /* 2. Total section ka top border adjust kiya sync ke liye */
+    .cart-summary {
+        margin-top: 0 !important;
+        padding-top: 10px !important;
+        border-top: none !important; /* Coins box ka bottom border divider ka kaam karega */
+    }
+}
 @media (max-width: 1023px) {
     /* Search Bar wale header container ke niche ka gap khatam kiya */
     .header-master {
