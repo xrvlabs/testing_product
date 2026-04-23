@@ -135,6 +135,7 @@
     background: var(--coral) !important; /* Halka sa redish alert feel */
     box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3) !important;
 }
+
 /* =========================================================================
    MOBILE HEADER: 3-ROW PERFECT ALIGNMENT
 ========================================================================= */
@@ -2461,6 +2462,79 @@ body, .app-container {
     }
 }
 /* =========================================================================
+   RESTORE ORIGINAL SIZES & APPLY BRAND SYNC (#26bfd2)
+========================================================================= */
+
+/* 1. OFFERS tab hatane ke baad spacing original jaisi rakho */
+.header-master {
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px 20px !important; /* Original Padding */
+    gap: 10px !important;
+}
+
+.nav-pills {
+    display: flex !important;
+    gap: 10px !important;
+    padding: 12px 20px !important; /* Original Padding */
+    margin-top: 0 !important; /* Saare negative margin khatam */
+    justify-content: center !important;
+}
+
+/* 2. Tabs (Pills) - Original size with 5px active state */
+.pill {
+    padding: 9px 22px !important; /* Original Size */
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    border-radius: 5px !important;
+}
+
+.pill.active {
+    background: #26bfd2 !important;
+    color: white !important;
+}
+
+.pill.active i {
+    color: white !important;
+}
+
+/* 3. Category Sidebar - Reset to clean white look */
+.mm-sidebar {
+    background: white !important;
+    border-right: 1.5px solid var(--smoke) !important;
+}
+
+.mm-cat-list li.active {
+    background: #26bfd2 !important;
+    color: white !important;
+    border-radius: 5px !important;
+}
+
+.mm-cat-list li.active i {
+    color: white !important;
+}
+
+/* 4. Strictly 5px corners for all main boxes */
+.megamenu,
+.mm-content,
+.subcat-card,
+#cartComponent,
+.auth-card,
+.form-input,
+.auth-submit-btn,
+.location-block,
+.search-input-box {
+    border-radius: 5px !important;
+}
+
+/* 5. Mobile/Tablet Header Icons Fix (5px corners) */
+@media (max-width: 1023px) {
+    .cart-wrapper,
+    .auth-trigger {
+        border-radius: 5px !important;
+    }
+}
+/* =========================================================================
    CART/PROFILE 5PX CORNERS & STRICT 10PX HEADER GAP (MOBILE/TABLET)
 ========================================================================= */
 @media (max-width: 1023px) {
@@ -2484,6 +2558,7 @@ body, .app-container {
         column-gap: 10px !important;
     }
 }
+
         /* =========================================================================
    STICKY SEARCH ON SCROLL (MOBILE)
 ========================================================================= */
@@ -2620,7 +2695,6 @@ input[type="email"],
         <div class="nav-pills no-scrollbar">
             <div class="pill active" onclick="switchView('homeView')"><i class="fa-solid fa-house"></i> HOME</div>
             <div class="pill" onclick="toggleMegamenu(event)" id="catDropdownBtn"><i class="fa-solid fa-border-all"></i> CATEGORY</div>
-            <div class="pill"><i class="fa-solid fa-tag"></i> OFFERS</div>
             <div class="pill" onclick="switchView('eventsView')"><i class="fa-regular fa-calendar-check"></i> EVENTS</div>
             <div class="pill" onclick="switchView('contactView')"><i class="fa-solid fa-headset"></i> CONTACT US</div>
         </div>
