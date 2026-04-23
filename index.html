@@ -2360,6 +2360,16 @@ body, .app-container {
         @keyframes scaleUp { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes rainFall { 0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 1; } 100% { transform: translate3d(0, 110vh, 0) rotate(360deg); opacity: 0; } }
         .rain-drop { position: absolute; font-size: 28px; z-index: 5; animation: rainFall linear forwards; pointer-events: none; }
+
+        /* =========================================================================
+           INPUT FIELD CASE FIX (ALLOW SMALL LETTERS)
+        ========================================================================= */
+        input[type="password"], 
+        input[type="email"],
+        #authEmail, 
+        #authPassword {
+            text-transform: none !important;
+        }
     </style>
 </head>
 <body>
@@ -2746,8 +2756,8 @@ body, .app-container {
                 
                <div class="auth-logo">
                     <img src="./oraco_transparent.png" alt="Oraco Logo" class="auth-logo-img">
-                    <div class="auth-title">LOG IN OR SIGN UP</div>
-                    <div class="auth-subtitle">Use <b>demo@gridlabs.com</b> and <b>demo123</b> to login</div>
+                    <div class="auth-title">O R A C O</div>
+                    <div class="auth-subtitle">Trusted by Dentists. Built for Growth.</div>
                 </div>
 
                 <form id="authForm" onsubmit="submitAuth(event)">
@@ -2758,13 +2768,13 @@ body, .app-container {
 
                     <div class="form-group">
                         <label>EMAIL ADDRESS</label>
-                        <input type="email" id="authEmail" class="form-input" placeholder="DEMO@GRIDLABS.COM" required>
+                        <input type="email" id="authEmail" class="form-input" placeholder="GUEST@GRIDLABS.IN" required>
                     </div>
 
                    <div class="form-group">
                         <label>PASSWORD</label>
                         <div class="password-wrapper">
-                            <input type="password" id="authPassword" class="form-input" placeholder="DEMO123" required>
+                            <input type="password" id="authPassword" class="form-input" placeholder="Demo123" maxlength="20" required>
                             <i class="fa-regular fa-eye-slash toggle-password" onclick="togglePasswordVisibility()"></i>
                         </div>
                     </div>
