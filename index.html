@@ -1967,13 +1967,79 @@ body, .app-container {
             object-fit: contain;
             animation: pulseLogo 1.5s ease-in-out infinite;
         }
-
+/* =========================================================================
+   EVENTS VIEW: DESKTOP WIDTH & ALIGNMENT SYNC
+========================================================================= */
+@media (min-width: 1024px) {
+    .events-wrapper {
+        width: 100% !important;
+        /* Homepage ki tarah 1560px max width */
+        max-width: 1560px !important; 
+        margin: 0 auto !important;
+        /* Side padding homepage se match karne ke liye */
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        padding-top: 24px !important;
+        box-sizing: border-box !important;
+    }
+}
         @keyframes pulseLogo {
             0% { transform: scale(1); opacity: 0.7; }
             50% { transform: scale(1.08); opacity: 1; }
             100% { transform: scale(1); opacity: 0.7; }
         }
+/* =========================================================================
+   EVENTS PAGE: 5PX CORNERS & 10PX MARGIN SYNC
+========================================================================= */
 
+/* 1. Event Cards aur Image ke corners 5px karega */
+.event-card, 
+.event-img-wrap, 
+.event-img-wrap img,
+.event-badge,
+.event-tag {
+    border-radius: 5px !important;
+}
+
+/* 2. Search Box, Tabs aur Dropdowns ke corners 5px karega */
+.events-tab,
+.events-tabs,
+.event-search-box,
+.event-select {
+    border-radius: 5px !important;
+}
+
+/* 3. Margins aur Gaps ko Homepage ki tarah 10px lock karega */
+@media (min-width: 1024px) {
+    .events-wrapper {
+        gap: 10px !important;
+        padding: 10px !important; /* Top/Bottom/Sides 10px margin */
+    }
+
+    .events-grid {
+        gap: 10px !important; /* Cards ke beech ka gap 10px */
+    }
+
+    .events-filters {
+        gap: 10px !important; /* Search aur Dropdowns ke beech ka gap */
+        margin-bottom: 10px !important;
+    }
+
+    .event-dropdowns {
+        gap: 10px !important;
+    }
+}
+
+/* Mobile/Tablet alignment safety */
+@media (max-width: 1023px) {
+    .events-wrapper {
+        padding: 10px !important;
+        gap: 10px !important;
+    }
+    .events-grid {
+        gap: 10px !important;
+    }
+}
         /* ===================== EVENTS VIEW ===================== */
         .events-wrapper { display: flex; flex-direction: column; width: 100%; padding: 20px; box-sizing: border-box; gap: 24px; max-width: 1560px; margin: 0 auto; }
         .events-tabs { display: flex; justify-content: center; border-bottom: 1.5px solid var(--smoke); background: var(--snow); border-radius: 50px; overflow: hidden; padding: 4px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);}
@@ -1992,7 +2058,98 @@ body, .app-container {
         .event-select { border: 1.5px solid var(--smoke); border-radius: 50px; padding: 0 20px; height: 46px; font-size: 12px; font-family: 'Quantico', sans-serif; font-weight: 700; background: white; color: var(--carbon); outline: none; width: 100%; cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%236B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); background-repeat: no-repeat; background-position: right 16px center; padding-right: 36px; transition: var(--transition);}
         .event-select:hover { border-color: var(--silver); }
         @media (min-width: 768px) { .event-select { width: auto; min-width: 160px; } }
+/* =========================================================================
+   EVENTS PAGE: REMOVE HOVER EFFECTS (STATIC CARDS)
+========================================================================= */
+/* =========================================================================
+   CONTACT US PAGE: WIDTH, MARGIN & 5PX CORNER SYNC
+========================================================================= */
 
+/* 1. Desktop Width & Alignment Sync */
+@media (min-width: 1024px) {
+    .contact-wrapper {
+        width: 100% !important;
+        max-width: 1560px !important; /* Homepage sync */
+        margin: 0 auto !important;
+        padding: 10px !important; /* Global 10px margin */
+        box-sizing: border-box !important;
+    }
+
+    .contact-grid {
+        gap: 10px !important; /* Columns ke beech ka gap */
+    }
+
+    .contact-info-col {
+        gap: 10px !important; /* Info cards ke beech ka gap */
+    }
+}
+
+/* 2. 5px Corners for All Elements */
+.contact-info-card,
+.contact-info-icon,
+.contact-form-col,
+.contact-input,
+.contact-submit-btn,
+.faq-section,
+.faq-item,
+.faq-q i {
+    border-radius: 5px !important;
+}
+
+/* 3. Remove Hover Effects (Static Look) */
+.contact-info-card:hover {
+    transform: none !important; /* Side movement band */
+    box-shadow: none !important; /* Shadow band */
+    border-color: var(--cloud) !important; /* Border static */
+}
+
+.contact-info-card:hover .contact-info-icon {
+    transform: none !important; /* Icon rotation band */
+    background: var(--ice) !important; /* Background blue nahi hoga */
+    color: var(--ocean) !important; /* Icon color static */
+}
+
+.contact-submit-btn:hover {
+    transform: none !important; /* Button lift band */
+    box-shadow: 0 8px 20px rgba(110, 201, 230, 0.2) !important; /* Default shadow only */
+}
+
+/* 4. FAQ & Form Spacing Adjustments */
+.contact-form-col {
+    padding: 30px 20px !important;
+}
+
+.faq-section {
+    margin-top: 10px !important;
+    padding: 20px !important;
+}
+
+/* Mobile/Tablet alignment safety */
+@media (max-width: 1023px) {
+    .contact-wrapper {
+        padding: 10px !important;
+    }
+    .contact-grid, .contact-info-col {
+        gap: 10px !important;
+    }
+}
+/* Card ka movement aur shadow band karne ke liye */
+.event-card:hover {
+    transform: none !important;      /* Upar lift hona band */
+    box-shadow: none !important;     /* Shadow aana band */
+    border-color: var(--cloud) !important; /* Border color change nahi hoga */
+}
+
+/* Hover par title ka color blue hone se rokne ke liye */
+.event-card:hover .event-title {
+    color: var(--carbon) !important; /* Text color black hi rahega */
+}
+
+/* Image ka fade/zoom effect agar ho toh use bhi reset karne ke liye */
+.event-card:hover img {
+    opacity: 1 !important;
+    transform: none !important;
+}
         .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
         .event-card { background: white; border: 1.5px solid var(--cloud); border-radius: var(--card-radius); overflow: hidden; display: flex; flex-direction: column; transition: var(--transition); cursor: pointer;}
         .event-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,.08); border-color: rgba(0,201,167,.2); }
