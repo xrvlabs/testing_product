@@ -816,7 +816,7 @@ body, .app-container {
     }
 }
 /* =========================================================================
-   FINAL REFINED DESKTOP CART: 10PX TOTAL & MERGED COINS
+   FINAL REFINED DESKTOP CART: 10PX SPACING & BOTTOM-RIGHT QTY LOCK
 ========================================================================= */
 @media (min-width: 1024px) {
     #cartOverlay {
@@ -850,7 +850,7 @@ body, .app-container {
 
     #cartComponent .modal-scroll-content {
         flex: 1 !important;
-        padding: 10px !important; /* Top space and side alignment standardized */
+        padding: 10px !important; /* Standard 10px top/sides */
         overflow-y: auto !important;
     }
 
@@ -860,48 +860,78 @@ body, .app-container {
         gap: 10px !important; 
     }
 
-    /* ITEM SECTION: Name, Price, Image ke beech 10px gap */
+    /* ITEM SECTION: Relative for Corner Locking */
     .cart-item {
         width: 100% !important;
         margin: 0 !important;
         padding: 10px !important; 
-        gap: 10px !important; /* Strictly 10px gap between img and info */
-        min-height: unset !important;
+        gap: 10px !important; /* Image aur Text ke beech 10px gap */
+        min-height: 100px !important; 
         height: auto !important;
         display: flex !important;
         align-items: center !important;
+        position: relative !important; /* Pill position lock karne ke liye */
+        border-bottom: 1.5px solid var(--cloud) !important;
     }
 
     .cart-item-info {
-        padding: 0 !important; /* Extra padding removed for clean 10px gap */
+        padding: 0 !important;
         display: flex !important;
         flex-direction: column !important;
-        gap: 5px !important;
+        gap: 4px !important;
     }
 
-    /* COINS SECTION: Merged look (No box, No background) */
+    /* QTY PILL: Locked to Bottom-Right Edge */
+    .qty-pill {
+        position: absolute !important;
+        bottom: 0 !important;
+        right: 0 !important;
+        background: #f0f9ff !important;
+        border-left: 1px solid var(--smoke) !important;
+        border-top: 1px solid var(--smoke) !important;
+        border-radius: 5px 0 0 0 !important; /* Sirf top-left round taaki corner touch kare */
+        height: 32px !important;
+        width: 100px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        overflow: hidden !important;
+        z-index: 10 !important;
+    }
+
+    .qty-pill button {
+        border: none !important;
+        background: transparent !important;
+        width: 30px !important;
+        height: 100% !important;
+        cursor: pointer !important;
+        color: var(--ocean) !important;
+        font-weight: bold !important;
+    }
+
+    /* COINS SECTION: Merged look */
     .apply-coins-box {
         background: transparent !important;
         border: none !important;
-        border-top: 1.5px dashed var(--smoke) !important; /* Divider for summary merge */
+        border-top: 1.5px dashed var(--smoke) !important;
         border-radius: 0 !important;
-        padding: 10px !important; /* Strict 10px padding */
+        padding: 10px !important;
         margin: 0 !important;
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
     }
 
-    /* TOTAL SECTION: Strict 10px padding all around */
+    /* TOTAL SECTION: 10px side/top/bottom padding */
     .cart-summary {
         margin-top: 0 !important;
-        padding: 10px !important; /* Strict 10px from sides, top, and bottom */
+        padding: 10px !important; 
         border-top: 1.5px solid var(--smoke) !important;
         background: white !important;
     }
 
     .summary-row {
-        margin-bottom: 8px !important;
+        margin-bottom: 6px !important;
     }
 
     .summary-total {
@@ -923,10 +953,10 @@ body, .app-container {
         display: none !important;
     }
 
-    /* Checkout Button Alignment */
     .checkout-btn {
         margin-top: 10px !important;
         width: 100% !important;
+        padding: 16px !important;
     }
 }
         @media (min-width: 1024px) {
@@ -4356,112 +4386,86 @@ if (benefitsTab) {
     }
 
     function renderCart(animate = false) {
-        const listContainer = document.getElementById('cartItemsList');
-        const emptyState = document.getElementById('emptyCartState');
-        const summaryBlock = document.getElementById('cartSummaryBlock');
-        const applyCoinsBox = document.getElementById('applyCoinsBoxModal');
+    const listContainer = document.getElementById('cartItemsList');
+    const emptyState = document.getElementById('emptyCartState');
+    const summaryBlock = document.getElementById('cartSummaryBlock');
+    const applyCoinsBox = document.getElementById('applyCoinsBoxModal');
 
-        if (cart.length === 0) {
-            listContainer.innerHTML = '';
-            listContainer.style.display = 'none';
-            emptyState.style.display = 'flex';
-            summaryBlock.style.display = 'none';
-            if (applyCoinsBox) applyCoinsBox.style.display = 'none';
-            previousCartTotal = 0;
-            return;
-        }
-
-        emptyState.style.display = 'none';
-        listContainer.style.display = 'flex';
-        summaryBlock.style.display = 'block';
-
-        let html = '';
-        let subtotal = 0;
-
-        // 1. Items Section: 10px Gap logic
-        cart.forEach((item, index) => {
-            let qty = item.qty || 1;
-            let itemPrice = item.priceNum || parseInt(item.price.replace(/,/g, ''));
-            subtotal += (itemPrice * qty);
-
-            html += `
-                <div class="cart-item" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1.5px solid var(--cloud); background: white; position: relative;">
-                    <div class="cart-item-img" style="width: 60px; height: 60px; background: var(--snow); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                        <img src="${item.img}" alt="${item.title}" style="max-width: 90%; max-height: 90%; object-fit: contain;">
-                    </div>
-                    
-                    <div class="cart-item-info" style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                        <div class="cart-item-title" style="font-size: 12px; font-weight: 800; color: var(--carbon); line-height: 1.2; text-transform: uppercase;">${item.title}</div>
-                        <div class="cart-item-price" style="font-size: 15px; font-weight: 900; color: var(--ocean);">Rs. ${(itemPrice * qty).toLocaleString('en-IN')}</div>
-                    </div>
-                    
-                    <div class="qty-pill" style="display: flex; align-items: center; background: #f0f9ff; border: 1px solid var(--smoke); border-radius: 5px; height: 30px; overflow: hidden;">
-                        <button onclick="updateCartItemQty(${index}, -1)" style="border:none; background:transparent; width:25px; color:var(--ocean); font-weight:bold; cursor:pointer;">-</button>
-                        <div style="width:25px; text-align:center; font-size:12px; font-weight:900;">${qty}</div>
-                        <button onclick="updateCartItemQty(${index}, 1)" style="border:none; background:transparent; width:25px; color:var(--ocean); font-weight:bold; cursor:pointer;">+</button>
-                    </div>
-                </div>`;
-        });
-        listContainer.innerHTML = html;
-
-        // 2. Coins & Summary Merge Logic
-        let userCoins = (currentUser && currentUser.coins) ? currentUser.coins : 0;
-        let usableCoins = Math.min(userCoins, subtotal * 10);
-        let discount = usableCoins * 0.1;
-        let finalTotal = subtotal;
-
-        if (applyCoinsBox) {
-            if (usableCoins > 0) {
-                // Styling specifically to merge it visually
-                applyCoinsBox.style.display = 'flex';
-                applyCoinsBox.style.background = 'transparent';
-                applyCoinsBox.style.border = 'none';
-                applyCoinsBox.style.borderBottom = '1.5px dashed var(--smoke)';
-                applyCoinsBox.style.borderRadius = '0';
-                applyCoinsBox.style.padding = '10px 0';
-                applyCoinsBox.style.margin = '0 10px';
-
-                document.getElementById('availableCoinsTextModal').innerText = `${userCoins} ORACOCOINS`;
-                document.getElementById('coinSavingsTextModal').innerText = discount.toFixed(2);
-
-                const applyBtn = document.getElementById('applyCoinsBtnModal');
-                if (isCoinsApplied) {
-                    applyBtn.innerText = 'REMOVE';
-                    applyBtn.style.background = 'var(--slate)';
-                    finalTotal = subtotal - discount;
-                } else {
-                    applyBtn.innerText = 'APPLY';
-                    applyBtn.style.background = 'var(--ocean)';
-                }
-            } else {
-                applyCoinsBox.style.display = 'none';
-                isCoinsApplied = false;
-            }
-        }
-
-        // 3. Summary Section: Strict 10px padding
-        summaryBlock.style.padding = '10px';
-        
-        document.getElementById('cartSubtotal').innerText = `Rs. ${subtotal.toLocaleString('en-IN')}`;
-        const totalEl = document.getElementById('cartTotal');
-        
-        if (animate && previousCartTotal !== finalTotal) {
-            animateValue(totalEl, previousCartTotal, finalTotal, 800);
-        } else {
-            totalEl.innerText = `Rs. ${finalTotal.toLocaleString('en-IN')}`;
-        }
-
-        const waContainer = document.getElementById('whatsappInputContainer');
-        if (waContainer) {
-            if (currentUser && (!currentUser.phone || currentUser.phone === "" || currentUser.phone.includes("Update"))) {
-                waContainer.style.display = "block";
-                waContainer.style.padding = "0 10px 10px 10px"; // Align with summary
-            } else {
-                waContainer.style.display = "none";
-            }
-        }
-        previousCartTotal = finalTotal;
+    if (cart.length === 0) {
+        listContainer.innerHTML = '';
+        listContainer.style.display = 'none';
+        emptyState.style.display = 'flex';
+        summaryBlock.style.display = 'none';
+        if (applyCoinsBox) applyCoinsBox.style.display = 'none';
+        previousCartTotal = 0;
+        return;
     }
+
+    emptyState.style.display = 'none';
+    listContainer.style.display = 'flex';
+    summaryBlock.style.display = 'block';
+
+    let html = '';
+    let subtotal = 0;
+
+    cart.forEach((item, index) => {
+        let qty = item.qty || 1;
+        let itemPrice = item.priceNum || parseInt(item.price.replace(/,/g, ''));
+        subtotal += (itemPrice * qty);
+
+        html += `
+            <div class="cart-item">
+                <div class="cart-item-img">
+                    <img src="${item.img}" alt="${item.title}">
+                </div>
+                
+                <div class="cart-item-info">
+                    <div class="cart-item-title">${item.title}</div>
+                    <div class="cart-item-price">Rs. ${(itemPrice * qty).toLocaleString('en-IN')}</div>
+                </div>
+                
+                <div class="qty-pill">
+                    <button onclick="updateCartItemQty(${index}, -1)">-</button>
+                    <div style="font-size:13px; font-weight:900;">${qty}</div>
+                    <button onclick="updateCartItemQty(${index}, 1)">+</button>
+                </div>
+            </div>`;
+    });
+    listContainer.innerHTML = html;
+
+    // Coins Logic (Merged look)
+    let userCoins = (currentUser && currentUser.coins) ? currentUser.coins : 0;
+    let usableCoins = Math.min(userCoins, subtotal * 10);
+    let discount = usableCoins * 0.1;
+    let finalTotal = subtotal;
+
+    if (applyCoinsBox && usableCoins > 0) {
+        applyCoinsBox.style.display = 'flex';
+        document.getElementById('availableCoinsTextModal').innerText = `${userCoins} ORACOCOINS`;
+        document.getElementById('coinSavingsTextModal').innerText = discount.toFixed(2);
+        
+        const applyBtn = document.getElementById('applyCoinsBtnModal');
+        if (isCoinsApplied) {
+            applyBtn.innerText = 'REMOVE';
+            finalTotal = subtotal - discount;
+        } else {
+            applyBtn.innerText = 'APPLY';
+        }
+    } else if (applyCoinsBox) {
+        applyCoinsBox.style.display = 'none';
+        isCoinsApplied = false;
+    }
+
+    // Total Update
+    document.getElementById('cartSubtotal').innerText = `Rs. ${subtotal.toLocaleString('en-IN')}`;
+    const totalEl = document.getElementById('cartTotal');
+    if (animate && previousCartTotal !== finalTotal) {
+        animateValue(totalEl, previousCartTotal, finalTotal, 800);
+    } else {
+        totalEl.innerText = `Rs. ${finalTotal.toLocaleString('en-IN')}`;
+    }
+    previousCartTotal = finalTotal;
+}
     window.placeOrder = async function() {
         if(cart.length === 0 || !currentUser) return;
         
