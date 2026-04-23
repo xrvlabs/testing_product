@@ -393,6 +393,7 @@
         text-align: left !important;
     }
 }
+
 /* 3. Mobile/Tablet reset (Safety check) */
 @media (max-width: 1023px) {
     .header-logo-desktop {
@@ -2199,6 +2200,91 @@ body, .app-container {
     }
 }
 /* =========================================================================
+   GLOBAL BRAND COLOR OVERRIDE (#7fd5e2)
+========================================================================= */
+:root {
+    --ocean: #7fd5e2 !important; /* Ye poori site ke default blue ko naye color se badal dega */
+}
+
+/* 1. Text & Icon Colors */
+.logo-title,
+.auth-trigger,
+.cart-wrapper i,
+.location-text .pincode,
+.search-input-box i.fa-tooth,
+.promo-btn,
+.loc-icon,
+.pill.active,
+.pill:hover,
+#locationModal h2 i, 
+.loc-input-wrapper i,
+.auth-tab.active,
+.toggle-password:hover {
+    color: #7fd5e2 !important;
+}
+
+/* 2. Solid Backgrounds & Hover States */
+.auth-trigger:hover,
+.mm-cat-list li:hover {
+    background: #7fd5e2 !important;
+    color: white !important;
+}
+
+/* 3. Background Gradients (Using #7fd5e2 and a slightly lighter shade #bceef5) */
+.location-icon-wrapper,
+.loc-submit-btn,
+.promo-card,
+.mm-cat-list li.active,
+.auth-submit-btn {
+    background: linear-gradient(135deg, #7fd5e2 0%, #bceef5 100%) !important;
+}
+
+/* 4. Borders */
+.cart-wrapper:hover,
+.search-input-box:focus-within,
+.loc-current:hover,
+.form-input:focus {
+    border-color: #7fd5e2 !important;
+}
+
+/* 5. Light Backgrounds & Shadows (RGB: 127, 213, 226) */
+.auth-trigger {
+    background: rgba(127, 213, 226, 0.1) !important;
+    border: 1px solid rgba(127, 213, 226, 0.2) !important;
+}
+
+.auth-trigger:hover {
+    box-shadow: 0 4px 16px rgba(127, 213, 226, 0.3) !important;
+}
+
+.search-input-box:focus-within,
+.form-input:focus {
+    box-shadow: 0 4px 16px rgba(127, 213, 226, 0.15) !important;
+}
+
+.auth-submit-btn {
+    box-shadow: 0 10px 25px rgba(127, 213, 226, 0.25) !important;
+}
+
+.auth-submit-btn:hover {
+    box-shadow: 0 15px 35px rgba(127, 213, 226, 0.35) !important;
+}
+
+.pill:hover, .pill.active {
+    background: rgba(127, 213, 226, 0.1) !important;
+}
+
+/* Mobile Icon & Pincode Box Sync */
+@media (max-width: 1023px) {
+    .location-block {
+        background: rgba(127, 213, 226, 0.1) !important;
+        border: 1px solid rgba(127, 213, 226, 0.2) !important;
+    }
+    .location-icon-wrapper i {
+        color: #7fd5e2 !important;
+    }
+}
+/* =========================================================================
    STRICT TABLET COMPACT PINCODE & BRAND COLOR SYNC (#6ec9e6)
 ========================================================================= */
 
@@ -2280,6 +2366,7 @@ body, .app-container {
 .loc-current:hover {
     border-color: #6ec9e6 !important;
 }
+
 @media (max-width: 1023px) {
     /* Pincode text ko hide kiya */
     .location-text {
@@ -3126,12 +3213,12 @@ input[type="email"],
             pwdInput.type = 'text';
             icon.classList.remove('fa-eye-slash');
             icon.classList.add('fa-eye');
-            icon.style.color = '#6ec9e6'; // Brand color when visible
+            icon.style.color = '#7fd5e2'; // YAHAN NAYA COLOR UPDATE KAR DIYA HAI
         } else {
             pwdInput.type = 'password';
             icon.classList.remove('fa-eye');
             icon.classList.add('fa-eye-slash');
-            icon.style.color = 'var(--silver)'; // Back to grey when hidden
+            icon.style.color = 'var(--silver)';
         }
     };
    // ===================== PRELOADER =====================
@@ -4395,16 +4482,18 @@ if (benefitsTab) {
         }, 300);
     }
 
-    function toggleAuthMode(mode) {
-        document.getElementById('authErrorMsg').style.display = 'none';
+   function toggleAuthMode(mode) {
+        const btn = document.getElementById('authSubmitBtn');
+        btn.classList.remove('shake-animation'); // Tab badalte waqt error animation reset karega
+        
         if (mode === 'login') {
             document.getElementById('tabLogin').classList.add('active');
             document.getElementById('tabSignup').classList.remove('active');
-            document.getElementById('authSubmitBtn').innerText = 'LOGIN SECURELY';
+            btn.innerText = 'LOGIN SECURELY';
         } else {
             document.getElementById('tabSignup').classList.add('active');
             document.getElementById('tabLogin').classList.remove('active');
-            document.getElementById('authSubmitBtn').innerText = 'CREATE ACCOUNT';
+            btn.innerText = 'CREATE ACCOUNT';
         }
     }
 async function submitAuth(e) {
