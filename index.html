@@ -135,7 +135,106 @@
     background: var(--coral) !important; /* Halka sa redish alert feel */
     box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3) !important;
 }
+/* BLOG SHIMMER SPECIFIC */
+.shimmer-blog-card {
+    background: white;
+    border: 1.5px solid var(--cloud);
+    border-radius: 5px !important;
+    padding: 0;
+    overflow: hidden;
+}
 
+.shimmer-blog-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+/* =========================================================================
+   BLOGS PAGE: 5PX CORNERS & 10PX MARGIN SYNC
+========================================================================= */
+@media (min-width: 1024px) {
+    .blogs-wrapper {
+        width: 100% !important;
+        max-width: 1560px !important;
+        margin: 0 auto !important;
+        padding: 10px !important;
+        box-sizing: border-box !important;
+    }
+}
+
+.blogs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 10px !important;
+    padding: 10px;
+}
+
+.blog-card {
+    background: white;
+    border: 1.5px solid var(--cloud);
+    border-radius: 5px !important;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-img-wrap {
+    width: 100%;
+    height: 200px;
+    background: var(--snow);
+}
+
+.blog-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px 5px 0 0 !important;
+}
+
+.blog-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.blog-date {
+    font-size: 11px;
+    font-weight: 800;
+    color: #6ec9e6; /* Branded Blue */
+}
+
+.blog-title {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--carbon);
+    line-height: 1.4;
+}
+
+.blog-excerpt {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.blog-tag {
+    font-size: 10px;
+    font-weight: 900;
+    padding: 4px 10px;
+    background: var(--snow);
+    color: var(--slate);
+    border-radius: 5px !important;
+    width: fit-content;
+    margin-top: 8px;
+}
+
+/* Hover effects removal */
+.blog-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
 /* =========================================================================
    MOBILE HEADER: 3-ROW PERFECT ALIGNMENT
 ========================================================================= */
@@ -1967,9 +2066,18 @@ body, .app-container {
             object-fit: contain;
             animation: pulseLogo 1.5s ease-in-out infinite;
         }
-/* =========================================================================
-   EVENTS VIEW: DESKTOP WIDTH & ALIGNMENT SYNC
-========================================================================= */
+@keyframes placeholderShimmer {
+    0% { background-position: -800px 0; }
+    100% { background-position: 800px 0; }
+}
+
+.shimmer {
+    animation: placeholderShimmer 1.5s linear infinite forwards;
+    background: #f6f7f8;
+    background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+    background-size: 800px 104px;
+    position: relative;
+}
 @media (min-width: 1024px) {
     .events-wrapper {
         width: 100% !important;
@@ -2920,9 +3028,11 @@ input[type="email"],
         <div class="nav-pills no-scrollbar">
             <div class="pill active" onclick="switchView('homeView')"><i class="fa-solid fa-house"></i> HOME</div>
             <div class="pill" onclick="toggleMegamenu(event)" id="catDropdownBtn"><i class="fa-solid fa-border-all"></i> CATEGORY</div>
+<div class="pill" onclick="switchView('blogsView')"><i class="fa-solid fa-blog"></i> BLOGS</div>
             <div class="pill" onclick="switchView('eventsView')"><i class="fa-regular fa-calendar-check"></i> EVENTS</div>
             <div class="pill" onclick="switchView('contactView')"><i class="fa-solid fa-headset"></i> CONTACT US</div>
-        </div>
+       
+ </div>
 
         <div class="megamenu-overlay" id="megamenuOverlay" onclick="closeMegamenu()"></div>
         <div class="megamenu" id="megamenu">
@@ -3138,7 +3248,11 @@ input[type="email"],
             <div class="events-grid" id="eventsGridContent" style="display: none;"></div>
         </div>
     </div>
-
+<div id="blogsView" class="view-section">
+    <div class="blogs-wrapper">
+        <div class="blogs-grid" id="blogsGrid"></div>
+    </div>
+</div>
     <div id="contactView" class="view-section">
         <div class="contact-wrapper">
             <div class="contact-grid">
@@ -3527,12 +3641,13 @@ input[type="email"],
     window.currentSelectedVariantIndex = 0;
 
     const views = {
-        homeView: document.getElementById('homeView'),
-        productView: document.getElementById('productView'),
-        authView: document.getElementById('authView'),
-        eventsView: document.getElementById('eventsView'),
-        contactView: document.getElementById('contactView')
-    };
+    homeView: document.getElementById('homeView'),
+    productView: document.getElementById('productView'),
+    authView: document.getElementById('authView'),
+    eventsView: document.getElementById('eventsView'),
+    blogsView: document.getElementById('blogsView'), // Naya
+    contactView: document.getElementById('contactView')
+};
 // Password Show/Hide Toggle Logic
     window.togglePasswordVisibility = function() {
         const pwdInput = document.getElementById('authPassword');
@@ -3885,7 +4000,7 @@ function renderPromoCards() {
         filterEvents();
     }
 
-    function switchView(targetViewId) {
+   function switchView(targetViewId) {
     closeMegamenu(); 
     
     // 1. View Switching Logic
@@ -3898,38 +4013,47 @@ function renderPromoCards() {
     const headerMaster = document.querySelector('.header-master'); 
     const footer = document.getElementById('globalFooter');
     
-    // 2. Correct Tab Highlighting (Pills index fix)
+    // 2. Correct Tab Highlighting (Sequence: Home, Category, Blogs, Events, Contact)
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     
     if(targetViewId === 'homeView') {
-        document.querySelector('.pill:nth-child(1)').classList.add('active'); // Home
+        document.querySelector('.pill:nth-child(1)').classList.add('active');
+    } else if(targetViewId === 'blogsView') {
+        document.querySelector('.pill:nth-child(3)').classList.add('active'); // Blogs 3rd pill hai
     } else if(targetViewId === 'eventsView') {
-        document.querySelector('.pill:nth-child(3)').classList.add('active'); // Events is 3rd child
+        document.querySelector('.pill:nth-child(4)').classList.add('active'); // Events 4th pill ho gaya
     } else if(targetViewId === 'contactView') {
-        document.querySelector('.pill:nth-child(4)').classList.add('active'); // Contact Us is 4th child
+        document.querySelector('.pill:nth-child(5)').classList.add('active'); // Contact 5th pill
     }
 
-    // 3. Header/Footer Visibility Logic
-    if (targetViewId === 'homeView' || targetViewId === 'eventsView' || targetViewId === 'contactView') {
+    // 3. Header/Footer Visibility & HeaderMaster Logic
+    // In views mein Header aur Footer dono dikhenge
+    if (targetViewId === 'homeView' || targetViewId === 'eventsView' || targetViewId === 'blogsView' || targetViewId === 'contactView') {
         header.style.display = 'block';
         footer.style.display = 'block';
+        
+        // Sirf Home aur Blogs mein Top Logo/Search (HeaderMaster) dikhega, baki mein clean look
         if (targetViewId === 'eventsView' || targetViewId === 'contactView') {
             headerMaster.style.display = 'none';
         } else {
             headerMaster.style.display = 'flex';
         }
-    } else if (targetViewId === 'productView') {
+    } 
+    // Product View mein Footer hide rahega
+    else if (targetViewId === 'productView') {
         header.style.display = 'block';
         headerMaster.style.display = 'flex';
         footer.style.display = 'none'; 
-    } else {
+    } 
+    // Auth View ya kisi aur view mein sab hide
+    else {
         header.style.display = 'none';
         footer.style.display = 'none';
     }
 
     window.scrollTo(0, 0);
     
-    // 4. Events View Auto-Reset
+    // 4. Events View Logic (Auto-Reset)
     if(targetViewId === 'eventsView') {
         const searchInput = document.getElementById('eventSearchInput');
         const catFilter = document.getElementById('eventCatFilter');
@@ -3942,8 +4066,81 @@ function renderPromoCards() {
         const liveTab = document.getElementById('tabLiveEvents');
         if(liveTab) switchEventTab('live', liveTab);
     }
+
+    // 5. Blogs View Logic (Shimmer + Data Loading)
+    if (targetViewId === 'blogsView') {
+        if (typeof renderBlogSkeletons === "function") {
+            renderBlogSkeletons(); // Pehle shimmer dikhao
+            setTimeout(() => {
+                renderBlogData(); // 1.2s baad dummy data load karo
+            }, 1200);
+        }
+    }
+}
+// 1. Shimmer Load karne wala function
+function renderBlogSkeletons() {
+    const grid = document.getElementById('blogsGrid');
+    if(!grid) return;
+    
+    let html = '';
+    for(let i = 0; i < 6; i++) {
+        html += `
+            <div class="shimmer-blog-card">
+                <div class="shimmer" style="height:200px; width:100%; display:block;"></div>
+                <div class="shimmer-blog-content">
+                    <div class="shimmer" style="width:30%; height:12px; border-radius:5px;"></div>
+                    <div class="shimmer" style="width:90%; height:18px; border-radius:5px;"></div>
+                    <div class="shimmer" style="width:100%; height:40px; border-radius:5px;"></div>
+                    <div class="shimmer" style="width:60px; height:16px; border-radius:5px; margin-top:5px;"></div>
+                </div>
+            </div>`;
+    }
+    grid.innerHTML = html;
 }
 
+// 2. Actual Data load karne wala function
+function renderBlogData() {
+    const blogs = [
+        {
+            title: "LATEST TRENDS IN DIGITAL DENTISTRY",
+            date: "24 APR 2026",
+            excerpt: "Discover how AI and 3D printing are revolutionizing modern dental clinics...",
+            tag: "TECHNOLOGY",
+            img: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?w=500&q=80"
+        },
+        {
+            title: "ESSENTIAL ORAL HYGIENE TIPS",
+            date: "20 APR 2026",
+            excerpt: "Professional advice for maintaining a healthy smile for your patients...",
+            tag: "EDUCATION",
+            img: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=500&q=80"
+        },
+        {
+            title: "CHOOSING THE RIGHT COMPOSITE",
+            date: "15 APR 2026",
+            excerpt: "A comprehensive guide to selecting materials for aesthetic restorations...",
+            tag: "CLINICAL",
+            img: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=500&q=80"
+        }
+    ];
+
+    const grid = document.getElementById('blogsGrid');
+    if(!grid) return;
+
+    grid.innerHTML = blogs.map(b => `
+        <div class="blog-card">
+            <div class="blog-img-wrap">
+                <img src="${b.img}" alt="${b.title}" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div class="blog-content">
+                <div class="blog-date"><i class="fa-solid fa-calendar-days"></i> ${b.date}</div>
+                <div class="blog-title">${b.title}</div>
+                <div class="blog-excerpt">${b.excerpt}</div>
+                <div class="blog-tag">${b.tag}</div>
+            </div>
+        </div>
+    `).join('');
+}
     function switchEventTab(type, element) {
         document.querySelectorAll('.events-tab').forEach(t => t.classList.remove('active'));
         element.classList.add('active');
