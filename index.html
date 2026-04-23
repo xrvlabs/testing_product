@@ -143,12 +143,54 @@
     padding: 0;
     overflow: hidden;
 }
+/* =========================================================================
+   REMOVE HOVER EFFECTS FROM BACK BUTTONS (PRODUCT & BLOG)
+========================================================================= */
 
+/* 1. Product Page: BACK TO HOME button hover removal */
+#productView .pd-back-btn:hover {
+    transform: none !important;            /* Side movement band */
+    border-color: var(--smoke) !important; /* Border static rahega */
+    color: var(--muted) !important;        /* Text color change nahi hoga */
+    background: white !important;          /* Background static */
+    box-shadow: none !important;           /* Shadow hatayi */
+}
+
+/* 2. Blog Detail Page: BACK TO BLOGS button hover removal */
+#blogDetailView .pd-back-btn:hover {
+    transform: none !important;
+    border-color: var(--smoke) !important;
+    color: var(--muted) !important;
+    background: white !important;
+    box-shadow: none !important;
+}
+
+/* Base style reset taaki button hamesha ek jaisa dikhe */
+.pd-back-btn {
+    transition: none !important; /* Kisi bhi tarah ka smooth transition disable kiya */
+}
 .shimmer-blog-content {
     padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+/* RESET FOR BLOG DETAIL ONLY */
+#blogDetailView .pd-wrapper {
+    padding-top: 5px !important; /* Top edge se chipka rahega */
+    padding-bottom: 10px !important;
+    gap: 5px !important; /* Button aur Card ke beech 5px gap */
+}
+
+#blogDetailView .pd-back-btn {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important; /* Wrapper ka gap manage karega spacing */
+    border-radius: 5px !important;
+}
+
+/* Scrollbar hide chrome/safari */
+#blogDetailView::-webkit-scrollbar {
+    display: none !important;
 }
 @media (max-width: 1023px) {
         .events-tabs {
@@ -853,7 +895,8 @@ body, .app-container {
    HIDE SCROLLBARS: CART, CATEGORY & PROFILE (MAINTAIN SCROLL)
 ========================================================================= */
 
-/* Sabhi target elements aur unke internal containers ko select kiya */
+#blogDetailView,
+#blogsView,
 #cartComponent, 
 #cartComponent .modal-scroll-content,
 #megamenu,
@@ -865,10 +908,12 @@ body, .app-container {
 #profileComponent .modal-scroll-content,
 #profileTabContent {
     -ms-overflow-style: none !important;  /* IE and Edge */
-    scrollbar-width: none !important;     /* Firefox */
+    scrollbar-width: none !important;      /* Firefox */
 }
 
-/* Webkit browsers (Chrome, Safari, Opera) ke liye scrollbar hidden */
+/* 2. For Chrome, Safari, and Opera (Webkit) */
+#blogDetailView::-webkit-scrollbar,
+#blogsView::-webkit-scrollbar,
 #cartComponent::-webkit-scrollbar,
 #cartComponent .modal-scroll-content::-webkit-scrollbar,
 #megamenu::-webkit-scrollbar,
@@ -3284,6 +3329,32 @@ input[type="email"],
         <div class="events-grid" id="eventsGridContent" style="display: none;"></div>
     </div>
 </div>
+<div id="blogDetailView" class="view-section" style="overflow-y: auto; height: 100vh; scrollbar-width: none; -ms-overflow-style: none;">
+    <div class="pd-wrapper" style="padding: 5px 10px !important; gap: 0 !important; display: flex; flex-direction: column;">
+        
+        <div class="pd-back-btn" onclick="switchView('blogsView')" style="margin: 0 0 5px 0 !important; border-radius: 5px !important; align-self: flex-start; padding: 8px 16px;">
+            <i class="fa-solid fa-arrow-left"></i> BACK TO BLOGS
+        </div>
+
+        <div class="blog-detail-container" style="background: white; border-radius: 5px; border: 1.5px solid var(--cloud); overflow: hidden; width: 100%;">
+            <div style="width: 100%; height: clamp(200px, 35vh, 400px); background: var(--snow);">
+                <img id="bd-main-img" src="" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            
+            <div class="blog-detail-content" style="padding: 20px 15px; display: flex; flex-direction: column; gap: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px dashed var(--cloud); padding-bottom: 10px;">
+                    <span id="bd-tag" class="blog-tag" style="margin: 0; background: var(--ice); color: var(--ocean); padding: 4px 10px; border-radius: 5px; font-size: 10px; font-weight: 900;"></span>
+                    <span id="bd-date" style="font-size: 11px; font-weight: 800; color: var(--silver);"></span>
+                </div>
+                
+                <h1 id="bd-title" style="font-size: 24px; font-weight: 900; color: var(--carbon); line-height: 1.2; text-transform: uppercase;"></h1>
+                
+                <div id="bd-full-text" style="font-size: 15px; color: var(--slate); line-height: 1.8; font-weight: 700; text-align: justify; white-space: pre-line;">
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="blogsView" class="view-section">
     <div class="blogs-wrapper">
         <div class="blogs-grid" id="blogsGrid" style="margin-top: 10px;">
@@ -3704,8 +3775,27 @@ let allBlogs = [
     productView: document.getElementById('productView'),
     authView: document.getElementById('authView'),
     eventsView: document.getElementById('eventsView'),
-    blogsView: document.getElementById('blogsView'), // Naya
+    blogsView: document.getElementById('blogsView'),
+    blogDetailView: document.getElementById('blogDetailView'), // 👈 Ye line check karein
     contactView: document.getElementById('contactView')
+};
+window.openFullBlog = function(blogTitle) {
+    const blog = allBlogs.find(b => b.title === blogTitle);
+    if(!blog) return;
+
+    // Image error handling
+    const imgEl = document.getElementById('bd-main-img');
+    imgEl.src = blog.img;
+    
+    document.getElementById('bd-title').innerText = blog.title;
+    document.getElementById('bd-tag').innerText = blog.tag;
+    document.getElementById('bd-date').innerHTML = `<i class="fa-solid fa-calendar-days"></i> ${blog.date}`;
+    
+    // Dynamic Description (Aapka custom text)
+    document.getElementById('bd-full-text').innerText = `${blog.excerpt}\n\nDigital dentistry is transforming the way we work. From precise 3D scanning to AI-assisted diagnosis, everything is now more accurate and faster.\n\nAt Oraco, we ensure that you get the best tools to serve your patients. This detailed guide covers everything you need to know about the latest innovations in this field.\n\nKey takeaways include cost management, time efficiency, and superior clinical outcomes. Reach out to our team if you need more details on implementing these workflows in your clinic.`;
+
+    // View switch command
+    switchView('blogDetailView');
 };
 // Password Show/Hide Toggle Logic
     window.togglePasswordVisibility = function() {
@@ -3823,9 +3913,9 @@ function renderBlogList(data) {
     if(!grid) return;
 
     grid.innerHTML = data.map(b => `
-        <div class="blog-card">
+        <div class="blog-card" onclick="openFullBlog('${b.title.replace(/'/g, "\\'")}')" style="cursor:pointer;">
             <div class="blog-img-wrap">
-                <img src="${b.img}" alt="${b.title}" style="width:100%; height:100%; object-fit:cover;">
+                <img src="${b.img}" alt="${b.title}">
             </div>
             <div class="blog-content">
                 <div class="blog-date"><i class="fa-solid fa-calendar-days"></i> ${b.date}</div>
