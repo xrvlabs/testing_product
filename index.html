@@ -122,6 +122,20 @@
     color: #6ec9e6 !important; /* Brand Blue Hover */
 }
 /* =========================================================================
+   SHAKE ANIMATION FOR AUTH BUTTON ERRORS
+========================================================================= */
+@keyframes shakeBtn {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+
+.shake-animation {
+    animation: shakeBtn 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
+    background: var(--coral) !important; /* Halka sa redish alert feel */
+    box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3) !important;
+}
+/* =========================================================================
    MOBILE HEADER: 3-ROW PERFECT ALIGNMENT
 ========================================================================= */
 @media (max-width: 1023px) {
@@ -2365,11 +2379,15 @@ body, .app-container {
            INPUT FIELD CASE FIX (ALLOW SMALL LETTERS)
         ========================================================================= */
         input[type="password"], 
-        input[type="email"],
-        #authEmail, 
-        #authPassword {
-            text-transform: none !important;
-        }
+#authPassword {
+    text-transform: none !important;
+}
+
+/* Email field humesha CAPITAL letters mein hi type hoga */
+input[type="email"],
+#authEmail {
+    text-transform: uppercase !important;
+}
     </style>
 </head>
 <body>
@@ -2768,18 +2786,18 @@ body, .app-container {
 
                     <div class="form-group">
                         <label>EMAIL ADDRESS</label>
-                        <input type="email" id="authEmail" class="form-input" placeholder="GUEST@GRIDLABS.IN" required>
+                        <input type="email" id="authEmail" class="form-input" placeholder="GUEST@GRIDLABS.COM" oninput="formatEmail(this)">
                     </div>
 
-                   <div class="form-group">
+                    <div class="form-group">
                         <label>PASSWORD</label>
                         <div class="password-wrapper">
-                            <input type="password" id="authPassword" class="form-input" placeholder="Demo123" maxlength="20" required>
+                            <input type="password" id="authPassword" class="form-input" placeholder="Demo123" maxlength="20">
                             <i class="fa-regular fa-eye-slash toggle-password" onclick="togglePasswordVisibility()"></i>
                         </div>
                     </div>
 
-                    <p id="authErrorMsg" style="color: var(--coral); font-size: 11px; font-weight: 800; display:none; margin-bottom: 12px;">INVALID CREDENTIALS</p>
+                  
 
                     <button type="submit" class="auth-submit-btn" id="authSubmitBtn">LOGIN SECURELY</button>
 
@@ -3073,7 +3091,10 @@ body, .app-container {
             setTimeout(() => { loader.classList.add('hidden'); }, delay); 
         }
     });
-
+window.formatEmail = function(input) {
+        // Ye line chote letters ko bada karegi aur symbols ko type hi nahi hone degi
+        input.value = input.value.toUpperCase().replace(/[^A-Z0-9@.]/g, '');
+    };
     // ===================== ALL FUNCTIONS =====================
 // Sticky Header Scroll Tracker
     window.addEventListener('scroll', () => {
@@ -4335,20 +4356,39 @@ if (benefitsTab) {
 async function submitAuth(e) {
         e.preventDefault();
         const isSignup = document.getElementById('tabSignup').classList.contains('active');
-        const email = document.getElementById('authEmail').value;
+        // .toUpperCase() lagaya hai taaki backend mein bhi strictly capital hi jaye
+        const email = document.getElementById('authEmail').value.trim().toUpperCase();
         const password = document.getElementById('authPassword').value;
-        const errorMsg = document.getElementById('authErrorMsg');
         const btn = document.getElementById('authSubmitBtn');
+        const originalText = isSignup ? "CREATE ACCOUNT" : "LOGIN SECURELY";
 
-        // Strong Password Validation (Sirf Sign Up ke time)
+        const triggerShake = (shortMsg) => {
+            btn.innerText = shortMsg; 
+            btn.classList.add('shake-animation');
+            setTimeout(() => {
+                btn.classList.remove('shake-animation');
+                btn.innerText = originalText;
+            }, 2000); 
+        };
+
+        // 1. Empty Fields Check
+        if (!email || !password) {
+            triggerShake("FIELDS REQUIRED!");
+            return;
+        }
+
+        // 2. Strict .COM Email Check
+        if (!email.endsWith('.COM')) {
+            triggerShake("ONLY .COM EMAILS ALLOWED!");
+            return;
+        }
+
+        // 3. Strong Password Validation (Only for Sign Up)
         if (isSignup) {
-            // Regex: Min 8 chars, at least 1 uppercase, 1 lowercase, 1 number, and 1 special character
             const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-            
             if (!strongPasswordRegex.test(password)) {
-                errorMsg.innerText = "PASSWORD MUST BE 8+ CHARS WITH 1 UPPERCASE, 1 LOWERCASE, 1 NUMBER & 1 SYMBOL.";
-                errorMsg.style.display = 'block';
-                return; // Yahin rok dega, Firebase tak request nahi jayegi
+                triggerShake("WEAK PASSWORD!"); 
+                return;
             }
         }
 
@@ -4368,13 +4408,10 @@ async function submitAuth(e) {
             } else {
                 await signInWithEmailAndPassword(auth, email, password);
             }
-            errorMsg.style.display = 'none';
             switchView('homeView');
         } catch (error) {
-            errorMsg.innerText = error.message.replace('Firebase: ', '').toUpperCase();
-            errorMsg.style.display = 'block';
+            triggerShake("INVALID CREDENTIALS!");
         }
-        btn.innerText = isSignup ? "CREATE ACCOUNT" : "LOGIN SECURELY";
     }
 
     function logoutUser() {
