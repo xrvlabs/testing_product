@@ -3580,7 +3580,67 @@ body, .app-container {
         column-gap: 10px !important;
     }
 }
+/* =========================================================================
+   PROFILE PAGE: HEIGHT ALIGNMENT & SINGLE CARD MAX-WIDTH FIX
+========================================================================= */
 
+/* 1. Sidebar aur Main Content box ki height hamesha barabar rakhne ke liye */
+@media(min-width: 1024px) {
+    .profile-layout-split {
+        align-items: stretch !important; /* 'flex-start' ko hata kar 'stretch' kiya */
+    }
+}
+
+/* 2. White Box (Content Area) ko empty hone par bhi ek lamba height dena */
+.profile-content-area {
+    min-height: 65vh !important; 
+    display: flex !important;
+    flex-direction: column !important;
+}
+/* =========================================================================
+   SINGLE CARD FULL-WIDTH (STRETCH) FIX
+========================================================================= */
+
+/* Agar grid mein sirf ek hi item (card) hai, toh wo poori 100% width lega */
+.pf-data-card:only-child {
+    grid-column: 1 / -1 !important; /* Card ko grid ke end tak stretch karega */
+    max-width: 100% !important;     /* Meri picchli 450px wali limit ko tod dega */
+    width: 100% !important;
+}
+
+/* Add New Address button ya dusre buttons ko bhi single items ke hisaab se full-width set karne ke liye (Optional) */
+.profile-tab-content > .pm-shop-btn {
+    width: 100% !important;
+}
+/* 3. Active tab space ko fill karega taaki content align ho sake */
+.profile-tab-content.active {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+}
+
+/* 4. Grid System Upgrade: Single item hone par extreme stretch se rokna */
+.pf-grid {
+    display: grid !important;
+    /* Auto-fill ensure karega ki extra space khali rahe, card stretch na ho */
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+    gap: 15px !important;
+    justify-content: start !important; /* Cards hamesha left se start honge */
+    align-items: start !important;
+}
+
+/* Single Cards ko ek strict Limit dena */
+.pf-data-card {
+    width: 100% !important;
+    max-width: 450px !important; /* Agar akela card hai toh 450px se bada nahi hoga */
+}
+
+/* 5. "Returns" ya "Help" mein kam content ho toh Icon aur Text ko exactly Center mein lana */
+.help-box {
+    margin: auto !important; /* Flexbox ke andar yeh automatically vertically & horizontally center kar dega */
+    width: 100% !important;
+    text-align: center !important;
+}
         /* =========================================================================
    STICKY SEARCH ON SCROLL (MOBILE)
 ========================================================================= */
