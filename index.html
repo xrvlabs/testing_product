@@ -952,8 +952,36 @@ body, .app-container {
         .cart-badge { position: absolute; top: -4px; right: -4px; background: var(--coral); color: white; font-size: 10px; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
 
         .nav-pills { display: flex; gap: 10px; padding: 12px 20px; overflow-x: auto; background: transparent; white-space: nowrap; max-width: 1560px; margin: 0 auto; }
-        .pill { padding: 9px 22px; border: 1px solid transparent; border-radius: 50px; font-size: 13px; font-weight: 700; color: var(--muted); cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 8px;}
-        .pill:hover, .pill.active { background: var(--ice); color: var(--ocean); }
+        /* 1. Base Setup: Shape aur background hataya */
+/* Normal State: Background, border, shadow sab khatam */
+.pill {
+    padding: 10px 15px;
+    background: transparent !important; 
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    color: var(--muted) !important;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+/* Hover State: Strictly transparent background */
+.pill:hover {
+    background: transparent !important;
+    color: var(--carbon) !important; /* Text halka dark hoga hover par bina shape ke */
+}
+
+/* Active State: Sirf Text aur Icon pure Black */
+.pill.active, 
+.pill.active:hover {
+    background: transparent !important;
+    color: #000000 !important; 
+}
+
+/* Active Icon Color sync */
+.pill.active i {
+    color: #000000 !important;
+}
 
         @media (min-width: 1024px) {
             .header-master { flex-wrap: nowrap; padding: 16px 40px; gap: 20px; border-bottom: none; }
@@ -3589,47 +3617,63 @@ function renderPromoCards() {
     }
 
     function switchView(targetViewId) {
-        closeMegamenu(); 
-        Object.values(views).forEach(view => { if(view) view.classList.remove('active'); });
-        if(views[targetViewId]) views[targetViewId].classList.add('active');
-        
-        const header = document.getElementById('globalHeader');
-        const headerMaster = document.querySelector('.header-master'); 
-        const footer = document.getElementById('globalFooter');
-        
-        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-        
-        if(targetViewId === 'homeView') document.querySelector('.pill:nth-child(1)').classList.add('active');
-        if(targetViewId === 'eventsView') document.querySelector('.pill:nth-child(4)').classList.add('active');
-        if(targetViewId === 'contactView') document.querySelector('.pill:nth-child(5)').classList.add('active');
-
-        if (targetViewId === 'homeView' || targetViewId === 'eventsView' || targetViewId === 'contactView') {
-            header.style.display = 'block';
-            footer.style.display = 'block';
-            if (targetViewId === 'eventsView' || targetViewId === 'contactView') {
-                headerMaster.style.display = 'none';
-            } else {
-                headerMaster.style.display = 'flex';
-            }
-        } else if (targetViewId === 'productView') {
-            header.style.display = 'block';
-            headerMaster.style.display = 'flex';
-            footer.style.display = 'none'; 
-        } else {
-            header.style.display = 'none';
-            footer.style.display = 'none';
-        }
-
-        window.scrollTo(0, 0);
-        
-        if(targetViewId === 'eventsView') {
-            document.getElementById('eventSearchInput').value = '';
-            document.getElementById('eventCatFilter').value = 'ALL';
-            document.getElementById('eventTypeFilter').value = 'ALL';
-            const liveTab = document.getElementById('tabLiveEvents');
-            if(liveTab) switchEventTab('live', liveTab);
-        }
+    closeMegamenu(); 
+    
+    // 1. View Switching Logic
+    Object.values(views).forEach(view => { 
+        if(view) view.classList.remove('active'); 
+    });
+    if(views[targetViewId]) views[targetViewId].classList.add('active');
+    
+    const header = document.getElementById('globalHeader');
+    const headerMaster = document.querySelector('.header-master'); 
+    const footer = document.getElementById('globalFooter');
+    
+    // 2. Tab Highlighting Logic (Fixed Indices)
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    
+    if(targetViewId === 'homeView') {
+        document.querySelector('.pill:nth-child(1)').classList.add('active'); // Home
+    } else if(targetViewId === 'eventsView') {
+        document.querySelector('.pill:nth-child(3)').classList.add('active'); // Events (3rd Child)
+    } else if(targetViewId === 'contactView') {
+        document.querySelector('.pill:nth-child(4)').classList.add('active'); // Contact Us (4th Child)
     }
+
+    // 3. Header/Footer Visibility Logic
+    if (targetViewId === 'homeView' || targetViewId === 'eventsView' || targetViewId === 'contactView') {
+        header.style.display = 'block';
+        footer.style.display = 'block';
+        if (targetViewId === 'eventsView' || targetViewId === 'contactView') {
+            headerMaster.style.display = 'none';
+        } else {
+            headerMaster.style.display = 'flex';
+        }
+    } else if (targetViewId === 'productView') {
+        header.style.display = 'block';
+        headerMaster.style.display = 'flex';
+        footer.style.display = 'none'; 
+    } else {
+        header.style.display = 'none';
+        footer.style.display = 'none';
+    }
+
+    window.scrollTo(0, 0);
+    
+    // 4. Events View Reset Logic
+    if(targetViewId === 'eventsView') {
+        const searchInput = document.getElementById('eventSearchInput');
+        const catFilter = document.getElementById('eventCatFilter');
+        const typeFilter = document.getElementById('eventTypeFilter');
+        
+        if(searchInput) searchInput.value = '';
+        if(catFilter) catFilter.value = 'ALL';
+        if(typeFilter) typeFilter.value = 'ALL';
+        
+        const liveTab = document.getElementById('tabLiveEvents');
+        if(liveTab) switchEventTab('live', liveTab);
+    }
+}
 
     function switchEventTab(type, element) {
         document.querySelectorAll('.events-tab').forEach(t => t.classList.remove('active'));
