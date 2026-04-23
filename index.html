@@ -278,8 +278,213 @@
     gap: 10px !important; /* Strict 10px gap sabhi components ke beech */
 }
 /* =========================================================================
-   PROFILE PAGE: BACK BUTTON HOVER REMOVAL & 5PX CORNER SYNC
+   PROFILE PAGE: STRICT UNIFORM TEXT FIELDS (MOBILE, TABLET, DESKTOP)
 ========================================================================= */
+/* Wrapper Box Design Lock */
+#profilePageView .pf-input-wrap {
+    height: 46px !important;
+    min-height: 46px !important;
+    max-height: 46px !important;
+    border-radius: 5px !important;
+    border: 1.5px solid var(--smoke) !important;
+    background: white !important;
+    padding: 0 15px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Input Text Design Lock */
+#profilePageView .pf-input-wrap input {
+    height: 100% !important;
+    font-family: 'Quantico', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--carbon) !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+/* Icon Design Lock */
+#profilePageView .pf-input-wrap i {
+    font-size: 15px !important;
+    color: var(--silver) !important;
+}
+
+/* Hover & Focus State Sync */
+#profilePageView .pf-input-wrap:focus-within {
+    border-color: #6ec9e6 !important;
+    box-shadow: 0 4px 16px rgba(110, 201, 230, 0.15) !important;
+}
+
+/* Readonly/Disabled Fields Look Sync */
+#profilePageView .pf-input-wrap:has(input[readonly]),
+#profilePageView .pf-input-wrap:has(input[disabled]) {
+    background: var(--snow) !important;
+}
+#profilePageView .pf-input-wrap input[readonly],
+#profilePageView .pf-input-wrap input[disabled] {
+    color: var(--muted) !important;
+}
+/* Input aur Select dono ka Text Design Lock */
+#profilePageView .pf-input-wrap input,
+#profilePageView .pf-input-wrap select {
+    height: 100% !important;
+    font-family: 'Quantico', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--carbon) !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    cursor: pointer;
+}
+
+#profilePageView .pf-input-wrap input { cursor: text; }
+
+/* Readonly/Disabled Fields Look Sync */
+#profilePageView .pf-input-wrap:has(input[readonly]),
+#profilePageView .pf-input-wrap:has(input[disabled]),
+#profilePageView .pf-input-wrap:has(select[disabled]) {
+    background: var(--snow) !important;
+}
+
+#profilePageView .pf-input-wrap input[readonly],
+#profilePageView .pf-input-wrap input[disabled],
+#profilePageView .pf-input-wrap select:disabled {
+    color: var(--muted) !important;
+    cursor: not-allowed !important;
+}
+/* =========================================================================
+   PROFILE PAGE: COLLAPSIBLE SIDEBAR (DESKTOP ONLY)
+========================================================================= */
+.ps-toggle-btn {
+    display: none; /* Mobile par hide rahega */
+}
+/* =========================================================================
+   PROFILE PAGE: TAB SYSTEM & DUMMY CARDS UI
+========================================================================= */
+/* Tab Switching Logic */
+.profile-tab-content {
+    display: none;
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.profile-tab-content.active {
+    display: block;
+}
+
+/* Generic Grid & Card Styles for Tabs */
+.pf-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px !important; /* Strict 10px gap */
+}
+@media(min-width: 768px) {
+    .pf-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.pf-data-card {
+    border: 1.5px solid var(--smoke);
+    border-radius: 5px !important;
+    padding: 15px;
+    background: white;
+    transition: var(--transition);
+}
+.pf-data-card:hover { border-color: #6ec9e6; }
+
+/* Address Card Specific */
+.address-card h4 { font-size: 14px; font-weight: 900; color: var(--carbon); margin-bottom: 5px; }
+.address-card p { font-size: 12px; color: var(--muted); font-weight: 700; line-height: 1.5; margin-bottom: 10px; }
+.address-actions { display: flex; gap: 10px; border-top: 1.5px dashed var(--smoke); padding-top: 10px; margin-top: 10px; }
+.address-actions span { font-size: 11px; font-weight: 900; color: #1c5271; cursor: pointer; }
+.address-actions span:hover { color: #6ec9e6; }
+
+/* Order & Return List Specific */
+.order-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-left: 4px solid var(--ocean);
+}
+.order-card.delivered { border-left-color: var(--mint); }
+.order-card.returned { border-left-color: var(--sun); }
+
+.order-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--snow); padding-bottom: 8px; }
+.order-id { font-size: 13px; font-weight: 900; color: var(--carbon); }
+.order-status { font-size: 10px; font-weight: 900; padding: 4px 8px; border-radius: 3px; background: var(--ice); color: var(--ocean); }
+.order-status.success { background: #e6f9f0; color: var(--mint); }
+
+.order-body { display: flex; gap: 15px; align-items: center; }
+.order-img { width: 60px; height: 60px; border-radius: 5px; background: var(--snow); padding: 5px; object-fit: contain; }
+.order-info { flex: 1; }
+.order-info h5 { font-size: 13px; color: var(--carbon); font-weight: 800; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.order-info p { font-size: 11px; color: var(--muted); font-weight: 700; }
+.order-total { font-size: 14px; font-weight: 900; color: #1c5271; }
+
+/* Help Box Specific */
+.help-box { text-align: center; padding: 30px 10px; }
+.help-box i { font-size: 40px; color: #6ec9e6; margin-bottom: 15px; }
+.help-box h3 { font-size: 18px; font-weight: 900; color: var(--carbon); margin-bottom: 10px; }
+.help-box p { font-size: 13px; color: var(--muted); font-weight: 700; margin-bottom: 20px; }
+/* Base text styling for smooth fade */
+.ps-text {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    white-space: nowrap;
+}
+
+@media(min-width: 1024px) {
+    .profile-sidebar {
+        width: 260px;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-x: hidden; /* Important: transition ke waqt text bahar na nikle */
+    }
+
+    /* Toggle Button Styling */
+    .ps-toggle-btn {
+        display: flex;
+        justify-content: flex-end;
+        padding: 10px 20px;
+        font-size: 18px;
+        color: #1c5271;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    .ps-toggle-btn:hover { color: #6ec9e6; }
+
+    /* COLLAPSED STATE LOGIC */
+    .profile-sidebar.collapsed {
+        width: 60px; /* Slim sidebar width */
+    }
+
+    .profile-sidebar.collapsed .ps-toggle-btn {
+        justify-content: center; /* Hamburger icon center mein */
+        padding: 10px 0;
+    }
+
+    .profile-sidebar.collapsed .ps-item {
+        padding-left: 20px; /* Icon ko center align karne ke liye perfect math (20+20+20=60) */
+        padding-right: 20px;
+    }
+
+    .profile-sidebar.collapsed .ps-text {
+        opacity: 0;
+        visibility: hidden;
+    }
+    
+    /* Jab sidebar close ho, toh active state ka right-side border hat jaaye */
+    .profile-sidebar.collapsed .ps-item.active {
+        border-radius: 5px;
+    }
+}
 #profilePageView .pd-back-btn:hover {
     transform: none !important;            /* Movement band */
     border-color: var(--smoke) !important; /* Border static */
@@ -293,7 +498,14 @@
         align-items: flex-start;
     }
 }
-
+/* =========================================================================
+   PROFILE PAGE: HIDE BACK BUTTON ON MOBILE & TABLETS
+========================================================================= */
+@media (max-width: 1023px) {
+    #profilePageView .pd-back-btn {
+        display: none !important;
+    }
+}
 /* Sidebar Navigation */
 .profile-sidebar {
     width: 100%;
@@ -3824,115 +4036,164 @@ input[type="email"],
     <i class="fa-solid fa-arrow-left"></i> BACK TO HOME
 </div>
         <div class="profile-layout-split">
-            <div class="profile-sidebar">
-                <div class="ps-item active"><i class="fa-solid fa-user"></i> Profile</div>
-                <div class="ps-item"><i class="fa-solid fa-location-dot"></i> Manage Address</div>
-                <div class="ps-item"><i class="fa-solid fa-clock-rotate-left"></i> Reward History</div>
-                <div class="ps-item"><i class="fa-solid fa-star"></i> Reward zone</div>
-                <div class="ps-item"><i class="fa-regular fa-heart"></i> Wishlist</div>
-                <div class="ps-item"><i class="fa-solid fa-box"></i> My orders</div>
-                <div class="ps-item"><i class="fa-solid fa-rotate-left"></i> Returns</div>
-                <div class="ps-item"><i class="fa-solid fa-ticket"></i> My Coupons</div>
-                <div class="ps-item"><i class="fa-regular fa-gem"></i> My Membership</div>
-                <div class="ps-item"><i class="fa-solid fa-bullhorn"></i> Refer and earn</div>
-                <div class="ps-item"><i class="fa-solid fa-headset"></i> Help</div>
-                <div class="ps-item" onclick="logoutUser()"><i class="fa-solid fa-power-off"></i> Logout</div>
+    <div class="profile-sidebar" id="profSidebar">
+        <div class="ps-toggle-btn" onclick="toggleProfileSidebar()">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+
+        <div class="ps-item active" onclick="switchProfileTab('ptab-profile', this)"><i class="fa-solid fa-user"></i> <span class="ps-text">Profile</span></div>
+        <div class="ps-item" onclick="switchProfileTab('ptab-address', this)"><i class="fa-solid fa-location-dot"></i> <span class="ps-text">Manage Address</span></div>
+        <div class="ps-item" onclick="switchProfileTab('ptab-wishlist', this)"><i class="fa-regular fa-heart"></i> <span class="ps-text">Wishlist</span></div>
+        <div class="ps-item" onclick="switchProfileTab('ptab-orders', this)"><i class="fa-solid fa-box"></i> <span class="ps-text">My orders</span></div>
+        <div class="ps-item" onclick="switchProfileTab('ptab-returns', this)"><i class="fa-solid fa-rotate-left"></i> <span class="ps-text">Returns</span></div>
+        <div class="ps-item" onclick="switchProfileTab('ptab-help', this)"><i class="fa-solid fa-headset"></i> <span class="ps-text">Help</span></div>
+        <div class="ps-item" onclick="logoutUser()"><i class="fa-solid fa-power-off"></i> <span class="ps-text">Logout</span></div>
+    </div>
+
+    <div class="profile-content-area">
+        
+        <div class="profile-tab-content active" id="ptab-profile">
+            <div class="profile-header-flex">
+      
+                <i class="fa-solid fa-pen" style="cursor:pointer; color:var(--carbon); font-size:16px;" onclick="toggleProfileEdit()"></i>
             </div>
 
-            <div class="profile-content-area">
-                <div class="profile-header-flex">
-                    <h2>Profile <span class="profile-completion">22% Complete</span></h2>
-                    <i class="fa-solid fa-pen" style="cursor:pointer; color:var(--carbon); font-size:16px;"></i>
+            <div class="pf-row">
+                <div class="pf-label">Full Name</div>
+                <div class="pf-input-wrap">
+                    <i class="fa-regular fa-user"></i>
+                    <input type="text" id="profInputName" value="Full Name" readonly>
                 </div>
+            </div>
 
-                <div class="pf-row">
-                    <div class="pf-label">Full Name</div>
+            <div class="pf-row">
+                <div class="pf-label">Type</div>
+                <div class="pf-multi-col" style="flex-direction: row !important;">
                     <div class="pf-input-wrap">
-                        <i class="fa-regular fa-user"></i>
-                        <input type="text" id="profInputName" value="Full Name">
+                        <i class="fa-solid fa-stethoscope"></i>
+                        <select id="profInputType" disabled onchange="handleTypeChange()">
+                            <option value="DENTIST" selected>DENTIST</option>
+                            <option value="SELLER">SELLER</option>
+                            <option value="BUSINESS">BUSINESS</option>
+                            <option value="OTHER">OTHER</option>
+                        </select>
                     </div>
-                </div>
-
-                <div class="pf-row">
-                    <div class="pf-label">Type</div>
-                    <div class="pf-multi-col">
-                        <div class="pf-input-wrap">
-                            <i class="fa-solid fa-stethoscope"></i>
-                            <input type="text" value="Type">
+                    <div class="pf-sub-col">
+                        <div class="pf-input-wrap" id="specialityWrap">
+                            <i class="fa-solid fa-plus-minus"></i>
+                            <select id="profInputSpeciality" disabled>
+                                <option value="" disabled selected>Select Speciality</option>
+                                <option value="ORTHODONTICS">ORTHODONTICS</option>
+                                <option value="PEADODONTICS">PEADODONTICS</option>
+                                <option value="PROSTHODONTICS">PROSTHODONTICS</option>
+                                <option value="PERODONTICS">PERODONTICS</option>
+                            </select>
                         </div>
-                        <div class="pf-sub-col">
-                            <div class="pf-label" style="width: auto; color:var(--silver);">Speciality</div>
-                            <div class="pf-input-wrap" style="background:var(--snow);">
-                                <i class="fa-solid fa-plus-minus"></i>
-                                <input type="text" value="Speciality" disabled style="color:var(--muted);">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pf-row">
-                    <div class="pf-label">Gender</div>
-                    <div class="pf-multi-col">
-                        <div class="pf-input-wrap">
-                            <i class="fa-solid fa-venus-mars"></i>
-                            <input type="text" value="Gender">
-                        </div>
-                        <div class="pf-sub-col">
-                            <div class="pf-label" style="width: auto;">Business Name</div>
-                            <div class="pf-input-wrap">
-                                <i class="fa-solid fa-briefcase"></i>
-                                <input type="text" value="Business name">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pf-row">
-                    <div class="pf-label">Date Of Birth</div>
-                    <div class="pf-input-wrap">
-                        <i class="fa-solid fa-cake-candles"></i>
-                        <input type="text" placeholder="YYYY-MM-DD">
-                    </div>
-                </div>
-
-                <div class="pf-row">
-                    <div class="pf-label">Anniversary</div>
-                    <div class="pf-input-wrap">
-                        <i class="fa-regular fa-calendar"></i>
-                        <input type="text" placeholder="YYYY-MM-DD">
-                    </div>
-                </div>
-
-                <div class="pf-row">
-                    <div class="pf-label">Email Address</div>
-                    <div class="pf-input-wrap">
-                        <i class="fa-regular fa-envelope"></i>
-                        <input type="email" id="profInputEmail" readonly>
-                    </div>
-                </div>
-
-                <div class="pf-row">
-                    <div class="pf-label">Mobile Number</div>
-                    <div class="pf-input-wrap">
-                        <i class="fa-solid fa-phone"></i>
-                        <input type="tel" id="profInputPhone" readonly>
                     </div>
                 </div>
             </div>
 
-            <div class="profile-right-panel">
-                <div class="pm-card">
-                    <div class="pm-card-top">
-                        <h4>No active membership plan.</h4>
-                        <button class="pm-shop-btn">Shop Now</button>
+            <div class="pf-row">
+                <div class="pf-label">Gender</div>
+                <div class="pf-multi-col">
+                    <div class="pf-input-wrap">
+                        <i class="fa-solid fa-venus-mars"></i>
+                        <select id="profInputGender" disabled>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="MALE">MALE</option>
+                            <option value="FEMALE">FEMALE</option>
+                            <option value="OTHER">OTHER</option>
+                        </select>
                     </div>
-                    <div class="pm-coins">
-                        <span>Total Coins</span>
-                        <span><strong id="profDisplayCoins" style="font-size: 16px;">500</strong> <i class="fa-solid fa-coins" style="color:#eab308;"></i></span>
+                    <div class="pf-sub-col">
+                        <div class="pf-input-wrap">
+                            <i class="fa-solid fa-briefcase"></i>
+                            <input type="text" id="profInputBusiness" placeholder="Business Name" value="Business Name" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pf-row">
+                <div class="pf-label">Email Address</div>
+                <div class="pf-input-wrap">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" id="profInputEmail" readonly>
+                </div>
+            </div>
+
+            <div class="pf-row">
+                <div class="pf-label">Mobile Number</div>
+                <div class="pf-input-wrap">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" id="profInputPhone" readonly>
+                </div>
+            </div>
+
+            <button id="profUpdateBtn" class="pm-shop-btn" style="width: 100%; margin-top: 15px; display: none;" onclick="saveProfileUpdates()">UPDATE PROFILE</button>
+        </div>
+
+        <div class="profile-tab-content" id="ptab-address">
+            <div class="profile-header-flex"><h2>Manage Address</h2></div>
+            <div class="pf-grid">
+                <div class="pf-data-card address-card">
+                    <h4>ORACO DENTAL CLINIC</h4>
+                    <p>123 Health Street, Sector 4<br>New Delhi, India - 110074</p>
+                    <div class="address-actions"><span>EDIT</span><span>DELETE</span></div>
+                </div>
+            </div>
+            <button class="pm-shop-btn" style="margin-top: 15px;">+ ADD NEW ADDRESS</button>
+        </div>
+
+        <div class="profile-tab-content" id="ptab-wishlist">
+            <div class="profile-header-flex"><h2>Wishlist</h2></div>
+            <div class="help-box">
+                <i class="fa-regular fa-heart" style="color: var(--silver);"></i>
+                <h3 style="color: var(--silver);">Your Wishlist is Empty</h3>
+                <button class="pm-shop-btn" style="margin-top: 10px;" onclick="switchView('homeView')">EXPLORE PRODUCTS</button>
+            </div>
+        </div>
+
+        <div class="profile-tab-content" id="ptab-orders">
+            <div class="profile-header-flex"><h2>My Orders</h2></div>
+            <div class="pf-grid">
+                <div class="pf-data-card order-card delivered">
+                    <div class="order-header">
+                        <span class="order-id">#ORD-58493</span>
+                        <span class="order-status success">DELIVERED</span>
+                    </div>
+                    <div class="order-body">
+                        <div class="order-img"><i class="fa-solid fa-box" style="font-size: 24px; color: var(--silver);"></i></div>
+                        <div class="order-info">
+                            <h5>Labodent DentWERK HD Model Resin</h5>
+                            <p>Qty: 1</p>
+                            <p class="order-total">Rs. 1,499</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="profile-tab-content" id="ptab-returns">
+            <div class="profile-header-flex"><h2>Returns</h2></div>
+            <div class="help-box">
+                <i class="fa-solid fa-rotate-left" style="color: var(--silver);"></i>
+                <h3 style="color: var(--silver);">No Return Requests</h3>
+            </div>
+        </div>
+
+        <div class="profile-tab-content" id="ptab-help">
+            <div class="profile-header-flex"><h2>Help & Support</h2></div>
+            <div class="help-box">
+                <i class="fa-solid fa-headset"></i>
+                <h3>How can we help you?</h3>
+                <p>Reach out to our support team for any queries regarding orders, products, or clinic tie-ups.</p>
+                <button class="pm-shop-btn" onclick="switchView('contactView')">CONTACT US</button>
+            </div>
+        </div>
+
+    </div>
+</div>
         
     </div>
 </div>
@@ -4624,7 +4885,80 @@ function renderPromoCards() {
             });
         }
     }
+// Jab TYPE dropdown change ho toh kya hoga
+window.handleTypeChange = function() {
+    const typeSelect = document.getElementById('profInputType');
+    const specSelect = document.getElementById('profInputSpeciality');
+    const isEditing = document.getElementById('profUpdateBtn').style.display === 'block';
 
+    // Speciality dropdown sirf tab active hoga jab 'Edit Mode' ON ho aur 'DENTIST' chuna gaya ho
+    if (isEditing && typeSelect.value === 'DENTIST') {
+        specSelect.removeAttribute('disabled');
+    } else {
+        specSelect.setAttribute('disabled', 'true');
+        specSelect.value = ""; // Dentist na hone par Speciality reset kar denge
+    }
+};
+
+// Profile Edit Toggle Function
+window.toggleProfileEdit = function() {
+    // ':not(#profInputEmail)' ensure karega ki email field kabhi select na ho aur hamesha lock rahe
+    const inputs = document.querySelectorAll('.profile-content-area input:not(#profInputEmail)');
+    const selects = document.querySelectorAll('.profile-content-area select');
+    const updateBtn = document.getElementById('profUpdateBtn');
+    
+    const isEditing = updateBtn.style.display === 'block';
+
+    if (isEditing) {
+        // Edit mode OFF (Lock fields)
+        inputs.forEach(input => input.setAttribute('readonly', 'true'));
+        selects.forEach(select => select.setAttribute('disabled', 'true'));
+        updateBtn.style.display = 'none';
+    } else {
+        // Edit mode ON (Unlock fields)
+        inputs.forEach(input => input.removeAttribute('readonly'));
+        
+        selects.forEach(select => {
+            if (select.id === 'profInputSpeciality') {
+                const typeVal = document.getElementById('profInputType').value;
+                if (typeVal === 'DENTIST') {
+                    select.removeAttribute('disabled');
+                }
+            } else {
+                select.removeAttribute('disabled');
+            }
+        });
+
+        updateBtn.style.display = 'block';
+        document.getElementById('profInputName').focus();
+    }
+};
+
+// Profile Save Function
+window.saveProfileUpdates = function() {
+    const updateBtn = document.getElementById('profUpdateBtn');
+    const originalText = updateBtn.innerText;
+    
+    updateBtn.innerText = "UPDATING...";
+    
+    setTimeout(() => {
+        updateBtn.innerText = "UPDATED SUCCESSFULLY!";
+        updateBtn.style.background = "#00c9a7"; 
+        
+        setTimeout(() => {
+            // Wapas Lock karte waqt bhi Email ko ignore karenge
+            const inputs = document.querySelectorAll('.profile-content-area input:not(#profInputEmail)');
+            const selects = document.querySelectorAll('.profile-content-area select');
+            
+            inputs.forEach(input => input.setAttribute('readonly', 'true'));
+            selects.forEach(select => select.setAttribute('disabled', 'true'));
+            
+            updateBtn.style.display = 'none';
+            updateBtn.innerText = originalText;
+            updateBtn.style.background = ""; 
+        }, 1500);
+    }, 1000);
+};
     async function initFirebaseAndData() {
         try {
             const dbRef = ref(db);
@@ -4719,7 +5053,13 @@ function renderPromoCards() {
         setTimeout(() => renderBlogData(), 1200);
     }
 }
-// 1. Shimmer Load karne wala function
+// Sidebar Drawer Toggle Function
+window.toggleProfileSidebar = function() {
+    const sidebar = document.getElementById('profSidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('collapsed');
+    }
+};
 function renderBlogSkeletons() {
     const grid = document.getElementById('blogsGrid');
     if(!grid) return;
@@ -4864,7 +5204,32 @@ function renderBlogData() {
         if(mmTimeout) clearTimeout(mmTimeout);
         mmTimeout = setTimeout(() => { renderCategories(); }, 800);
     }
+// Function to switch between Profile Sidebar Tabs
+window.switchProfileTab = function(tabId, element) {
+    // 1. Sidebar items ke active class ko reset karna
+    const sidebarItems = document.querySelectorAll('.profile-sidebar .ps-item');
+    sidebarItems.forEach(item => item.classList.remove('active'));
+    
+    // 2. Clicked item ko active banana
+    if(element) element.classList.add('active');
 
+    // 3. Saare tab contents ko hide karna
+    const allTabs = document.querySelectorAll('.profile-tab-content');
+    allTabs.forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    // 4. Target tab ko show karna
+    const targetTab = document.getElementById(tabId);
+    if(targetTab) {
+        targetTab.classList.add('active');
+    }
+
+    // Optional: Mobile par tab click hone ke baad scroll top kar dena
+    if (window.innerWidth < 1024) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+};
     function renderCategories() {
         const catList = document.getElementById('mmCatList');
         if(!catList) return;
