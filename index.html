@@ -2454,6 +2454,36 @@ body, .app-container {
     margin-bottom: 16px !important;
     object-fit: contain;
 }
+@media (max-width: 1023px) {
+    .cart-wrapper,
+    .auth-trigger {
+        border-radius: 5px !important;
+    }
+}
+/* =========================================================================
+   CART/PROFILE 5PX CORNERS & STRICT 10PX HEADER GAP (MOBILE/TABLET)
+========================================================================= */
+@media (max-width: 1023px) {
+    /* 1. Cart aur Profile Icon ke corners Location icon (5px) jaise square kiye */
+    .cart-wrapper,
+    .auth-trigger {
+        border-radius: 5px !important;
+    }
+
+    /* 2. Extra margins remove kiye taaki unequal vertical spacing khatam ho */
+    .location-block,
+    .header-actions,
+    .search-container {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* 3. Header rows (Icons aur Search Bar) ke beech strictly 10px ka gap lock kiya */
+    .header-master {
+        row-gap: 10px !important;
+        column-gap: 10px !important;
+    }
+}
         /* =========================================================================
    STICKY SEARCH ON SCROLL (MOBILE)
 ========================================================================= */
