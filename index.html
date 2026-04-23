@@ -192,6 +192,79 @@
 #blogDetailView::-webkit-scrollbar {
     display: none !important;
 }
+/* Cart Badge ko hide kiya */
+.cart-badge {
+    display: none !important;
+}
+
+#mainCartBadge {
+    display: none !important;
+}
+
+/* 2. Base Cart Icon Style (Jab empty ho) */
+.cart-wrapper i {
+    color: var(--carbon) !important; /* Default Dark color */
+    transition: color 0.3s ease;
+}
+
+/* 3. Has Items State: Icon color turns Green */
+.cart-wrapper.has-items i {
+    color: #00C9A7 !important; /* Mint/Green Color */
+}
+
+/* Hover par koi bhi animation hataya jaisa pehle manga tha */
+.cart-wrapper:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+/* =========================================================================
+   QTY PILL CORNER LOCK (UNIVERSAL FIX)
+========================================================================= */
+
+/* Parent container ko relative lock kiya */
+.cart-item {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Qty Pill: Desktop and Mobile dono ke liye bottom-right fix */
+.qty-pill {
+    position: absolute !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    background: #f0f9ff !important; /* Branded Blue Tint */
+    border-left: 1px solid var(--smoke) !important;
+    border-top: 1px solid var(--smoke) !important;
+    border-radius: 5px 0 0 0 !important; /* Sirf top-left corner round */
+    height: 32px !important;
+    width: 90px !important; /* Compact width for mobile */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    z-index: 5 !important;
+}
+
+.qty-pill button {
+    background: transparent !important;
+    border: none !important;
+    width: 30px !important;
+    height: 100% !important;
+    cursor: pointer !important;
+    color: var(--ocean) !important;
+    font-weight: 900 !important;
+    font-size: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Desktop par thoda bada dikhega */
+@media (min-width: 1024px) {
+    .qty-pill {
+        width: 100px !important;
+        height: 32px !important;
+    }
+}
 @media (max-width: 1023px) {
         .events-tabs {
             width: 100% !important;
@@ -4422,7 +4495,7 @@ function renderBlogData() {
         } else {
             gridEl.innerHTML = `
                 <div style="padding: 40px; color: var(--silver); font-weight:900; width:100%; text-align:center; font-size: 14px;">
-                    NO PRODUCTS FOUND IN THIS CATEGORY
+                    NO PRODUCT FOUND
                 </div>`;
         }
     };
@@ -4791,10 +4864,23 @@ if (benefitsTab) {
     }
 
     function updateCartBadges() {
-        let count = 0;
-        cart.forEach(item => { count += (item.qty || 1); });
-        document.getElementById('mainCartBadge').innerText = count;
+    const cartWrapper = document.getElementById('mainCartIcon');
+    const badge = document.getElementById('mainCartBadge');
+    
+    // Count toh nikalenge logic ke liye lekin show nahi karenge
+    let count = 0;
+    cart.forEach(item => { count += (item.qty || 1); });
+
+    if (cartWrapper) {
+        if (count > 0) {
+            // Cart mein items hain -> Red Color
+            cartWrapper.classList.add('has-items');
+        } else {
+            // Cart empty hai -> Default Color
+            cartWrapper.classList.remove('has-items');
+        }
     }
+}
 
     async function removeFromCart(index) {
         cart.splice(index, 1);
@@ -4853,7 +4939,7 @@ if (benefitsTab) {
         window.requestAnimationFrame(step);
     }
 
-    function renderCart(animate = false) {
+   function renderCart(animate = false) {
     const listContainer = document.getElementById('cartItemsList');
     const emptyState = document.getElementById('emptyCartState');
     const summaryBlock = document.getElementById('cartSummaryBlock');
@@ -4881,52 +4967,45 @@ if (benefitsTab) {
         let itemPrice = item.priceNum || parseInt(item.price.replace(/,/g, ''));
         subtotal += (itemPrice * qty);
 
+        // Poora Cart Item Div: Relative position ke saath
         html += `
-            <div class="cart-item">
-                <div class="cart-item-img">
-                    <img src="${item.img}" alt="${item.title}">
+            <div class="cart-item" style="position: relative !important; display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1.5px solid var(--cloud); min-height: 100px;">
+                <div class="cart-item-img" style="width: 80px; height: 80px; flex-shrink: 0;">
+                    <img src="${item.img}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 
-                <div class="cart-item-info">
-                    <div class="cart-item-title">${item.title}</div>
-                    <div class="cart-item-price">Rs. ${(itemPrice * qty).toLocaleString('en-IN')}</div>
+                <div class="cart-item-info" style="flex: 1; display: flex; flex-direction: column; gap: 4px; padding-bottom: 20px;">
+                    <div class="cart-item-title" style="font-size: 13px; font-weight: 800; color: var(--carbon); line-height: 1.4;">${item.title}</div>
+                    <div class="cart-item-price" style="font-size: 16px; font-weight: 900; color: var(--ocean);">Rs. ${(itemPrice * qty).toLocaleString('en-IN')}</div>
                 </div>
                 
                 <div class="qty-pill">
                     <button onclick="updateCartItemQty(${index}, -1)">-</button>
-                    <div style="font-size:13px; font-weight:900;">${qty}</div>
+                    <div style="font-size:13px; font-weight:900; flex:1; text-align:center;">${qty}</div>
                     <button onclick="updateCartItemQty(${index}, 1)">+</button>
                 </div>
             </div>`;
     });
     listContainer.innerHTML = html;
 
-    // Coins Logic (Merged look)
+    // Coins and Summary Logic
     let userCoins = (currentUser && currentUser.coins) ? currentUser.coins : 0;
     let usableCoins = Math.min(userCoins, subtotal * 10);
     let discount = usableCoins * 0.1;
-    let finalTotal = subtotal;
+    let finalTotal = isCoinsApplied ? (subtotal - discount) : subtotal;
 
     if (applyCoinsBox && usableCoins > 0) {
         applyCoinsBox.style.display = 'flex';
         document.getElementById('availableCoinsTextModal').innerText = `${userCoins} ORACOCOINS`;
         document.getElementById('coinSavingsTextModal').innerText = discount.toFixed(2);
-        
-        const applyBtn = document.getElementById('applyCoinsBtnModal');
-        if (isCoinsApplied) {
-            applyBtn.innerText = 'REMOVE';
-            finalTotal = subtotal - discount;
-        } else {
-            applyBtn.innerText = 'APPLY';
-        }
+        document.getElementById('applyCoinsBtnModal').innerText = isCoinsApplied ? 'REMOVE' : 'APPLY';
     } else if (applyCoinsBox) {
         applyCoinsBox.style.display = 'none';
-        isCoinsApplied = false;
     }
 
-    // Total Update
     document.getElementById('cartSubtotal').innerText = `Rs. ${subtotal.toLocaleString('en-IN')}`;
     const totalEl = document.getElementById('cartTotal');
+    
     if (animate && previousCartTotal !== finalTotal) {
         animateValue(totalEl, previousCartTotal, finalTotal, 800);
     } else {
