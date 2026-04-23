@@ -96,7 +96,31 @@
 .apply-coins-box {
     border-radius: 5px !important;
 }
+/* =========================================================================
+   PASSWORD VISIBILITY TOGGLE (EYE ICON)
+========================================================================= */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
 
+.password-wrapper .form-input {
+    padding-right: 45px !important; /* Icon ke liye right mein space */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 16px;
+    color: var(--silver);
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.toggle-password:hover {
+    color: #6ec9e6 !important; /* Brand Blue Hover */
+}
 /* =========================================================================
    MOBILE HEADER: 3-ROW PERFECT ALIGNMENT
 ========================================================================= */
@@ -2223,6 +2247,55 @@ body, .app-container {
         gap: 10px !important;
     }
 }
+/* =========================================================================
+   AUTH (LOGIN/SIGNUP) PAGE SYNC: COLORS, LOGO & 5PX CORNERS
+========================================================================= */
+
+/* 1. Login Card Corners */
+.auth-card {
+    border-radius: 5px 5px 0 0 !important; /* Mobile safe */
+}
+@media (min-width: 1024px) {
+    .auth-card {
+        border-radius: 5px !important; /* Desktop strictly 5px */
+    }
+}
+
+/* 2. Inputs, Tabs, and Buttons Corners (Strictly 5px) */
+.auth-tabs,
+.auth-tab,
+.form-input,
+.auth-submit-btn,
+.auth-google-btn {
+    border-radius: 5px !important;
+}
+
+/* 3. Brand Color Sync (#6ec9e6) */
+.auth-tab.active {
+    color: #6ec9e6 !important;
+}
+
+.form-input:focus {
+    border-color: #6ec9e6 !important;
+    box-shadow: 0 4px 16px rgba(110, 201, 230, 0.15) !important;
+}
+
+.auth-submit-btn {
+    background: linear-gradient(135deg, #6ec9e6, #a2e1f3) !important;
+    box-shadow: 0 10px 25px rgba(110, 201, 230, 0.25) !important;
+}
+
+.auth-submit-btn:hover {
+    box-shadow: 0 15px 35px rgba(110, 201, 230, 0.35) !important;
+}
+
+/* 4. New Auth Logo Styling (Larger Size) */
+.auth-logo-img {
+    height: 70px !important; /* Larger size */
+    width: auto !important;
+    margin-bottom: 16px !important;
+    object-fit: contain;
+}
         /* =========================================================================
    STICKY SEARCH ON SCROLL (MOBILE)
 ========================================================================= */
@@ -2671,8 +2744,8 @@ body, .app-container {
             <div class="auth-card">
                 <button class="auth-close-desktop" onclick="switchView('homeView')"><i class="fa-solid fa-xmark"></i></button>
                 
-                <div class="auth-logo">
-                    <div class="logo-box">O+</div>
+               <div class="auth-logo">
+                    <img src="./oraco_transparent.png" alt="Oraco Logo" class="auth-logo-img">
                     <div class="auth-title">LOG IN OR SIGN UP</div>
                     <div class="auth-subtitle">Use <b>demo@gridlabs.com</b> and <b>demo123</b> to login</div>
                 </div>
@@ -2688,9 +2761,12 @@ body, .app-container {
                         <input type="email" id="authEmail" class="form-input" placeholder="DEMO@GRIDLABS.COM" required>
                     </div>
 
-                    <div class="form-group">
+                   <div class="form-group">
                         <label>PASSWORD</label>
-                        <input type="password" id="authPassword" class="form-input" placeholder="DEMO123" required>
+                        <div class="password-wrapper">
+                            <input type="password" id="authPassword" class="form-input" placeholder="DEMO123" required>
+                            <i class="fa-regular fa-eye-slash toggle-password" onclick="togglePasswordVisibility()"></i>
+                        </div>
                     </div>
 
                     <p id="authErrorMsg" style="color: var(--coral); font-size: 11px; font-weight: 800; display:none; margin-bottom: 12px;">INVALID CREDENTIALS</p>
@@ -2959,7 +3035,23 @@ body, .app-container {
         eventsView: document.getElementById('eventsView'),
         contactView: document.getElementById('contactView')
     };
-
+// Password Show/Hide Toggle Logic
+    window.togglePasswordVisibility = function() {
+        const pwdInput = document.getElementById('authPassword');
+        const icon = document.querySelector('.toggle-password');
+        
+        if (pwdInput.type === 'password') {
+            pwdInput.type = 'text';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+            icon.style.color = '#6ec9e6'; // Brand color when visible
+        } else {
+            pwdInput.type = 'password';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+            icon.style.color = 'var(--silver)'; // Back to grey when hidden
+        }
+    };
     // ===================== PRELOADER =====================
     const loaderStartTime = Date.now();
     window.addEventListener('load', function() {
@@ -4230,14 +4322,25 @@ if (benefitsTab) {
             document.getElementById('authSubmitBtn').innerText = 'CREATE ACCOUNT';
         }
     }
-
-    async function submitAuth(e) {
+async function submitAuth(e) {
         e.preventDefault();
         const isSignup = document.getElementById('tabSignup').classList.contains('active');
         const email = document.getElementById('authEmail').value;
         const password = document.getElementById('authPassword').value;
         const errorMsg = document.getElementById('authErrorMsg');
         const btn = document.getElementById('authSubmitBtn');
+
+        // Strong Password Validation (Sirf Sign Up ke time)
+        if (isSignup) {
+            // Regex: Min 8 chars, at least 1 uppercase, 1 lowercase, 1 number, and 1 special character
+            const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+            
+            if (!strongPasswordRegex.test(password)) {
+                errorMsg.innerText = "PASSWORD MUST BE 8+ CHARS WITH 1 UPPERCASE, 1 LOWERCASE, 1 NUMBER & 1 SYMBOL.";
+                errorMsg.style.display = 'block';
+                return; // Yahin rok dega, Firebase tak request nahi jayegi
+            }
+        }
 
         btn.innerText = "WAIT...";
         try {
