@@ -4174,7 +4174,7 @@ input[type="email"],
                 <div class="skeleton banner-skel-sub" style="width: 40%;"></div>
                 <div class="skeleton banner-skel-btn"></div>
             </div>
-            <img src="banner_1.jpg" alt="Promo Banner" onload="this.classList.add('loaded'); this.previousElementSibling.style.display='none'">
+            <img src="banner_1.jpg" alt="" onload="this.classList.add('loaded'); this.previousElementSibling.style.display='none'">
         </div>
     </div>
 </div>
@@ -4216,7 +4216,7 @@ input[type="email"],
                         <div class="zoom-lens" id="zoomLens"></div>
                         <div class="zoom-result" id="zoomResult"></div>
                         <i class="fa-regular fa-heart wishlist-btn-large" id="pdWishlistBtn" onclick="toggleWishlist(event, this, currentSelectedProduct ? currentSelectedProduct.id : null)"></i>
-                        <img src="pro_1.jpg" alt="Product Image" id="pd-hero-img" class="pd-main-img">
+                        <img src="pro_1.jpg" alt="" id="pd-hero-img" class="pd-main-img">
                     </div>
                     <div class="pd-thumb-list">
                         <img src="pro_1.jpg" class="pd-thumb active" onclick="changeImage(this)">
@@ -5180,8 +5180,8 @@ input[type="email"],
 
             <div class="auth-mobile-slider-wrapper">
                 <div class="auth-slider-track">
-                    <img src="pro_1.jpg" alt="1"><img src="pro_2.jpg" alt="2"><img src="pro_1.jpg" alt="3"><img src="pro_2.jpg" alt="4">
-                    <img src="pro_1.jpg" alt="1"><img src="pro_2.jpg" alt="2"><img src="pro_1.jpg" alt="3"><img src="pro_2.jpg" alt="4">
+                    <img src="pro_1.jpg" alt=""><img src="pro_2.jpg" alt=""><img src="pro_1.jpg" alt=""><img src="pro_2.jpg" alt="">
+                    <img src="pro_1.jpg" alt=""><img src="pro_2.jpg" alt=""><img src="pro_1.jpg" alt=""><img src="pro_2.jpg" alt="">
                 </div>
                 <div class="slider-fade-bottom"></div>
             </div>
@@ -5230,7 +5230,7 @@ input[type="email"],
                     <div class="auth-divider"><span>OR</span></div>
 
                     <button type="button" class="auth-google-btn">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="G"> CONTINUE WITH GOOGLE
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt=""> CONTINUE WITH GOOGLE
                     </button>
                 </form>
             </div>
@@ -5691,7 +5691,7 @@ function renderBlogList(data) {
     grid.innerHTML = data.map(b => `
         <div class="blog-card" onclick="openFullBlog('${b.title.replace(/'/g, "\\'")}')" style="cursor:pointer;">
             <div class="blog-img-wrap">
-                <img src="${b.img}" alt="${b.title}">
+                <img src="${b.img}" alt="">
             </div>
             <div class="blog-content">
                 <div class="blog-date"><i class="fa-solid fa-calendar-days"></i> ${b.date}</div>
@@ -6203,7 +6203,7 @@ function renderBlogData() {
                     <div class="event-card">
                         <div class="event-img-wrap">
                             <span class="event-badge" style="background: ${badgeBg};">${badgeText}</span>
-                            <img src="${ev.img}" alt="${ev.title}">
+                            <img src="${ev.img}" alt="">
                         </div>
                         <div class="event-content">
                             <div class="event-title">${ev.title}</div>
@@ -6329,7 +6329,7 @@ window.switchProfileTab = async function(tabId, element) {
             gridEl.innerHTML = items.map(item => `
                 <div class="subcat-card" onclick="openProduct(${item.id})">
                     <div class="subcat-img">
-                        <img src="${item.img}" alt="${item.title}">
+                        <img src="${item.img}" alt="">
                     </div>
                     <div class="subcat-title">${item.title}</div>
                 </div>
@@ -6375,7 +6375,7 @@ window.switchProfileTab = async function(tabId, element) {
                 <div class="product-card" onclick="openProduct(${prod.id})">
                     <div class="product-image-container">
                         <i class="${heartClass} fa-heart wishlist-btn" onclick="toggleWishlist(event, this, ${prod.id})"></i>
-                        <img src="${prod.img}" alt="${prod.title}" loading="lazy">
+                        <img src="${prod.img}" alt="" loading="lazy">
                         <div class="add-btn" onclick="event.stopPropagation(); openProduct(${prod.id})">VIEW DETAILS</div>
                     </div>
                     <div class="product-details">
@@ -6873,7 +6873,7 @@ if (thumbListContainer) {
         html += `
             <div class="cart-item" style="position: relative !important; display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1.5px solid var(--cloud); min-height: 100px;">
                 <div class="cart-item-img" style="width: 80px; height: 80px; flex-shrink: 0;">
-                    <img src="${item.img}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: contain;">
+                    <img src="${item.img}" alt="" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 
                 <div class="cart-item-info" style="flex: 1; display: flex; flex-direction: column; gap: 4px; padding-bottom: 20px;">
