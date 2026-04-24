@@ -459,6 +459,24 @@
         font-size: 32px;
     }
 }
+/* =========================================================================
+   UNIVERSAL IMAGE CROSSFADE ANIMATION
+========================================================================= */
+.fade-in-img {
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+}
+.fade-in-img.loaded {
+    opacity: 1;
+}
+
+/* Event image ka purana animation hata dein taaki conflict na ho */
+.event-img-wrap img {
+    /* opacity: 0; aur animation: imageFade... wali line hata dein ya override kar dein */
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover;
+}
 /* ===================== BANNER DETAILED SKELETON ===================== */
 .banner-skel-wrap {
     position: absolute;
@@ -5683,7 +5701,6 @@ window.formatEmail = function(input) {
         if(pastTab) pastTab.innerText = `PAST EVENTS (${mockPastEvents.length})`;
     }
 
-
 function renderBlogList(data) {
     const grid = document.getElementById('blogsGrid');
     if(!grid) return;
@@ -5691,7 +5708,7 @@ function renderBlogList(data) {
     grid.innerHTML = data.map(b => `
         <div class="blog-card" onclick="openFullBlog('${b.title.replace(/'/g, "\\'")}')" style="cursor:pointer;">
             <div class="blog-img-wrap">
-                <img src="${b.img}" alt="">
+                <img src="${b.img}" alt="" class="fade-in-img" onload="this.classList.add('loaded')">
             </div>
             <div class="blog-content">
                 <div class="blog-date"><i class="fa-solid fa-calendar-days"></i> ${b.date}</div>
@@ -6191,35 +6208,35 @@ function renderBlogData() {
 }
 
     function renderEventsData(data, type) {
-        let html = '';
-        const badgeText = type === 'live' ? 'RUNNING' : 'COMPLETED';
-        const badgeBg = type === 'live' ? 'linear-gradient(135deg, var(--ocean), var(--mint))' : 'var(--silver)';
+    let html = '';
+    const badgeText = type === 'live' ? 'RUNNING' : 'COMPLETED';
+    const badgeBg = type === 'live' ? 'linear-gradient(135deg, var(--ocean), var(--mint))' : 'var(--silver)';
 
-        if(data.length === 0) {
-            html = `<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--silver); font-weight: 900; font-size: 16px;">NO EVENTS FOUND MATCHING YOUR CRITERIA</div>`;
-        } else {
-            data.forEach(ev => {
-                html += `
-                    <div class="event-card">
-                        <div class="event-img-wrap">
-                            <span class="event-badge" style="background: ${badgeBg};">${badgeText}</span>
-                            <img src="${ev.img}" alt="">
-                        </div>
-                        <div class="event-content">
-                            <div class="event-title">${ev.title}</div>
-                            <div class="event-date"><i class="fa-solid fa-calendar"></i> ${ev.date}</div>
-                            <div class="event-tags">
-                                <span class="event-tag">${ev.type}</span>
-                                <span class="event-tag cat">${ev.cat}</span>
-                            </div>
+    if(data.length === 0) {
+        html = `<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--silver); font-weight: 900; font-size: 16px;">NO EVENTS FOUND MATCHING YOUR CRITERIA</div>`;
+    } else {
+        data.forEach(ev => {
+            html += `
+                <div class="event-card">
+                    <div class="event-img-wrap">
+                        <span class="event-badge" style="background: ${badgeBg};">${badgeText}</span>
+                        <img src="${ev.img}" alt="" class="fade-in-img" onload="this.classList.add('loaded')">
+                    </div>
+                    <div class="event-content">
+                        <div class="event-title">${ev.title}</div>
+                        <div class="event-date"><i class="fa-solid fa-calendar"></i> ${ev.date}</div>
+                        <div class="event-tags">
+                            <span class="event-tag">${ev.type}</span>
+                            <span class="event-tag cat">${ev.cat}</span>
                         </div>
                     </div>
-                `;
-            });
-        }
-        const grid = document.getElementById('eventsGridContent');
-        if(grid) grid.innerHTML = html;
+                </div>
+            `;
+        });
     }
+    const grid = document.getElementById('eventsGridContent');
+    if(grid) grid.innerHTML = html;
+}
 
     function typeWriterEffect() {
         const searchInput = document.getElementById('mainSearchInput');
@@ -6317,30 +6334,30 @@ window.switchProfileTab = async function(tabId, element) {
         if(cat) renderSubcategories(cat);
     }
 
-    window.renderSubcategories = function(cat) {
-        const titleEl = document.getElementById('mmContentTitle');
-        const gridEl = document.getElementById('mmContentGrid');
-        
-        if(!cat || !titleEl || !gridEl) return;
-        titleEl.innerHTML = `${cat.title} <span>${Math.floor(Math.random() * 20) + 5} ITEMS</span>`;
-        const items = mockProducts.filter(p => p && p.category === cat.id);
+   window.renderSubcategories = function(cat) {
+    const titleEl = document.getElementById('mmContentTitle');
+    const gridEl = document.getElementById('mmContentGrid');
+    
+    if(!cat || !titleEl || !gridEl) return;
+    titleEl.innerHTML = `${cat.title} <span>${Math.floor(Math.random() * 20) + 5} ITEMS</span>`;
+    const items = mockProducts.filter(p => p && p.category === cat.id);
 
-        if(items && items.length > 0) {
-            gridEl.innerHTML = items.map(item => `
-                <div class="subcat-card" onclick="openProduct(${item.id})">
-                    <div class="subcat-img">
-                        <img src="${item.img}" alt="">
-                    </div>
-                    <div class="subcat-title">${item.title}</div>
+    if(items && items.length > 0) {
+        gridEl.innerHTML = items.map(item => `
+            <div class="subcat-card" onclick="openProduct(${item.id})">
+                <div class="subcat-img">
+                    <img src="${item.img}" alt="" class="fade-in-img" onload="this.classList.add('loaded')">
                 </div>
-            `).join('');
-        } else {
-            gridEl.innerHTML = `
-                <div style="padding: 40px; color: var(--silver); font-weight:900; width:100%; text-align:center; font-size: 14px;">
-                    NO PRODUCT FOUND
-                </div>`;
-        }
-    };
+                <div class="subcat-title">${item.title}</div>
+            </div>
+        `).join('');
+    } else {
+        gridEl.innerHTML = `
+            <div style="padding: 40px; color: var(--silver); font-weight:900; width:100%; text-align:center; font-size: 14px;">
+                NO PRODUCT FOUND
+            </div>`;
+    }
+};
 
     function closeMegamenu() {
         const megamenu = document.getElementById('megamenu');
@@ -6364,32 +6381,32 @@ window.switchProfileTab = async function(tabId, element) {
         document.getElementById('skeletonContainer').innerHTML = skelHTML;
     }
 
-    function renderProducts() {
-        let prodHTML = '';
-        if (!mockProducts || mockProducts.length === 0) return;
+   function renderProducts() {
+    let prodHTML = '';
+    if (!mockProducts || mockProducts.length === 0) return;
 
-        mockProducts.forEach(prod => {
-            let isWished = window.userWishlist && window.userWishlist[prod.id] ? true : false;
-            let heartClass = isWished ? 'fa-solid active' : 'fa-regular';
-            prodHTML += `
-                <div class="product-card" onclick="openProduct(${prod.id})">
-                    <div class="product-image-container">
-                        <i class="${heartClass} fa-heart wishlist-btn" onclick="toggleWishlist(event, this, ${prod.id})"></i>
-                        <img src="${prod.img}" alt="" loading="lazy">
-                        <div class="add-btn" onclick="event.stopPropagation(); openProduct(${prod.id})">VIEW DETAILS</div>
-                    </div>
-                    <div class="product-details">
-                        <div class="product-title">${prod.title}</div>
-                        <div class="product-price">
-                            <span class="current-price">Rs. ${prod.price}</span>
-                            <span class="mrp-price">Rs. ${prod.mrp}</span>
-                        </div>
+    mockProducts.forEach(prod => {
+        let isWished = window.userWishlist && window.userWishlist[prod.id] ? true : false;
+        let heartClass = isWished ? 'fa-solid active' : 'fa-regular';
+        prodHTML += `
+            <div class="product-card" onclick="openProduct(${prod.id})">
+                <div class="product-image-container">
+                    <i class="${heartClass} fa-heart wishlist-btn" onclick="toggleWishlist(event, this, ${prod.id})"></i>
+                    <img src="${prod.img}" alt="" class="fade-in-img" loading="lazy" onload="this.classList.add('loaded')">
+                    <div class="add-btn" onclick="event.stopPropagation(); openProduct(${prod.id})">VIEW DETAILS</div>
+                </div>
+                <div class="product-details">
+                    <div class="product-title">${prod.title}</div>
+                    <div class="product-price">
+                        <span class="current-price">Rs. ${prod.price}</span>
+                        <span class="mrp-price">Rs. ${prod.mrp}</span>
                     </div>
                 </div>
-            `;
-        });
-        document.getElementById('productGrid').innerHTML = prodHTML;
-    }
+            </div>
+        `;
+    });
+    document.getElementById('productGrid').innerHTML = prodHTML;
+}
 
     function renderEventSkeletons() {
         let skelHTML = '';
@@ -6841,7 +6858,7 @@ if (thumbListContainer) {
         window.requestAnimationFrame(step);
     }
 
-   function renderCart(animate = false) {
+  function renderCart(animate = false) {
     const listContainer = document.getElementById('cartItemsList');
     const emptyState = document.getElementById('emptyCartState');
     const summaryBlock = document.getElementById('cartSummaryBlock');
@@ -6873,7 +6890,7 @@ if (thumbListContainer) {
         html += `
             <div class="cart-item" style="position: relative !important; display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1.5px solid var(--cloud); min-height: 100px;">
                 <div class="cart-item-img" style="width: 80px; height: 80px; flex-shrink: 0;">
-                    <img src="${item.img}" alt="" style="width: 100%; height: 100%; object-fit: contain;">
+                    <img src="${item.img}" alt="" class="fade-in-img" onload="this.classList.add('loaded')" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 
                 <div class="cart-item-info" style="flex: 1; display: flex; flex-direction: column; gap: 4px; padding-bottom: 20px;">
