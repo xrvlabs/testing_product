@@ -2639,22 +2639,29 @@ body, .app-container {
 }
 
         .product-image-container { 
-            position: relative; 
-            padding: 20px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            background: var(--snow); 
-            border-radius: calc(var(--card-radius) - 2px) calc(var(--card-radius) - 2px) 0 0; 
-            overflow: hidden;
-        }
+    position: relative; 
+    padding: 20px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    background: var(--snow); 
+    border-radius: calc(var(--card-radius) - 2px) calc(var(--card-radius) - 2px) 0 0; 
+    overflow: hidden;
+}
 
-        .product-image-container img { 
-            max-width: 100%; 
-            max-height: 100%; 
-            object-fit: contain; 
-            transition: var(--transition); 
-        }
+.product-image-container img { 
+    max-width: 100%; 
+    max-height: 100%; 
+    object-fit: contain; 
+    opacity: 0; /* Fade in ke liye initial state hidden */
+    /* Apne default var(--transition) ki jagah specific fade animation lagaya hai */
+    transition: opacity 0.6s ease-in-out, transform 0.3s ease !important; 
+}
+
+/* 🚨 Ye ek naya rule add karna hai jisse load hone par image smoothly show ho */
+.product-image-container img.loaded { 
+    opacity: 1; 
+}
 
         .wishlist-btn { 
             position: absolute; 
@@ -6381,31 +6388,33 @@ window.switchProfileTab = async function(tabId, element) {
     }
 
     function renderProducts() {
-        let prodHTML = '';
-        if (!mockProducts || mockProducts.length === 0) return;
+    let prodHTML = '';
+    if (!mockProducts || mockProducts.length === 0) return;
 
-        mockProducts.forEach(prod => {
-            let isWished = window.userWishlist && window.userWishlist[prod.id] ? true : false;
-            let heartClass = isWished ? 'fa-solid active' : 'fa-regular';
-            prodHTML += `
-                <div class="product-card" onclick="openProduct(${prod.id})">
-                    <div class="product-image-container">
-                        <i class="${heartClass} fa-heart wishlist-btn" onclick="toggleWishlist(event, this, ${prod.id})"></i>
-                        <img src="${prod.img}" alt="" loading="lazy">
-                        <div class="add-btn" onclick="event.stopPropagation(); openProduct(${prod.id})">VIEW DETAILS</div>
-                    </div>
-                    <div class="product-details">
-                        <div class="product-title">${prod.title}</div>
-                        <div class="product-price">
-                            <span class="current-price">Rs. ${prod.price}</span>
-                            <span class="mrp-price">Rs. ${prod.mrp}</span>
-                        </div>
+    mockProducts.forEach(prod => {
+        let isWished = window.userWishlist && window.userWishlist[prod.id] ? true : false;
+        let heartClass = isWished ? 'fa-solid active' : 'fa-regular';
+        prodHTML += `
+            <div class="product-card" onclick="openProduct(${prod.id})">
+                <div class="product-image-container">
+                    <i class="${heartClass} fa-heart wishlist-btn" onclick="toggleWishlist(event, this, ${prod.id})"></i>
+                    
+                    <img src="${prod.img}" alt="" loading="lazy" onload="this.classList.add('loaded')">
+                    
+                    <div class="add-btn" onclick="event.stopPropagation(); openProduct(${prod.id})">VIEW DETAILS</div>
+                </div>
+                <div class="product-details">
+                    <div class="product-title">${prod.title}</div>
+                    <div class="product-price">
+                        <span class="current-price">Rs. ${prod.price}</span>
+                        <span class="mrp-price">Rs. ${prod.mrp}</span>
                     </div>
                 </div>
-            `;
-        });
-        document.getElementById('productGrid').innerHTML = prodHTML;
-    }
+            </div>
+        `;
+    });
+    document.getElementById('productGrid').innerHTML = prodHTML;
+}
 
     function renderEventSkeletons() {
         let skelHTML = '';
