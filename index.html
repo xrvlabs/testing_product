@@ -4304,14 +4304,22 @@ input[type="email"],
     </div>
 
     <div id="eventsView" class="view-section">
-    <div class="events-wrapper">
-        <div class="events-tabs">
+    <div class="policy-wrapper">
+        
+        <div class="policy-top-bar">
+            <div class="pd-back-btn" onclick="switchView('homeView')">
+                <i class="fa-solid fa-arrow-left"></i> BACK TO HOME
+            </div>
+        </div>
+
+        <div class="events-tabs" style="margin: 0 !important; width: 100% !important; border-radius: 5px;">
             <div class="events-tab active" id="tabLiveEvents" onclick="switchEventTab('live', this)">LIVE EVENTS (6)</div>
             <div class="events-tab" id="tabPastEvents" onclick="switchEventTab('past', this)">PAST EVENTS (4)</div>
         </div>
 
-        <div class="events-grid" id="eventsSkeletonContainer" style="display: none;"></div>
-        <div class="events-grid" id="eventsGridContent" style="display: none;"></div>
+        <div class="events-grid" id="eventsSkeletonContainer" style="display: none; padding: 0 !important; margin: 0 !important;"></div>
+        <div class="events-grid" id="eventsGridContent" style="display: none; padding: 0 !important; margin: 0 !important;"></div>
+        
     </div>
 </div>
 <div id="blogDetailView" class="view-section" style="overflow-y: auto; height: 100vh; scrollbar-width: none; -ms-overflow-style: none;">
@@ -4341,9 +4349,17 @@ input[type="email"],
     </div>
 </div>
 <div id="blogsView" class="view-section">
-    <div class="blogs-wrapper">
-        <div class="blogs-grid" id="blogsGrid" style="margin-top: 10px;">
+    <div class="policy-wrapper">
+        
+        <div class="policy-top-bar">
+            <div class="pd-back-btn" onclick="switchView('homeView')">
+                <i class="fa-solid fa-arrow-left"></i> BACK TO HOME
             </div>
+        </div>
+
+        <div class="blogs-grid" id="blogsGrid" style="padding: 0 !important; margin: 0 !important;">
+            </div>
+        
     </div>
 </div>
     <div id="contactView" class="view-section">
@@ -4352,10 +4368,6 @@ input[type="email"],
         <div class="policy-top-bar">
             <div class="pd-back-btn" onclick="switchView('homeView')">
                 <i class="fa-solid fa-arrow-left"></i> BACK TO HOME
-            </div>
-            <div class="policy-header-right">
-                <h1>CONTACT US</h1>
-                <span>WE ARE HERE TO HELP YOU</span>
             </div>
         </div>
 
@@ -5987,7 +5999,7 @@ window.saveProfileUpdates = async function() {
 function switchView(targetViewId, isBackMode = false) {
     closeMegamenu(); 
     
-    // 1. View switching logic (Active section handle karna)
+    // View switching logic
     Object.values(views).forEach(view => { 
         if(view) view.classList.remove('active'); 
     });
@@ -5998,8 +6010,7 @@ function switchView(targetViewId, isBackMode = false) {
     const footer = document.getElementById('globalFooter');
     const navPillsStrip = document.querySelector('.nav-pills');
     
-    // 2. Sirf in pages par Header aur Strip hide hogi (Privacy, Terms, Help etc.)
-    // Blogs, Events aur Contact Us ko yahan se hata diya gaya hai taaki wo visible rahein
+    // Policy pages jahan header/strip bilkul nahi chahiye
     const strictlyHiddenPages = [
         'policyView', 'returnPolicyView', 'termsView', 
         'helpOrdersView', 'helpRefundsView', 'helpRewardsView', 
@@ -6007,23 +6018,21 @@ function switchView(targetViewId, isBackMode = false) {
         'aboutUsView', 'careersView', 'locationView'
     ];
 
-    // 3. Nav Pills (Home Strip) Active State handle karna
+    // Nav Pills Active State
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     if(targetViewId === 'homeView') {
         const homePill = document.querySelector('.pill:nth-child(1)');
         if(homePill) homePill.classList.add('active');
     }
 
-    // 4. Header & Footer Visibility Logic
     if (targetViewId === 'authView') {
         if(header) header.style.display = 'none';
         if(footer) footer.style.display = 'none';
     } else {
         if(header) header.style.display = 'block';
-        // Product view mein footer hide rakhte hain jaisa aapne pehle set kiya tha
+        // Footer management: Product view mein hide, baaki sab mein flex/block
         if(footer) footer.style.display = (targetViewId === 'productView') ? 'none' : 'block';
         
-        // Header Master (Logo, Search, Icons) hide logic
         if (headerMaster) {
             if (strictlyHiddenPages.includes(targetViewId)) {
                 headerMaster.style.setProperty('display', 'none', 'important');
@@ -6033,34 +6042,30 @@ function switchView(targetViewId, isBackMode = false) {
         }
     }
 
-    // 5. Home Strip (Nav Pills) Visibility Logic
+    // Home Strip (Nav Pills) Visibility
     if (navPillsStrip) {
         if (strictlyHiddenPages.includes(targetViewId) || targetViewId === 'productView' || targetViewId === 'blogDetailView') {
-            // Policy pages aur Product detail par strip hide rakhenge taaki distraction na ho
             navPillsStrip.style.setProperty('display', 'none', 'important');
         } else {
-            // Home, Blogs, Events, Contact Us par strip hamesha dikhegi
             navPillsStrip.style.setProperty('display', 'flex', 'important');
         }
     }
 
-    // 6. History API Management
     if (!isBackMode) {
         history.pushState({ viewId: targetViewId }, "", "");
     }
 
-    // 7. Page Reset (Top par scroll karna)
     window.scrollTo(0, 0);
     
-    // 8. Specific Page Initializers (Data loading)
     if(targetViewId === 'eventsView') {
         const liveTab = document.getElementById('tabLiveEvents');
         if(liveTab) switchEventTab('live', liveTab);
     }
     
+    // BLOG LOADING FIX: Pehle skeleton dikhayenge, fir data
     if (targetViewId === 'blogsView') {
         renderBlogSkeletons();
-        setTimeout(() => renderBlogData(), 1200);
+        setTimeout(() => renderBlogData(), 800);
     }
 }
 
