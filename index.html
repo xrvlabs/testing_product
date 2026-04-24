@@ -3052,12 +3052,14 @@ body, .app-container {
             pointer-events: none; 
         }
         
-        .pre-img {
-            width: clamp(140px, 20vw, 200px); /* Responsive size */
-            height: auto;
-            object-fit: contain;
-            animation: pulseLogo 1.5s ease-in-out infinite;
-        }
+        /* ===================== PRELOADER LOGO FIX ===================== */
+.pre-img {
+    /* Pehle size clamp(140px, 20vw, 200px) tha, isko chota kar diya hai */
+    width: clamp(80px, 12vw, 120px); 
+    height: auto;
+    object-fit: contain;
+    animation: pulseLogo 1.5s ease-in-out infinite;
+}
 @keyframes placeholderShimmer {
     0% { background-position: -800px 0; }
     100% { background-position: 800px 0; }
