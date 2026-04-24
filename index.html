@@ -3939,10 +3939,17 @@ body, .app-container {
         vertical-align: middle;
     }
 }
-/* =========================================================================
-   PROFILE PAGE: HEIGHT ALIGNMENT & SINGLE CARD MAX-WIDTH FIX
-========================================================================= */
+@media (max-width: 1023px) {
+    .pd-thumb-list.hide-single-thumb {
+        display: none !important;
+    }
 
+    /* Optional: Jab thumbnail hide ho toh niche ke content (Title box) 
+       ka gap maintain karne ke liye margin adjust karein */
+    .pd-thumb-list.hide-single-thumb + #rightContentCol {
+        margin-top: 10px !important;
+    }
+}
 /* 1. Sidebar aur Main Content box ki height hamesha barabar rakhne ke liye */
 @media(min-width: 1024px) {
     .profile-layout-split {
@@ -6643,11 +6650,18 @@ if (benefitsTab) {
         allImages = [...new Set(allImages)];
 
         const thumbListContainer = document.querySelector('.pd-thumb-list');
-        if (thumbListContainer) {
-            thumbListContainer.innerHTML = allImages.map((imgUrl, index) => `
-                <img src="${imgUrl}" class="pd-thumb ${index === 0 ? 'active' : ''}" onclick="changeImage(this)">
-            `).join('');
-        }
+if (thumbListContainer) {
+    // Agar sirf ek hi image hai toh 'hide-single-thumb' class add kardo
+    if (allImages.length <= 1) {
+        thumbListContainer.classList.add('hide-single-thumb');
+    } else {
+        thumbListContainer.classList.remove('hide-single-thumb');
+    }
+
+    thumbListContainer.innerHTML = allImages.map((imgUrl, index) => `
+        <img src="${imgUrl}" class="pd-thumb ${index === 0 ? 'active' : ''}" onclick="changeImage(this)">
+    `).join('');
+}
         document.getElementById('pd-hero-img').src = allImages[0];
         document.getElementById('pd-title').innerText = currentSelectedProduct.title;
         document.getElementById('pd-subtitle').innerText = currentSelectedProduct.subtitle || "";
