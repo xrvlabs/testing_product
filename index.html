@@ -459,6 +459,63 @@
         font-size: 32px;
     }
 }
+
+/* =========================================================================
+   HARDWARE BACK BUTTON FIX FOR MOBILE & TABLET
+========================================================================= */
+
+// 1. Purane switchView function ko intercept karke history track karenge
+const originalSwitchView = window.switchView;
+window.switchView = function(targetViewId, isBack = false) {
+    originalSwitchView(targetViewId); // Aapka purana view change logic
+    
+    // Agar user kisi naye page par gaya hai (jaise Profile), toh history banayenge
+    if (!isBack && targetViewId !== 'homeView') {
+        window.history.pushState({ view: targetViewId }, '', '#' + targetViewId);
+    } 
+    // Agar UI ke "BACK TO HOME" button se wapas aaye hain, toh URL clean karenge
+    else if (!isBack && targetViewId === 'homeView') {
+        window.history.pushState({ view: 'homeView' }, '', window.location.pathname);
+    }
+};
+
+// 2. Hardware / Browser Back Button Detect karna
+window.addEventListener('popstate', function(event) {
+    // Jab user back button dabaye, toh direct Home Page dikhao
+    originalSwitchView('homeView');
+    
+    // Agar us waqt koi modal open reh gaya ho (Cart, Pincode etc.), toh usko safety ke liye band kar do
+    if(typeof closeCartModal === 'function') closeCartModal();
+    if(typeof closeLocationModal === 'function') closeLocationModal();
+    if(typeof closeMegamenu === 'function') closeMegamenu();
+});
+/* =========================================================================
+   PROFILE PAGE: HIDE LOCATION & PROFILE/CART ICONS (MOBILE/TABLET)
+========================================================================= */
+@media (max-width: 1023px) {
+    /* Jab profile page active ho, tab location block aur profile icon hide kar do */
+    body:has(#profilePageView.active) .location-block,
+    body:has(#profilePageView.active) .header-actions {
+        display: none !important;
+    }
+}
+
+/* =========================================================================
+   PROFILE PAGE: HIDE SEARCH BAR & CATEGORY STRIP (MOBILE/TABLET)
+========================================================================= */
+@media (max-width: 1023px) {
+    /* Jab profilePageView active ho, tab search aur nav-pills ko hide karein */
+    body:has(#profilePageView.active) .search-container,
+    body:has(#profilePageView.active) .nav-pills {
+        display: none !important;
+    }
+
+    /* Search bar hatne ke baad header ko clean dikhane ke liye niche ka border add kiya */
+    body:has(#profilePageView.active) .header-master {
+        padding-bottom: 10px !important;
+        border-bottom: 1.5px solid var(--smoke) !important;
+    }
+}
 /* =========================================================================
    FOOTER FIX: REMOVE HOVER EFFECT FROM LINKS
 ========================================================================= */
