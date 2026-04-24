@@ -5987,7 +5987,7 @@ window.saveProfileUpdates = async function() {
 function switchView(targetViewId, isBackMode = false) {
     closeMegamenu(); 
     
-    // View switching logic
+    // 1. View switching logic (Active section handle karna)
     Object.values(views).forEach(view => { 
         if(view) view.classList.remove('active'); 
     });
@@ -5998,55 +5998,66 @@ function switchView(targetViewId, isBackMode = false) {
     const footer = document.getElementById('globalFooter');
     const navPillsStrip = document.querySelector('.nav-pills');
     
-    // Sabhi Policy aur Footer pages ki list
-    const policyAndFooterPages = [
-        'contactView', 'blogsView', 'eventsView', 'productView', 
-        'blogDetailView', 'policyView', 'returnPolicyView', 'termsView', 
+    // 2. Sirf in pages par Header aur Strip hide hogi (Privacy, Terms, Help etc.)
+    // Blogs, Events aur Contact Us ko yahan se hata diya gaya hai taaki wo visible rahein
+    const strictlyHiddenPages = [
+        'policyView', 'returnPolicyView', 'termsView', 
         'helpOrdersView', 'helpRefundsView', 'helpRewardsView', 
-        'contactBulkView', 'contactSellView', 'contactInvestorView', 
+        'contactBulkView', 'contactSellView', 'contactInvestorView',
         'aboutUsView', 'careersView', 'locationView'
     ];
 
-    // UI Updates
+    // 3. Nav Pills (Home Strip) Active State handle karna
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-    if(targetViewId === 'homeView') document.querySelector('.pill:nth-child(1)').classList.add('active');
+    if(targetViewId === 'homeView') {
+        const homePill = document.querySelector('.pill:nth-child(1)');
+        if(homePill) homePill.classList.add('active');
+    }
 
+    // 4. Header & Footer Visibility Logic
     if (targetViewId === 'authView') {
-        header.style.display = 'none';
-        footer.style.display = 'none';
+        if(header) header.style.display = 'none';
+        if(footer) footer.style.display = 'none';
     } else {
-        header.style.display = 'block';
-        footer.style.display = (targetViewId === 'productView') ? 'none' : 'block';
+        if(header) header.style.display = 'block';
+        // Product view mein footer hide rakhte hain jaisa aapne pehle set kiya tha
+        if(footer) footer.style.display = (targetViewId === 'productView') ? 'none' : 'block';
         
-        // Agar page policy ya footer wala hai, toh main header hide karo
-        if (policyAndFooterPages.includes(targetViewId)) {
-            headerMaster.style.setProperty('display', 'none', 'important');
-        } else {
-            headerMaster.style.setProperty('display', 'flex', 'important');
+        // Header Master (Logo, Search, Icons) hide logic
+        if (headerMaster) {
+            if (strictlyHiddenPages.includes(targetViewId)) {
+                headerMaster.style.setProperty('display', 'none', 'important');
+            } else {
+                headerMaster.style.setProperty('display', 'flex', 'important');
+            }
         }
     }
 
-    // --- HOME STRIP (NAV PILLS) HIDE LOGIC FOR ALL FOOTER PAGES ---
+    // 5. Home Strip (Nav Pills) Visibility Logic
     if (navPillsStrip) {
-        if (policyAndFooterPages.includes(targetViewId)) {
+        if (strictlyHiddenPages.includes(targetViewId) || targetViewId === 'productView' || targetViewId === 'blogDetailView') {
+            // Policy pages aur Product detail par strip hide rakhenge taaki distraction na ho
             navPillsStrip.style.setProperty('display', 'none', 'important');
         } else {
+            // Home, Blogs, Events, Contact Us par strip hamesha dikhegi
             navPillsStrip.style.setProperty('display', 'flex', 'important');
         }
     }
 
-    // History API
+    // 6. History API Management
     if (!isBackMode) {
         history.pushState({ viewId: targetViewId }, "", "");
     }
 
+    // 7. Page Reset (Top par scroll karna)
     window.scrollTo(0, 0);
     
-    // Sub-renders
+    // 8. Specific Page Initializers (Data loading)
     if(targetViewId === 'eventsView') {
         const liveTab = document.getElementById('tabLiveEvents');
         if(liveTab) switchEventTab('live', liveTab);
     }
+    
     if (targetViewId === 'blogsView') {
         renderBlogSkeletons();
         setTimeout(() => renderBlogData(), 1200);
