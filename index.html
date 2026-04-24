@@ -479,16 +479,29 @@ window.switchView = function(targetViewId, isBack = false) {
     }
 };
 
-// 2. Hardware / Browser Back Button Detect karna
 window.addEventListener('popstate', function(event) {
-    // Jab user back button dabaye, toh direct Home Page dikhao
-    originalSwitchView('homeView');
-    
-    // Agar us waqt koi modal open reh gaya ho (Cart, Pincode etc.), toh usko safety ke liye band kar do
-    if(typeof closeCartModal === 'function') closeCartModal();
-    if(typeof closeLocationModal === 'function') closeLocationModal();
-    if(typeof closeMegamenu === 'function') closeMegamenu();
+    // Agar koi modal/megamenu open hai toh pehle usey band karein
+    if (document.getElementById('megamenu').classList.contains('active')) {
+        closeMegamenu();
+        return;
+    }
+    if (document.getElementById('cartComponent').classList.contains('active')) {
+        closeCartModal();
+        return;
+    }
+    if (document.getElementById('locationModal').classList.contains('active')) {
+        closeLocationModal();
+        return;
+    }
+
+    // View switch karein
+    if (event.state && event.state.viewId) {
+        switchView(event.state.viewId, true);
+    } else {
+        switchView('homeView', true);
+    }
 });
+history.replaceState({ viewId: 'homeView' }, "", "");
 /* =========================================================================
    PROFILE PAGE: HIDE LOCATION & PROFILE/CART ICONS (MOBILE/TABLET)
 ========================================================================= */
@@ -5937,10 +5950,10 @@ window.saveProfileUpdates = async function() {
         filterEvents();
     }
 
-   function switchView(targetViewId) {
+   function switchView(targetViewId, isBackMode = false) {
     closeMegamenu(); 
     
-    // 1. View Switching Logic
+    // View switching logic
     Object.values(views).forEach(view => { 
         if(view) view.classList.remove('active'); 
     });
@@ -5950,19 +5963,14 @@ window.saveProfileUpdates = async function() {
     const headerMaster = document.querySelector('.header-master'); 
     const footer = document.getElementById('globalFooter');
     
-    // 2. Tab Highlighting
+    // Tab highlighting logic... (aapka purana code yahan rahega)
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     if(targetViewId === 'homeView') document.querySelector('.pill:nth-child(1)').classList.add('active');
     else if(targetViewId === 'blogsView') document.querySelector('.pill:nth-child(3)').classList.add('active');
     else if(targetViewId === 'eventsView') document.querySelector('.pill:nth-child(4)').classList.add('active');
     else if(targetViewId === 'contactView') document.querySelector('.pill:nth-child(5)').classList.add('active');
 
-    const hideHeaderPages = [
-    'eventsView', 'contactView', 'blogsView', 'productView', 'blogDetailView', 
-    'policyView', 'returnPolicyView', 'termsView', 'helpOrdersView', 'helpRefundsView', 'helpRewardsView',
-    'contactBulkView', 'contactSellView', 'contactInvestorView',
-    'aboutUsView', 'careersView', 'locationView' // <-- YE TEEN ADD KIYE
-];
+    const hideHeaderPages = ['eventsView', 'contactView', 'blogsView', 'productView', 'blogDetailView', 'policyView', 'returnPolicyView', 'termsView', 'helpOrdersView', 'helpRefundsView', 'helpRewardsView', 'contactBulkView', 'contactSellView', 'contactInvestorView', 'aboutUsView', 'careersView', 'locationView'];
 
     if (targetViewId === 'authView') {
         header.style.display = 'none';
@@ -5970,8 +5978,6 @@ window.saveProfileUpdates = async function() {
     } else {
         header.style.display = 'block';
         footer.style.display = (targetViewId === 'productView') ? 'none' : 'block';
-
-        // Strict Hide with !important feel via JS
         if (hideHeaderPages.includes(targetViewId)) {
             headerMaster.style.setProperty('display', 'none', 'important');
         } else {
@@ -5979,9 +5985,13 @@ window.saveProfileUpdates = async function() {
         }
     }
 
+    // IMPORTANT: History add karein agar ye back button se nahi aaya hai
+    if (!isBackMode) {
+        history.pushState({ viewId: targetViewId }, "", "");
+    }
+
     window.scrollTo(0, 0);
     
-    // 4. Sub-view rendering triggers
     if(targetViewId === 'eventsView') {
         const liveTab = document.getElementById('tabLiveEvents');
         if(liveTab) switchEventTab('live', liveTab);
