@@ -3915,7 +3915,30 @@ body, .app-container {
         margin-bottom: 0 !important;
     }
 }
+/* =========================================================================
+   MOBILE ONLY: "BACK" TEXT INSTEAD OF "BACK TO HOME"
+========================================================================= */
+@media (max-width: 767px) {
+    /* Button ke andar ka text hide karenge lekin icon ko nahi */
+    .pd-back-btn {
+        font-size: 0 !important; /* Original text hide karne ke liye */
+        padding: 8px 12px !important; /* Mobile compact padding */
+    }
 
+    /* Icon ko wapas size dena zaroori hai */
+    .pd-back-btn i {
+        font-size: 14px !important;
+        margin-right: 5px !important;
+    }
+
+    /* Naya "BACK" text content ke zariye add karenge */
+    .pd-back-btn::after {
+        content: "BACK";
+        font-size: 12px !important; /* Mobile font size */
+        font-weight: 800;
+        vertical-align: middle;
+    }
+}
 /* =========================================================================
    PROFILE PAGE: HEIGHT ALIGNMENT & SINGLE CARD MAX-WIDTH FIX
 ========================================================================= */
@@ -4809,7 +4832,7 @@ input[type="email"],
             </div>
             <div class="policy-header-right">
                 <h1>INVESTOR RELATIONS</h1>
-                <span>PARTNER WITH ORAL HEALTHCARE INNOVATORS</span>
+                <span>PARTNER WITH ORAL HEALTHCARE</span>
             </div>
         </div>
 
