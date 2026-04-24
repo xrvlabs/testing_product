@@ -5968,14 +5968,18 @@ function switchView(targetViewId, isBackMode = false) {
     const footer = document.getElementById('globalFooter');
     const navPillsStrip = document.querySelector('.nav-pills');
     
-    // UI Updates (Header/Footer logic)
+    // Sabhi Policy aur Footer pages ki list
+    const policyAndFooterPages = [
+        'contactView', 'blogsView', 'eventsView', 'productView', 
+        'blogDetailView', 'policyView', 'returnPolicyView', 'termsView', 
+        'helpOrdersView', 'helpRefundsView', 'helpRewardsView', 
+        'contactBulkView', 'contactSellView', 'contactInvestorView', 
+        'aboutUsView', 'careersView', 'locationView'
+    ];
+
+    // UI Updates
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     if(targetViewId === 'homeView') document.querySelector('.pill:nth-child(1)').classList.add('active');
-    else if(targetViewId === 'blogsView') document.querySelector('.pill:nth-child(3)').classList.add('active');
-    else if(targetViewId === 'eventsView') document.querySelector('.pill:nth-child(4)').classList.add('active');
-    else if(targetViewId === 'contactView') document.querySelector('.pill:nth-child(5)').classList.add('active');
-
-    const hideHeaderPages = ['eventsView', 'contactView', 'blogsView', 'productView', 'blogDetailView', 'policyView', 'returnPolicyView', 'termsView', 'helpOrdersView', 'helpRefundsView', 'helpRewardsView', 'contactBulkView', 'contactSellView', 'contactInvestorView', 'aboutUsView', 'careersView', 'locationView'];
 
     if (targetViewId === 'authView') {
         header.style.display = 'none';
@@ -5983,29 +5987,32 @@ function switchView(targetViewId, isBackMode = false) {
     } else {
         header.style.display = 'block';
         footer.style.display = (targetViewId === 'productView') ? 'none' : 'block';
-        if (hideHeaderPages.includes(targetViewId)) {
+        
+        // Agar page policy ya footer wala hai, toh main header hide karo
+        if (policyAndFooterPages.includes(targetViewId)) {
             headerMaster.style.setProperty('display', 'none', 'important');
         } else {
             headerMaster.style.setProperty('display', 'flex', 'important');
         }
     }
 
-    // --- ONLY HIDE HOME STRIP ON CONTACT PAGE ---
+    // --- HOME STRIP (NAV PILLS) HIDE LOGIC FOR ALL FOOTER PAGES ---
     if (navPillsStrip) {
-        if (targetViewId === 'contactView') {
+        if (policyAndFooterPages.includes(targetViewId)) {
             navPillsStrip.style.setProperty('display', 'none', 'important');
         } else {
             navPillsStrip.style.setProperty('display', 'flex', 'important');
         }
     }
 
-    // CRITICAL: History API for Back Button
+    // History API
     if (!isBackMode) {
         history.pushState({ viewId: targetViewId }, "", "");
     }
 
     window.scrollTo(0, 0);
     
+    // Sub-renders
     if(targetViewId === 'eventsView') {
         const liveTab = document.getElementById('tabLiveEvents');
         if(liveTab) switchEventTab('live', liveTab);
