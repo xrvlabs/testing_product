@@ -2493,25 +2493,34 @@ body, .app-container {
         }
         .hero-slide.active { opacity: 1; z-index: 1; pointer-events: auto; }
         
-        .hero-slide img { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            object-fit: contain !important; /* MOBILE/TABLET: Image zoomed out aur poori dikhegi */
-            object-position: center; display: block; z-index: 2;
-        }
-        
-        @media (min-width: 1024px) {
-            .hero-slide img {
-                object-fit: cover !important; /* DESKTOP: Edge-to-edge lock barqaraar rahega */
-            }
-        }
-        
-        .hero-slide img.loaded { opacity: 1; }
-        .banner-skeleton { position: absolute; inset: 0; z-index: 1; border-radius: 0; }
+        /* 🚨 CROSSFADE SLIDER CSS FIX */
+.hero-slide img { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    object-fit: contain !important; 
+    object-position: center; display: block; z-index: 2;
+    opacity: 0; /* Initial state hidden taaki fade-in ho sake */
+    transition: opacity 0.6s ease-in-out, transform 0.5s ease; /* Smooth Crossfade */
+}
+
+.hero-slide img.loaded { 
+    opacity: 1; /* Jab image load ho jaye tab fade in hogi */
+}
+
+.banner-skel-wrap {
+    /* (Aapki baaki CSS same rahegi, bas ye transition add karni hai) */
+    position: absolute; inset: 0; z-index: 1; background: white; 
+    border-radius: 5px !important; display: flex; flex-direction: column; 
+    justify-content: center; padding: 40px; box-sizing: border-box; 
+    border: 1.5px solid var(--cloud);
+    transition: opacity 0.6s ease-in-out; /* Skeleton smoothly fade out hoga */
+}
+
 /* Mobile aur Tablet mein Slider Image ka halka zoom */
 @media (max-width: 1023px) {
     .hero-slide img {
-        transform: scale(1.08); /* 🚨 Halka sa zoom effect */
-        transition: transform 0.5s ease; /* Smoothness ke liye */
+        transform: scale(1.08); 
+        /* Dono transitions combine karni zaroori hain */
+        transition: opacity 0.6s ease-in-out, transform 0.5s ease; 
     }
 }
         /* ===================== PROMO CARD STATIC MODIFICATION ===================== */
@@ -5814,7 +5823,6 @@ function renderBanners() {
     const sliderContainer = document.getElementById('heroSliderContainer');
     if (!sliderContainer) return;
 
-    // Variable jisme hamara naya detailed skeleton save hai
     const detailSkeletonHTML = `
         <div class="banner-skel-wrap">
             <div class="skeleton banner-skel-title"></div>
@@ -5828,13 +5836,13 @@ function renderBanners() {
         sliderContainer.innerHTML = `
             <div class="hero-slide active">
                 ${detailSkeletonHTML}
-                <img src="banner_1.jpg" alt="" onload="this.classList.add('loaded'); this.previousElementSibling.style.display='none'">
+                <img src="banner_1.jpg" alt="" onload="this.classList.add('loaded'); this.previousElementSibling.style.opacity='0'; setTimeout(() => { this.previousElementSibling.style.display='none' }, 600);">
             </div>`;
     } else {
         sliderContainer.innerHTML = bannersData.map((banner, index) => `
             <div class="hero-slide ${index === 0 ? 'active' : ''}">
                 ${detailSkeletonHTML}
-                <img src="${banner.img}" onload="this.classList.add('loaded'); this.previousElementSibling.style.display='none';">
+                <img src="${banner.img}" onload="this.classList.add('loaded'); this.previousElementSibling.style.opacity='0'; setTimeout(() => { this.previousElementSibling.style.display='none' }, 600);">
             </div>
         `).join('');
     }
