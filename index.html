@@ -5926,12 +5926,10 @@ window.saveProfileUpdates = async function() {
         updateEventTabCounts();
         filterEvents();
     }
-
-   // 1. Modified switchView Function (History API integration)
 function switchView(targetViewId, isBackMode = false) {
     closeMegamenu(); 
     
-    // View switching logic (Same as before)
+    // View switching logic
     Object.values(views).forEach(view => { 
         if(view) view.classList.remove('active'); 
     });
@@ -5940,6 +5938,7 @@ function switchView(targetViewId, isBackMode = false) {
     const header = document.getElementById('globalHeader');
     const headerMaster = document.querySelector('.header-master'); 
     const footer = document.getElementById('globalFooter');
+    const navPillsStrip = document.querySelector('.nav-pills');
     
     // UI Updates (Header/Footer logic)
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
@@ -5963,7 +5962,16 @@ function switchView(targetViewId, isBackMode = false) {
         }
     }
 
-    // CRITICAL: Agar ye hardware back button se nahi aaya, toh browser history mein entry add karo
+    // --- ONLY HIDE HOME STRIP ON CONTACT PAGE ---
+    if (navPillsStrip) {
+        if (targetViewId === 'contactView') {
+            navPillsStrip.style.setProperty('display', 'none', 'important');
+        } else {
+            navPillsStrip.style.setProperty('display', 'flex', 'important');
+        }
+    }
+
+    // CRITICAL: History API for Back Button
     if (!isBackMode) {
         history.pushState({ viewId: targetViewId }, "", "");
     }
