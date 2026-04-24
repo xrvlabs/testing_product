@@ -459,7 +459,32 @@
         font-size: 32px;
     }
 }
+/* ===================== BANNER DETAILED SKELETON ===================== */
+.banner-skel-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: white; /* Ekdum clean white base */
+    border-radius: 5px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    box-sizing: border-box;
+    border: 1.5px solid var(--cloud);
+}
 
+/* Skeleton Lines jo chamkengi */
+.banner-skel-title { height: 32px; width: 40%; border-radius: 5px !important; margin-bottom: 16px; }
+.banner-skel-sub { height: 14px; width: 60%; border-radius: 5px !important; margin-bottom: 10px; }
+.banner-skel-btn { height: 36px; width: 120px; border-radius: 50px !important; margin-top: 20px; }
+
+/* Mobile adjustments */
+@media (max-width: 1023px) {
+    .banner-skel-wrap { padding: 20px; }
+    .banner-skel-title { width: 70%; height: 24px; }
+    .banner-skel-sub { width: 90%; }
+}
 /* =========================================================================
    HARDWARE BACK BUTTON FIX FOR MOBILE & TABLET
 ========================================================================= */
@@ -4140,14 +4165,19 @@ input[type="email"],
 
     <div id="homeView" class="view-section active">
         <div class="home-top-container">
-            <div class="hero-slider-wrap">
-                <div class="hero-slider contained" id="heroSliderContainer">
-                    <div class="hero-slide">
-                        <div class="skeleton banner-skeleton"></div>
-                        <img src="banner_1.jpg" alt="Promo Banner" onload="this.classList.add('loaded'); this.previousElementSibling.style.display='none'">
-                    </div>
-                </div>
+           <div class="hero-slider-wrap">
+    <div class="hero-slider contained" id="heroSliderContainer">
+        <div class="hero-slide active">
+            <div class="banner-skel-wrap">
+                <div class="skeleton banner-skel-title"></div>
+                <div class="skeleton banner-skel-sub"></div>
+                <div class="skeleton banner-skel-sub" style="width: 40%;"></div>
+                <div class="skeleton banner-skel-btn"></div>
             </div>
+            <img src="banner_1.jpg" alt="Promo Banner" onload="this.classList.add('loaded'); this.previousElementSibling.style.display='none'">
+        </div>
+    </div>
+</div>
             
             <div class="promo-cards-side">
                <div class="promo-card" style="background: linear-gradient(135deg, var(--ocean), var(--mint)); border: none;">
@@ -5781,25 +5811,35 @@ function renderBlogList(data) {
     }
 
 function renderBanners() {
-        const sliderContainer = document.getElementById('heroSliderContainer');
-        if (!sliderContainer) return;
+    const sliderContainer = document.getElementById('heroSliderContainer');
+    if (!sliderContainer) return;
 
-        if (bannersData.length === 0) {
-            sliderContainer.innerHTML = `
-                <div class="hero-slide active">
-                    <div class="skeleton banner-skeleton"></div>
-                    <img src="banner_1.jpg" alt="" onload="this.classList.add('loaded'); this.previousElementSibling.style.display='none'">
-                </div>`;
-        } else {
-            sliderContainer.innerHTML = bannersData.map((banner, index) => `
-                <div class="hero-slide ${index === 0 ? 'active' : ''}">
-                    <div class="skeleton banner-skeleton"></div>
-                    <img src="${banner.img}" onload="this.classList.add('loaded'); this.parentElement.querySelector('.banner-skeleton').style.display='none';">
-                </div>
-            `).join('');
-        }
-        startAutoSlide();
+    // Variable jisme hamara naya detailed skeleton save hai
+    const detailSkeletonHTML = `
+        <div class="banner-skel-wrap">
+            <div class="skeleton banner-skel-title"></div>
+            <div class="skeleton banner-skel-sub"></div>
+            <div class="skeleton banner-skel-sub" style="width: 40%;"></div>
+            <div class="skeleton banner-skel-btn"></div>
+        </div>
+    `;
+
+    if (bannersData.length === 0) {
+        sliderContainer.innerHTML = `
+            <div class="hero-slide active">
+                ${detailSkeletonHTML}
+                <img src="banner_1.jpg" alt="" onload="this.classList.add('loaded'); this.previousElementSibling.style.display='none'">
+            </div>`;
+    } else {
+        sliderContainer.innerHTML = bannersData.map((banner, index) => `
+            <div class="hero-slide ${index === 0 ? 'active' : ''}">
+                ${detailSkeletonHTML}
+                <img src="${banner.img}" onload="this.classList.add('loaded'); this.previousElementSibling.style.display='none';">
+            </div>
+        `).join('');
     }
+    startAutoSlide();
+}
 
     function startAutoSlide() {
         const slider = document.getElementById('heroSliderContainer');
