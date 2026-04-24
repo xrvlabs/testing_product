@@ -479,29 +479,6 @@ window.switchView = function(targetViewId, isBack = false) {
     }
 };
 
-window.addEventListener('popstate', function(event) {
-    // Agar koi modal/megamenu open hai toh pehle usey band karein
-    if (document.getElementById('megamenu').classList.contains('active')) {
-        closeMegamenu();
-        return;
-    }
-    if (document.getElementById('cartComponent').classList.contains('active')) {
-        closeCartModal();
-        return;
-    }
-    if (document.getElementById('locationModal').classList.contains('active')) {
-        closeLocationModal();
-        return;
-    }
-
-    // View switch karein
-    if (event.state && event.state.viewId) {
-        switchView(event.state.viewId, true);
-    } else {
-        switchView('homeView', true);
-    }
-});
-history.replaceState({ viewId: 'homeView' }, "", "");
 /* =========================================================================
    PROFILE PAGE: HIDE LOCATION & PROFILE/CART ICONS (MOBILE/TABLET)
 ========================================================================= */
@@ -5950,10 +5927,11 @@ window.saveProfileUpdates = async function() {
         filterEvents();
     }
 
-   function switchView(targetViewId, isBackMode = false) {
+   // 1. Modified switchView Function (History API integration)
+function switchView(targetViewId, isBackMode = false) {
     closeMegamenu(); 
     
-    // View switching logic
+    // View switching logic (Same as before)
     Object.values(views).forEach(view => { 
         if(view) view.classList.remove('active'); 
     });
@@ -5963,7 +5941,7 @@ window.saveProfileUpdates = async function() {
     const headerMaster = document.querySelector('.header-master'); 
     const footer = document.getElementById('globalFooter');
     
-    // Tab highlighting logic... (aapka purana code yahan rahega)
+    // UI Updates (Header/Footer logic)
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     if(targetViewId === 'homeView') document.querySelector('.pill:nth-child(1)').classList.add('active');
     else if(targetViewId === 'blogsView') document.querySelector('.pill:nth-child(3)').classList.add('active');
@@ -5985,7 +5963,7 @@ window.saveProfileUpdates = async function() {
         }
     }
 
-    // IMPORTANT: History add karein agar ye back button se nahi aaya hai
+    // CRITICAL: Agar ye hardware back button se nahi aaya, toh browser history mein entry add karo
     if (!isBackMode) {
         history.pushState({ viewId: targetViewId }, "", "");
     }
@@ -6001,6 +5979,28 @@ window.saveProfileUpdates = async function() {
         setTimeout(() => renderBlogData(), 1200);
     }
 }
+
+// 2. Hardware/Browser Back Button Listener
+window.addEventListener('popstate', function(event) {
+    // Pehle check karein agar koi modal ya menu open hai toh unhe band karein
+    const megamenu = document.getElementById('megamenu');
+    const cart = document.getElementById('cartComponent');
+    const loc = document.getElementById('locationModal');
+
+    if (megamenu.classList.contains('active')) { closeMegamenu(); return; }
+    if (cart.classList.contains('active')) { closeCartModal(); return; }
+    if (loc.classList.contains('active')) { closeLocationModal(); return; }
+
+    // Agar state hai, toh us page par wapas jayein bina naya state push kiye
+    if (event.state && event.state.viewId) {
+        switchView(event.state.viewId, true);
+    } else {
+        switchView('homeView', true);
+    }
+});
+
+// 3. Initial State Set karein (Home View lock karne ke liye)
+history.replaceState({ viewId: 'homeView' }, "", "");
 // Sidebar Drawer Toggle Function
 window.toggleProfileSidebar = function() {
     const sidebar = document.getElementById('profSidebar');
