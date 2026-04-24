@@ -3888,6 +3888,34 @@ body, .app-container {
         column-gap: 10px !important;
     }
 }
+
+@media (max-width: 1023px) {
+    /* 1. Form ke outer card ki styling remove kardi */
+    #contactView .contact-form-col {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+    }
+
+    /* 2. Heading ko left edge se align kiya */
+    #contactView .contact-form-col h3 {
+        margin-left: 0 !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* 3. Inputs ke beech perfect 10px spacing lock ki */
+    #contactView .contact-input {
+        margin-bottom: 10px !important;
+    }
+
+    /* 4. Form row (Name/Phone) ka gap bhi adjust kiya */
+    #contactView .contact-form-row {
+        gap: 10px !important;
+        margin-bottom: 0 !important;
+    }
+}
+
 /* =========================================================================
    PROFILE PAGE: HEIGHT ALIGNMENT & SINGLE CARD MAX-WIDTH FIX
 ========================================================================= */
