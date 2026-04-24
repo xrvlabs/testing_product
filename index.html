@@ -2493,21 +2493,20 @@ body, .app-container {
         }
         .hero-slide.active { opacity: 1; z-index: 1; pointer-events: auto; }
         
-        /* 🚨 CROSSFADE SLIDER CSS FIX */
+        /* 🚨 CROSSFADE SLIDER CSS FIX (With Desktop Cover) */
 .hero-slide img { 
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-    object-fit: contain !important; 
+    object-fit: contain !important; /* Mobile ke liye default contain */
     object-position: center; display: block; z-index: 2;
-    opacity: 0; /* Initial state hidden taaki fade-in ho sake */
-    transition: opacity 0.6s ease-in-out, transform 0.5s ease; /* Smooth Crossfade */
+    opacity: 0; /* Fade in effect ke liye default hidden */
+    transition: opacity 0.6s ease-in-out, transform 0.5s ease; 
 }
 
 .hero-slide img.loaded { 
-    opacity: 1; /* Jab image load ho jaye tab fade in hogi */
+    opacity: 1; 
 }
 
 .banner-skel-wrap {
-    /* (Aapki baaki CSS same rahegi, bas ye transition add karni hai) */
     position: absolute; inset: 0; z-index: 1; background: white; 
     border-radius: 5px !important; display: flex; flex-direction: column; 
     justify-content: center; padding: 40px; box-sizing: border-box; 
@@ -2515,11 +2514,17 @@ body, .app-container {
     transition: opacity 0.6s ease-in-out; /* Skeleton smoothly fade out hoga */
 }
 
+/* 🚨 DESKTOP: Image ko edge-to-edge lock karne ke liye */
+@media (min-width: 1024px) {
+    .hero-slide img {
+        object-fit: cover !important; 
+    }
+}
+
 /* Mobile aur Tablet mein Slider Image ka halka zoom */
 @media (max-width: 1023px) {
     .hero-slide img {
         transform: scale(1.08); 
-        /* Dono transitions combine karni zaroori hain */
         transition: opacity 0.6s ease-in-out, transform 0.5s ease; 
     }
 }
@@ -5823,6 +5828,7 @@ function renderBanners() {
     const sliderContainer = document.getElementById('heroSliderContainer');
     if (!sliderContainer) return;
 
+    // Detailed skeleton wrapper
     const detailSkeletonHTML = `
         <div class="banner-skel-wrap">
             <div class="skeleton banner-skel-title"></div>
@@ -5833,12 +5839,14 @@ function renderBanners() {
     `;
 
     if (bannersData.length === 0) {
+        // Fallback banner
         sliderContainer.innerHTML = `
             <div class="hero-slide active">
                 ${detailSkeletonHTML}
                 <img src="banner_1.jpg" alt="" onload="this.classList.add('loaded'); this.previousElementSibling.style.opacity='0'; setTimeout(() => { this.previousElementSibling.style.display='none' }, 600);">
             </div>`;
     } else {
+        // Dynamic banners
         sliderContainer.innerHTML = bannersData.map((banner, index) => `
             <div class="hero-slide ${index === 0 ? 'active' : ''}">
                 ${detailSkeletonHTML}
