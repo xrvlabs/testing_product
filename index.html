@@ -4210,15 +4210,16 @@ input[type="email"],
         <div class="promo-btn" id="promoBtn1" style="display: none;"></div>
     </div>
     <div class="promo-img-wrap ig-frame-1">
-        <div class="ig-frame">
-            <img src="" alt="" id="promoImg1">
-            <div class="ig-icons">
-                <i class="fa-solid fa-heart" style="color:var(--coral);"></i> 
-                <i class="fa-regular fa-comment"></i> 
-                <i class="fa-regular fa-paper-plane"></i>
-            </div>
+    <div class="ig-frame">
+        <img src="./oraco_transparent.png" alt="" id="promoImg1" style="padding: 15px; object-fit: contain;">
+        <div class="ig-icons">
+            <i class="fa-solid fa-heart" style="color:var(--coral);"></i> 
+            <i class="fa-regular fa-comment"></i> 
+            <i class="fa-regular fa-paper-plane"></i>
         </div>
     </div>
+</div>
+</div>
 </div>
             </div>
         </div>
@@ -5897,16 +5898,22 @@ function renderPromoCards() {
     if (otherMediaData.length > 0) {
         const data = otherMediaData[0];
         
-        if (promoImg1) {
-            // Agar image fetch na ho paye toh default logo show karein
+        if (promoImg1 && data.img) {
+            // Nayi image aane par padding hata do taaki wo frame cover kare
+            promoImg1.onload = function() {
+                this.style.padding = '0px'; 
+                this.style.objectFit = 'cover'; 
+            };
+            
+            // Image fail hone par wapas Oraco ka logo set kar do
             promoImg1.onerror = function() {
-                this.src = './oraco_transparent.png';
-                this.style.padding = '15px'; // Logo ko frame ke andar space dene ke liye
+                this.src = './oraco_transparent.png'; 
+                this.style.padding = '15px'; 
                 this.style.objectFit = 'contain';
             };
             
-            // Image source set karein, agar empty ho toh seedha logo dikhayein
-            promoImg1.src = data.img || './oraco_transparent.png';
+            // Firebase se fetch ki hui image assign kar rahe hain
+            promoImg1.src = data.img;
         }
 
         if (promoTitle1 && data.title) promoTitle1.innerHTML = data.title;
