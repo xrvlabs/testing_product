@@ -499,7 +499,60 @@ window.addEventListener('popstate', function(event) {
         display: none !important;
     }
 }
+/* =========================================================================
+   SUPER STRICT FIX: LOCATION + SEARCH + CART + PROFILE IN ONE ROW
+========================================================================= */
+@media (max-width: 1023px) {
+    /* ID selector (#globalHeader) use kiya hai taaki purani CSS pakka override ho */
+    
+    #globalHeader .header-master {
+        display: flex !important;
+        flex-wrap: wrap !important; /* Logo ko upar alag row mein rakhne ke liye */
+        gap: 10px !important;
+        align-items: center !important;
+    }
 
+    /* 1. Location Block (Left) */
+    #globalHeader .location-block {
+        flex: 0 0 auto !important; /* Sirf utni jagah lega jitni icon ko chahiye */
+        width: 42px !important;
+        order: 2 !important;
+        margin: 0 !important;
+    }
+
+    /* 2. Search Container (Middle - Forces it into the same row) */
+    #globalHeader .search-container {
+        flex: 1 1 0% !important; /* 100% ko todkar bachi hui saari jagah isko dega */
+        min-width: 0 !important; /* Search bar ko screen se bahar bhagne se rokega */
+        order: 3 !important;
+        margin: 0 !important;
+    }
+    
+    #globalHeader .search-input-box {
+        width: 100% !important;
+        height: 42px !important;
+    }
+
+    /* 3. Cart & Profile Icons (Right) */
+    #globalHeader .header-actions {
+        flex: 0 0 auto !important;
+        order: 4 !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important; /* Cart aur Profile ke beech gap */
+    }
+}
+/* =========================================================================
+   PROFILE PAGE: HIDE LOCATION & PROFILE/CART ICONS (MOBILE/TABLET)
+========================================================================= */
+@media (max-width: 1023px) {
+    /* Strong ID selector ke sath taaki ye pakka hide ho jaye */
+    body:has(#profilePageView.active) #globalHeader .location-block,
+    body:has(#profilePageView.active) #globalHeader .header-actions {
+        display: none !important;
+    }
+}
 /* =========================================================================
    PROFILE PAGE: HIDE SEARCH BAR & CATEGORY STRIP (MOBILE/TABLET)
 ========================================================================= */
