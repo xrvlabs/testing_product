@@ -544,6 +544,25 @@ window.addEventListener('popstate', function(event) {
     }
 }
 /* =========================================================================
+   KEEP LOCATION & PROFILE ICONS VISIBLE ON SCROLL (MOBILE/TABLET)
+========================================================================= */
+@media (max-width: 1023px) {
+    /* Scroll hone par jo chizein hide ho rahi thi, unhe wapas visible aur lock kiya */
+    #globalHeader.scrolled .location-block,
+    #globalHeader.scrolled .header-actions {
+        max-height: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        display: flex !important;
+        visibility: visible !important;
+    }
+    
+    /* Scroll hone par gap zero ho raha tha, usko wapas normal kiya */
+    #globalHeader.scrolled .header-master {
+        gap: 10px !important; 
+    }
+}
+/* =========================================================================
    PROFILE PAGE: HIDE LOCATION & PROFILE/CART ICONS (MOBILE/TABLET)
 ========================================================================= */
 @media (max-width: 1023px) {
@@ -3943,38 +3962,7 @@ body, .app-container {
         /* =========================================================================
    STICKY SEARCH ON SCROLL (MOBILE)
 ========================================================================= */
-@media (max-width: 1023px) {
-    /* Base setup for animation */
-    .location-block, .header-actions {
-        max-height: 60px; 
-        opacity: 1;
-        overflow: hidden;
-        transform: translateY(0);
-        transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease, transform 0.3s ease;
-    }
 
-    .header-master {
-        transition: gap 0.3s ease, padding 0.3s ease;
-    }
-
-    /* Scrolled State: Smoothly hide Pincode and Profile/Cart */
-    #globalHeader.scrolled .location-block,
-    #globalHeader.scrolled .header-actions {
-        max-height: 0 !important;
-        opacity: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-        transform: translateY(-15px);
-    }
-
-    /* Remove extra space so search bar stays perfectly flush at top */
-    #globalHeader.scrolled .header-master {
-        gap: 0 !important;
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
-    }
-}
         .loc-current { display: flex; align-items: center; gap: 16px; padding: 24px; background: var(--ice); border: 1.5px solid rgba(0,102,255,.1); border-radius: 20px; cursor: pointer; transition: var(--transition); }
         .loc-current:hover { background: white; border-color: var(--ocean); box-shadow: 0 10px 25px rgba(0,102,255,.1); }
         .loc-icon { color: var(--ocean); font-size: 24px; background: white; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);}
