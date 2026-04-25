@@ -73,6 +73,15 @@
     flex-direction: column;
 }
 /* =========================================================================
+   FINAL FIX: HIDE DELIVERY BANNER ON MOBILE STRICTLY
+========================================================================= */
+@media (max-width: 1023px) {
+    #cartPageSummaryBlock .cart-delivery-banner,
+    #cartPageView .cart-delivery-banner {
+        display: none !important;
+    }
+}
+/* =========================================================================
    FINAL OVERRIDE: HIDE BANNER ON MOBILE, SHOW ON DESKTOP
 ========================================================================= */
 
@@ -6653,7 +6662,20 @@ function switchView(targetViewId, isBackMode = false) {
         if(footer) footer.style.display = (targetViewId === 'productView') ? 'none' : 'block';
         
         if (headerMaster) {
-            if (strictlyHiddenPages.includes(targetViewId)) {
+            // Pages jahan sirf Mobile/Tablet par header hide karna hai
+            const hiddenOnMobilePages = [
+                'productView', 'eventsView', 'blogsView', 
+                'blogDetailView', 'contactView', 'profilePageView', 'cartPageView'
+            ];
+
+            let shouldHide = strictlyHiddenPages.includes(targetViewId);
+            
+            // Agar screen phone/tablet hai, aur page list mein hai, toh hide karo
+            if (window.innerWidth < 1024 && hiddenOnMobilePages.includes(targetViewId)) {
+                shouldHide = true;
+            }
+
+            if (shouldHide) {
                 headerMaster.style.setProperty('display', 'none', 'important');
             } else {
                 headerMaster.style.setProperty('display', 'flex', 'important');
