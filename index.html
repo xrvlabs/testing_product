@@ -196,6 +196,76 @@
     }
 }
 /* =========================================================================
+   FLOATING SOCIAL MEDIA BAR (LEFT MIDDLE EXTANDABLE)
+========================================================================= */
+.floating-social-bar {
+    display: none; /* Mobile/Tablet par default hidden rahega */
+}
+
+@media (min-width: 1024px) {
+    .floating-social-bar {
+        display: flex;
+        flex-direction: column;
+        gap: 5px; /* Icons ke beech ka gap */
+        position: fixed;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        z-index: 999;
+    }
+
+    .fs-item {
+        display: flex;
+        align-items: center;
+        background: white;
+        color: var(--carbon);
+        text-decoration: none;
+        width: 50px; /* Default width sirf icon ke liye */
+        height: 50px;
+        border: 1.5px solid var(--smoke);
+        border-left: none; /* Left edge se merge karne ke liye */
+        border-radius: 0 5px 5px 0 !important; /* Sirf right corners round */
+        overflow: hidden;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, border-color 0.3s ease;
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .fs-item i {
+        width: 50px;
+        text-align: center;
+        font-size: 20px;
+        flex-shrink: 0; /* Icon dabega nahi jab text aayega */
+        transition: color 0.3s ease;
+    }
+
+    .fs-text {
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        white-space: nowrap; /* Text ko ek hi line me rakhega */
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        color: white;
+    }
+
+    /* Hover Animation */
+    .fs-item:hover {
+        width: 150px; /* Hover karne par lamba ho jayega */
+        background: var(--hover-color); /* Original brand color le lega */
+        border-color: var(--hover-color);
+    }
+
+    .fs-item:hover i {
+        color: white; /* Icon white ho jayega */
+    }
+
+    .fs-item:hover .fs-text {
+        opacity: 1; /* Text reveal hoga */
+        transform: translateX(0);
+    }
+}
+/* =========================================================================
    FINAL FIX: HIDE DELIVERY BANNER ON MOBILE STRICTLY
 ========================================================================= */
 @media (max-width: 1023px) {
@@ -8550,6 +8620,24 @@ window.showAddressForm = showAddressForm;
 <div id="floatingDesktopCart" class="floating-desktop-cart" onclick="openCartModal()">
     <i class="fa-solid fa-cart-shopping"></i>
     <div class="floating-cart-badge" id="floatingCartBadge">0</div>
+</div>
+<div id="floatingSocialBar" class="floating-social-bar">
+    <a href="#" class="fs-item" style="--hover-color: #25D366;">
+        <i class="fa-brands fa-whatsapp"></i>
+        <span class="fs-text">WHATSAPP</span>
+    </a>
+    <a href="#" class="fs-item" style="--hover-color: #E1306C;">
+        <i class="fa-brands fa-instagram"></i>
+        <span class="fs-text">INSTAGRAM</span>
+    </a>
+    <a href="#" class="fs-item" style="--hover-color: #1877F2;">
+        <i class="fa-brands fa-facebook-f"></i>
+        <span class="fs-text">FACEBOOK</span>
+    </a>
+    <a href="#" class="fs-item" style="--hover-color: #FF0000;">
+        <i class="fa-brands fa-youtube"></i>
+        <span class="fs-text">YOUTUBE</span>
+    </a>
 </div>
 </body>
 </html>
