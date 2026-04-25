@@ -8989,7 +8989,6 @@ window.removeProfileWishlist = async function(productId) {
     }
 
   document.addEventListener('DOMContentLoaded', () => {
-    // 1. Initialize App Data (This got deleted accidentally!)
     document.getElementById('skeletonContainer').style.display = 'grid';
     document.getElementById('productGrid').style.display = 'none';
     trackUniqueVisitor();
@@ -8999,7 +8998,17 @@ window.removeProfileWishlist = async function(productId) {
     setupZoom();
     initFirebaseAndData();
 
-    // 2. Overlay Click Listener (For Chat & Careers)
+    // 👉 PASTE THE LOGO CLICK FIX HERE 👈
+    document.querySelectorAll('.header-logo, .header-logo-desktop, .site-logo-img, .logo-text-wrapper').forEach(logo => {
+        logo.style.cursor = 'pointer';
+        logo.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            switchView('homeView');
+        });
+    });
+
+    // Overlay Click Listener (For Chat & Careers)
     const overlay = document.getElementById('popupOverlay');
     if (overlay) {
         overlay.addEventListener('click', () => {
