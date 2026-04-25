@@ -196,6 +196,199 @@
     }
 }
 /* =========================================================================
+   LIVE CHAT WINDOW (Careers Popup Exact Match)
+========================================================================= */
+.live-chat-trigger {
+    position: fixed;
+    bottom: 20px; /* Careers jaisa same */
+    right: 20px;  /* Careers jaisa same */
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #7fd5e2, var(--mint));
+    color: white;
+    border-radius: 50% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 10px 25px rgba(127, 213, 226, 0.4);
+    cursor: pointer;
+    z-index: 2499;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+.live-chat-trigger:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(127, 213, 226, 0.5);
+}
+
+/* Jab chat open ho toh icon smoothly hide ho jaye */
+.live-chat-trigger.hidden {
+    transform: scale(0) !important;
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+.chat-popup {
+    position: fixed;
+    bottom: 20px; /* Careers jaisa same */
+    right: 20px;  /* Careers jaisa same */
+    width: 350px;
+    max-width: calc(100vw - 20px);
+    background: white;
+    border: 1.5px solid var(--smoke);
+    border-radius: 5px !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    z-index: 2500;
+    transform: translateY(150%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, visibility 0.4s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-popup.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px !important;
+    border-bottom: 1.5px solid var(--smoke);
+    background: var(--snow);
+    border-radius: 5px 5px 0 0 !important;
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--carbon);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-close {
+    cursor: pointer;
+    color: var(--silver);
+    font-size: 18px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.chat-close:hover {
+    color: var(--coral);
+}
+
+.chat-body {
+    padding: 15px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 10px !important;
+    height: 320px;
+    overflow-y: auto;
+    background: white;
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+.chat-body::-webkit-scrollbar {
+    display: none; 
+}
+
+.chat-msg {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+    padding: 10px 14px;
+    border-radius: 5px !important;
+    max-width: 85%;
+}
+
+.msg-bot {
+    background: var(--snow);
+    color: var(--slate);
+    border: 1.5px solid var(--smoke);
+    align-self: flex-start;
+    border-bottom-left-radius: 0 !important; 
+}
+
+.msg-user {
+    background: #7fd5e2;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 0 !important; 
+}
+
+.chat-footer {
+    padding: 10px !important;
+    border-top: 1.5px solid var(--smoke);
+    background: var(--snow);
+    display: flex;
+    gap: 10px !important;
+    border-radius: 0 0 5px 5px !important;
+}
+
+.chat-input {
+    flex: 1;
+    border: 1.5px solid var(--smoke);
+    border-radius: 5px !important;
+    padding: 10px 15px;
+    font-size: 12px;
+    font-family: 'Quantico', sans-serif;
+    outline: none;
+    transition: 0.3s;
+}
+
+.chat-input:focus {
+    border-color: #7fd5e2;
+    box-shadow: 0 4px 16px rgba(127, 213, 226, 0.15);
+}
+
+.chat-send-btn {
+    background: #7fd5e2;
+    color: white;
+    border: none;
+    border-radius: 5px !important;
+    width: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.chat-send-btn:hover {
+    background: var(--carbon);
+}
+
+/* Mobile Adjustments (Careers Popup Exact Match) */
+@media (max-width: 767px) {
+    .chat-popup {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+    }
+    
+    .live-chat-trigger {
+        bottom: 10px;
+        right: 10px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+}
+/* =========================================================================
    FLOATING SOCIAL MEDIA BAR (LEFT MIDDLE EXTANDABLE)
 ========================================================================= */
 .floating-social-bar {
@@ -7437,6 +7630,72 @@ window.switchProfileTab = async function(tabId, element) {
         populateSizesDropdown(variant);
         updateProductControlUI();
     };
+window.toggleLiveChat = function(e) {
+    if(e) e.stopPropagation();
+    
+    // Close other popups if open
+    closeMegamenu();
+    if (typeof closeCareersPopup === 'function') closeCareersPopup();
+    
+    const chatPopup = document.getElementById('liveChatPopup');
+    const chatTrigger = document.getElementById('liveChatTrigger');
+    
+    chatPopup.classList.toggle('active');
+    
+    // Hide trigger icon when chat opens, show when it closes
+    if (chatPopup.classList.contains('active')) {
+        chatTrigger.classList.add('hidden');
+    } else {
+        chatTrigger.classList.remove('hidden');
+    }
+};
+
+// Dummy message sending logic
+window.sendDummyMessage = function() {
+    const input = document.getElementById('chatInput');
+    const msgText = input.value.trim();
+    if (!msgText) return;
+    
+    const chatBody = document.getElementById('chatBody');
+    
+    // Append User Message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'chat-msg msg-user';
+    userMsg.innerText = msgText;
+    chatBody.appendChild(userMsg);
+    
+    // Clear Input & Scroll to bottom
+    input.value = '';
+    chatBody.scrollTop = chatBody.scrollHeight;
+    
+    // Simulate Bot Typing & Reply
+    setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'chat-msg msg-bot';
+        botMsg.innerText = "Thanks for the information. An executive will get back to you shortly.";
+        chatBody.appendChild(botMsg);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }, 1000);
+};
+
+// Enter key to send message
+window.handleChatEnter = function(e) {
+    if (e.key === 'Enter') {
+        sendDummyMessage();
+    }
+};
+
+document.addEventListener('click', (event) => {
+    const chatPopup = document.getElementById('liveChatPopup');
+    const chatTrigger = document.getElementById('liveChatTrigger');
+    
+    if (chatPopup && chatPopup.classList.contains('active')) {
+        if (!chatPopup.contains(event.target) && !chatTrigger.contains(event.target)) {
+            chatPopup.classList.remove('active');
+            chatTrigger.classList.remove('hidden');
+        }
+    }
+});
 window.submitCustomForm = function(e, formType, btnId) {
     e.preventDefault();
     const form = e.target;
@@ -8712,6 +8971,33 @@ window.showAddressForm = showAddressForm;
         <i class="fa-brands fa-youtube"></i>
         <span class="fs-text">YOUTUBE</span>
     </a>
+</div>
+<div id="liveChatTrigger" class="live-chat-trigger" onclick="toggleLiveChat()">
+    <i class="fa-solid fa-robot"></i>
+</div>
+
+<div class="chat-popup" id="liveChatPopup">
+    <div class="chat-header">
+        <h3><i class="fa-solid fa-headset" style="color: #7fd5e2;"></i> ORACO SUPPORT</h3>
+        <div class="chat-close" onclick="toggleLiveChat()"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+    
+    <div class="chat-body" id="chatBody">
+        <div class="chat-msg msg-bot">
+            Hello! Welcome to Oraco Dental Innovation. How can I help you with your dental supplies today? 👋
+        </div>
+        <div class="chat-msg msg-user">
+            Hi, I need an update on my recent order of composites.
+        </div>
+        <div class="chat-msg msg-bot">
+            Sure! Could you please share your Order ID (e.g., ORD12345) so I can check the live status for you?
+        </div>
+    </div>
+    
+    <div class="chat-footer">
+        <input type="text" placeholder="TYPE YOUR MESSAGE..." class="chat-input" id="chatInput" onkeypress="handleChatEnter(event)">
+        <button class="chat-send-btn" onclick="sendDummyMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
 </div>
 </body>
 </html>
