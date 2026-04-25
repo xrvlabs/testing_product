@@ -459,6 +459,106 @@
         font-size: 32px;
     }
 }
+/* =========================================================================
+   FIX: CART LIST ALIGNMENT & MOBILE DELIVERY BANNER STRIP
+========================================================================= */
+
+/* 1. Cart items ko humesha ek ke niche ek (column) force karega */
+#cartItemsList {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+}
+
+/* 2. Mobile Banner ko perfect edge-to-edge header banayega */
+@media (max-width: 1023px) {
+    .cart-delivery-banner {
+        /* Container ki 16px padding ko exactly cover karne ke liye */
+        margin: -16px -16px 15px -16px !important; 
+        width: calc(100% + 32px) !important; 
+        box-sizing: border-box !important;
+        
+        /* Strip Styling */
+        border-radius: 0 !important; 
+        border-left: none !important;
+        border-right: none !important;
+        border-top: none !important;
+        border-bottom: 1.5px solid rgba(127, 213, 226, 0.3) !important;
+        background: linear-gradient(90deg, rgba(127, 213, 226, 0.05), rgba(127, 213, 226, 0.15)) !important;
+        
+        padding: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: left !important;
+        gap: 12px !important;
+    }
+}
+/* Cart ka top "MY CART" wala header hide karne ke liye */
+#cartComponent .modal-header {
+    display: none !important;
+}
+
+/* Header hatne ke baad upar se thodi spacing balance karne ke liye */
+#cartComponent .modal-scroll-content {
+    padding-top: 20px !important;
+}
+/* =========================================================================
+   CART INFORMATIVE UI (TRUST BADGES & DELIVERY BANNER)
+========================================================================= */
+.cart-delivery-banner {
+    background: rgba(127, 213, 226, 0.08);
+    border: 1.5px dashed rgba(127, 213, 226, 0.4);
+    border-radius: 5px !important;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--carbon);
+}
+
+.cdb-icon {
+    width: 32px;
+    height: 32px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(127, 213, 226, 0.2);
+}
+
+.cdb-icon i {
+    color: #7fd5e2;
+    font-size: 14px;
+}
+
+.cart-trust-box {
+    display: flex;
+    justify-content: space-between;
+    background: var(--snow);
+    border: 1.5px solid var(--smoke);
+    border-radius: 5px !important;
+    padding: 14px;
+    margin-top: 20px;
+}
+
+.ctb-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 9px;
+    font-weight: 900;
+    color: var(--muted);
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.ctb-item i {
+    font-size: 18px;
+    color: #7fd5e2; /* Brand Blue */
+}
 /* ===================== BANNER DETAILED SKELETON ===================== */
 .banner-skel-wrap {
     position: absolute;
@@ -1828,6 +1928,23 @@ body, .app-container {
 #profileComponent .modal-scroll-content::-webkit-scrollbar,
 #profileTabContent::-webkit-scrollbar {
     display: none !important;
+}
+/* =========================================================================
+   GLOBAL SCROLLBAR HIDE (ALL DEVICES & ALL BROWSERS)
+========================================================================= */
+
+/* 1. For Firefox, IE, and Edge */
+html, body, * {
+    scrollbar-width: none !important;      /* Firefox */
+    -ms-overflow-style: none !important;   /* IE and Edge */
+}
+
+/* 2. For Chrome, Safari, newer Edge, and Opera */
+::-webkit-scrollbar, 
+*::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
 }
 /* =========================================================================
    PROFILE MODAL: EXACT MATCH TO CATEGORY SCREEN (NO BLUR)
@@ -3998,6 +4115,174 @@ body, .app-container {
         margin-top: 10px !important;
     }
 }
+/* =========================================================================
+   NEW BULK OFFERS SECTION UI
+========================================================================= */
+
+/* Container for the offer tiers */
+.bulk-offers-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Individual Offer Row */
+.bulk-tier {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--snow);
+    border: 1.5px solid var(--smoke);
+    border-radius: 5px !important; /* Strict 5px corners */
+    padding: 14px 16px;
+    transition: var(--transition);
+    position: relative;
+    cursor: default;
+}
+
+/* Hover Effect for Offers */
+.bulk-tier:hover {
+    border-color: #7fd5e2; /* Global Brand Blue */
+    background: rgba(127, 213, 226, 0.05);
+}
+
+.tier-qty {
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--carbon);
+}
+
+.tier-discount {
+    font-size: 14px;
+    font-weight: 900;
+    color: #7fd5e2; /* Brand Blue */
+}
+
+/* Highlighted Tier (Best Value) */
+.bulk-tier.highlight-tier {
+    border-color: #7fd5e2;
+    background: rgba(127, 213, 226, 0.08);
+    margin-top: 8px; /* Space for the floating badge */
+}
+
+.tier-badge {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    background: linear-gradient(135deg, #7fd5e2, var(--mint));
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 4px 10px;
+    border-radius: 5px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(127, 213, 226, 0.3);
+}
+
+/* Text above the button */
+.bulk-footer-text {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Updated Quote Button */
+.bulk-req-btn {
+    width: 100%;
+    background: var(--carbon); /* Dark contrast button */
+    color: white;
+    border: none;
+    border-radius: 5px !important;
+    font-weight: 900;
+    font-size: 13px;
+    padding: 16px;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+/* =========================================================================
+   FLOATING DESKTOP CART (RIGHT MIDDLE)
+========================================================================= */
+.floating-desktop-cart {
+    display: none; /* Mobile/Tablet par default hidden */
+}
+
+@media (min-width: 1024px) {
+    .floating-desktop-cart {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        background: white;
+        border: 1.5px solid var(--smoke);
+        border-right: none; /* Right edge se merge karne ke liye */
+        border-radius: 5px 0 0 5px !important; /* Sirf left corners 5px */
+        width: 55px;
+        height: 65px;
+        z-index: 999; /* Content ke upar, modals ke niche */
+        cursor: pointer;
+        box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
+        transition: var(--transition);
+    }
+
+    .floating-desktop-cart:hover {
+        border-color: #7fd5e2; /* Brand Blue sync */
+        box-shadow: -4px 0 15px rgba(127, 213, 226, 0.2);
+    }
+
+    .floating-desktop-cart i {
+        font-size: 20px;
+        color: var(--carbon);
+        transition: var(--transition);
+    }
+
+    .floating-desktop-cart:hover i {
+        color: #7fd5e2;
+    }
+
+    /* Floating Cart Badge */
+    .floating-cart-badge {
+        position: absolute;
+        top: -6px;
+        left: -6px;
+        background: var(--coral);
+        color: white;
+        font-size: 10px;
+        font-weight: 900;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    /* Jab cart mein items hon */
+    .floating-desktop-cart.has-items i {
+        color: #7fd5e2;
+    }
+    
+    .floating-desktop-cart.has-items .floating-cart-badge {
+        transform: scale(1.1);
+    }
+}
+.bulk-req-btn:hover {
+    background: #7fd5e2 !important; /* Turns blue on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(127, 213, 226, 0.3) !important;
+}
 /* 1. Sidebar aur Main Content box ki height hamesha barabar rakhne ke liye */
 @media(min-width: 1024px) {
     .profile-layout-split {
@@ -4316,14 +4601,27 @@ input[type="email"],
                         </div>
 
                         <div class="pd-bulk-box">
-                            <div class="bulk-title"><i class="fa-solid fa-boxes-stacked" style="color: var(--ocean);"></i> BULK QUANTITY</div>
-                            <div class="bulk-content">
-                                <i class="fa-solid fa-box-open" style="font-size: 40px; color: var(--silver); margin-bottom: 16px;"></i>
-                                <strong style="font-size: 15px; color: var(--carbon);">BUY MORE, SAVE MORE!</strong>
-                                <span style="margin-top: 8px;">Special pricing available for bulk clinic orders and hospital supplies.</span>
-                                <button class="bulk-req-btn" style="margin-top: 24px; background: var(--ocean); color: white; border: none; border-radius: 50px; font-weight: 900; font-size: 12px; padding: 14px 28px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 16px rgba(0,102,255,.2);">REQUEST QUOTE</button>
-                            </div>
-                        </div>
+    <div class="bulk-title"><i class="fa-solid fa-tags" style="color: var(--ocean);"></i> BULK OFFERS</div>
+    
+    <div class="bulk-offers-container">
+        <div class="bulk-tier">
+            <div class="tier-qty">BUY 5+ ITEMS</div>
+            <div class="tier-discount">GET 5% OFF</div>
+        </div>
+        <div class="bulk-tier">
+            <div class="tier-qty">BUY 10+ ITEMS</div>
+            <div class="tier-discount">GET 10% OFF</div>
+        </div>
+        <div class="bulk-tier highlight-tier">
+            <div class="tier-badge">BEST VALUE</div>
+            <div class="tier-qty">BUY 20+ ITEMS</div>
+            <div class="tier-discount">GET 15% OFF</div>
+        </div>
+    </div>
+
+    <div class="bulk-footer-text">Need larger quantities for your clinic?</div>
+    <button class="bulk-req-btn">REQUEST B2B QUOTE</button>
+</div>
                         
                     </div>
 
@@ -4363,12 +4661,12 @@ input[type="email"],
         </div>
 
         <div class="pd-bottom-bar-mobile">
-            <div class="bottom-price-info">
-                <span style="font-size: 11px; color: var(--muted); font-weight: 800;">STARTING AT</span>
-                <div class="bottom-price" id="bottom-price-mobile">Rs. 1,499</div>
-            </div>
-            <button class="bottom-btn" onclick="handleMainDynamicAdd(event)">BUY NOW</button>
-        </div>
+    <div class="bottom-price-info">
+        <span style="font-size: 11px; color: var(--muted); font-weight: 800;">STARTING AT</span>
+        <div class="bottom-price" id="bottom-price-mobile">Rs. 1,499</div>
+    </div>
+    <button class="bottom-btn" onclick="handleBuyNow(currentSelectedProduct ? currentSelectedProduct.id : null)">BUY NOW</button>
+</div>
     </div>
 
     <div id="eventsView" class="view-section">
@@ -5428,17 +5726,30 @@ input[type="email"],
     </div>
 
     <div class="cart-summary" id="cartSummaryBlock">
-        <div class="summary-row"><span>SHIPPING</span> <span style="color:var(--mint);">FREE</span></div>
-        <div class="summary-row"><span>SUBTOTAL</span> <span id="cartSubtotal">Rs. 0</span></div>
-        <div class="summary-total"><span>TOTAL</span> <span id="cartTotal">Rs. 0</span></div>
-
-        <div id="whatsappInputContainer" style="display: none; margin-top: 24px;">
-            <label style="font-size: 10px; font-weight: 800; color: var(--silver); margin-bottom: 8px; display: block; letter-spacing: 1px;">WHATSAPP NUMBER FOR UPDATES</label>
-            <input type="tel" id="cartWhatsappInput" placeholder="10-DIGIT MOBILE NUMBER" maxlength="10" style="width: 100%; border: 1.5px solid var(--smoke); border-radius: 50px; padding: 0 20px; height: 46px; font-size: 13px; font-weight: 700; outline: none; font-family: 'Quantico', sans-serif; background: var(--snow);">
-        </div>
-
-        <button class="checkout-btn" onclick="placeOrder()">MAKE PAYMENT</button>
+    <div class="summary-row"><span>SUBTOTAL</span> <span id="cartSubtotal">Rs. 0</span></div>
+    
+    <div class="summary-row" id="cartDiscountRow" style="display: none; color: var(--mint);">
+        <span>COINS DISCOUNT</span> <span id="cartDiscountAmount">- Rs. 0</span>
     </div>
+    
+    <div class="summary-row"><span>GST / TAXES</span> <span style="color:var(--muted);">INCLUDED</span></div>
+    <div class="summary-row"><span>SHIPPING</span> <span style="color:var(--mint);">FREE</span></div>
+    
+    <div class="summary-total"><span>TOTAL</span> <span id="cartTotal">Rs. 0</span></div>
+
+    <div class="cart-trust-box">
+        <div class="ctb-item"><i class="fa-solid fa-truck-fast"></i><span>FAST<br>DELIVERY</span></div>
+        <div class="ctb-item"><i class="fa-solid fa-shield-halved"></i><span>SECURE<br>PAYMENT</span></div>
+        <div class="ctb-item"><i class="fa-solid fa-rotate-left"></i><span>EASY<br>RETURNS</span></div>
+    </div>
+
+    <div id="whatsappInputContainer" style="display: none; margin-top: 24px;">
+        <label style="font-size: 10px; font-weight: 800; color: var(--silver); margin-bottom: 8px; display: block; letter-spacing: 1px;">WHATSAPP NUMBER FOR UPDATES</label>
+        <input type="tel" id="cartWhatsappInput" placeholder="10-DIGIT MOBILE NUMBER" maxlength="10" style="width: 100%; border: 1.5px solid var(--smoke); border-radius: 5px !important; padding: 0 20px; height: 46px; font-size: 13px; font-weight: 700; outline: none; font-family: 'Quantico', sans-serif; background: var(--snow);">
+    </div>
+
+    <button class="checkout-btn" onclick="placeOrder()">MAKE PAYMENT</button>
+</div>
 </div>
 
 <div id="successOverlay">
@@ -6871,17 +7182,38 @@ if (thumbListContainer) {
     const cartWrapper = document.getElementById('mainCartIcon');
     const badge = document.getElementById('mainCartBadge');
     
-    // Count toh nikalenge logic ke liye lekin show nahi karenge
+    // Naya floating cart
+    const floatingCart = document.getElementById('floatingDesktopCart');
+    const floatingBadge = document.getElementById('floatingCartBadge');
+    
     let count = 0;
     cart.forEach(item => { count += (item.qty || 1); });
 
+    // Header Cart Badge Logic
     if (cartWrapper) {
         if (count > 0) {
-            // Cart mein items hain -> Red Color
             cartWrapper.classList.add('has-items');
+            if (badge) badge.innerText = count;
         } else {
-            // Cart empty hai -> Default Color
             cartWrapper.classList.remove('has-items');
+            if (badge) badge.innerText = "0";
+        }
+    }
+    
+    // Floating Desktop Cart Badge Logic
+    if (floatingCart) {
+        if (count > 0) {
+            floatingCart.classList.add('has-items');
+            if (floatingBadge) {
+                floatingBadge.style.display = 'flex';
+                floatingBadge.innerText = count;
+            }
+        } else {
+            floatingCart.classList.remove('has-items');
+            if (floatingBadge) {
+                floatingBadge.style.display = 'none'; // Empty hone par hide
+                floatingBadge.innerText = "0";
+            }
         }
     }
 }
@@ -6963,7 +7295,22 @@ if (thumbListContainer) {
     listContainer.style.display = 'flex';
     summaryBlock.style.display = 'block';
 
-    let html = '';
+    // 1. Dynamic Estimated Delivery Date Calculation (Current Date + 4 Days)
+    let delDate = new Date();
+    delDate.setDate(delDate.getDate() + 4);
+    let delDateStr = delDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    // 2. Add Delivery Banner at the top of the items list
+    let html = `
+    <div class="cart-delivery-banner">
+        <div class="cdb-icon"><i class="fa-solid fa-calendar-check"></i></div>
+        <div style="line-height: 1.2;">
+            <span style="color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: 0.5px;">ESTIMATED DELIVERY BY</span><br>
+            <span style="font-size: 13px; font-weight: 900; color: #7fd5e2;">${delDateStr}</span>
+        </div>
+    </div>
+    `;
+
     let subtotal = 0;
 
     cart.forEach((item, index) => {
@@ -6971,16 +7318,18 @@ if (thumbListContainer) {
         let itemPrice = item.priceNum || parseInt(item.price.replace(/,/g, ''));
         subtotal += (itemPrice * qty);
 
-        // Poora Cart Item Div: Relative position ke saath
         html += `
-            <div class="cart-item" style="position: relative !important; display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1.5px solid var(--cloud); min-height: 100px;">
+            <div class="cart-item" style="position: relative !important; display: flex; align-items: center; gap: 10px; padding: 12px; border-bottom: 1.5px solid var(--cloud); min-height: 100px;">
                 <div class="cart-item-img" style="width: 80px; height: 80px; flex-shrink: 0;">
                     <img src="${item.img}" alt="" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 
                 <div class="cart-item-info" style="flex: 1; display: flex; flex-direction: column; gap: 4px; padding-bottom: 20px;">
-                    <div class="cart-item-title" style="font-size: 13px; font-weight: 800; color: var(--carbon); line-height: 1.4;">${item.title}</div>
-                    <div class="cart-item-price" style="font-size: 16px; font-weight: 900; color: var(--ocean);">Rs. ${(itemPrice * qty).toLocaleString('en-IN')}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div class="cart-item-title" style="font-size: 13px; font-weight: 800; color: var(--carbon); line-height: 1.4; padding-right:10px;">${item.title}</div>
+                        <i class="fa-solid fa-trash-can" style="color: var(--silver); cursor:pointer; font-size:14px; transition:0.3s;" onmouseover="this.style.color='var(--coral)'" onmouseout="this.style.color='var(--silver)'" onclick="updateCartItemQty(${index}, -99)"></i>
+                    </div>
+                    <div class="cart-item-price" style="font-size: 16px; font-weight: 900; color: #7fd5e2;">Rs. ${(itemPrice * qty).toLocaleString('en-IN')}</div>
                 </div>
                 
                 <div class="qty-pill">
@@ -7007,17 +7356,28 @@ if (thumbListContainer) {
         applyCoinsBox.style.display = 'none';
     }
 
+    // Summary details update
     document.getElementById('cartSubtotal').innerText = `Rs. ${subtotal.toLocaleString('en-IN')}`;
-    const totalEl = document.getElementById('cartTotal');
     
+    // Manage discount row visibility
+    const discountRow = document.getElementById('cartDiscountRow');
+    if(discountRow) {
+        if(isCoinsApplied && discount > 0) {
+            discountRow.style.display = 'flex';
+            document.getElementById('cartDiscountAmount').innerText = `- Rs. ${discount.toLocaleString('en-IN')}`;
+        } else {
+            discountRow.style.display = 'none';
+        }
+    }
+
+    const totalEl = document.getElementById('cartTotal');
     if (animate && previousCartTotal !== finalTotal) {
         animateValue(totalEl, previousCartTotal, finalTotal, 800);
     } else {
         totalEl.innerText = `Rs. ${finalTotal.toLocaleString('en-IN')}`;
     }
     previousCartTotal = finalTotal;
-}
-    window.placeOrder = async function() {
+}  window.placeOrder = async function() {
         if(cart.length === 0 || !currentUser) return;
         
         const waContainer = document.getElementById('whatsappInputContainer');
@@ -7197,27 +7557,28 @@ window.renderWishlist = function() {
     }
 }
 
-    function triggerRain() {
-        const overlay = document.getElementById('successOverlay');
-        overlay.style.display = 'flex';
-        const symbols = ['🎉', '📦', '💙', '🦷', '💎'];
-        for(let i=0; i<60; i++) {
-            let drop = document.createElement('div');
-            drop.className = 'rain-drop';
-            drop.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-            drop.style.left = Math.random() * 100 + 'vw';
-            drop.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
-            drop.style.animationDelay = (Math.random() * 0.5) + 's';
-            overlay.appendChild(drop);
-            setTimeout(() => drop.remove(), 4000);
-        }
-        setTimeout(() => {
-            overlay.style.display = 'none';
-            switchView('homeView'); 
-            openProfile(); 
-            renderProfileOrders();
-        }, 3500);
+   function triggerRain() {
+    const overlay = document.getElementById('successOverlay');
+    overlay.style.display = 'flex';
+    const symbols = ['🎉', '📦', '💙', '🦷', '💎'];
+    
+    for(let i=0; i<60; i++) {
+        let drop = document.createElement('div');
+        drop.className = 'rain-drop';
+        drop.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+        drop.style.left = Math.random() * 100 + 'vw';
+        drop.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+        drop.style.animationDelay = (Math.random() * 0.5) + 's';
+        overlay.appendChild(drop);
+        setTimeout(() => drop.remove(), 4000);
     }
+    
+    setTimeout(() => {
+        overlay.style.display = 'none';
+        switchView('homeView'); 
+        // Yahan se openProfile() aur renderProfileOrders() hata diya gaya hai
+    }, 3500);
+}
 
     onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -7770,5 +8131,9 @@ window.showAddressForm = showAddressForm;
     window.deleteAddress = deleteAddress;
     window.removeProfileWishlist = removeProfileWishlist;
 </script>
+<div id="floatingDesktopCart" class="floating-desktop-cart" onclick="openCartModal()">
+    <i class="fa-solid fa-cart-shopping"></i>
+    <div class="floating-cart-badge" id="floatingCartBadge">0</div>
+</div>
 </body>
 </html>
