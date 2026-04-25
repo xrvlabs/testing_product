@@ -6041,7 +6041,7 @@ input[type="email"],
             <div class="loc-icon"><i class="fa-solid fa-location-crosshairs"></i></div>
             <div class="loc-text">
                 <strong>Use my Current Location</strong>
-                <span id="locSubtext">Enable your current location for better services</span>
+                <span id="locSubtext">ENABLE YOUR CURRENT LOCATION</span>
             </div>
         </div>
         
@@ -6522,19 +6522,19 @@ function renderBlogList(data) {
                         closeLocationModal();
                     } else {
                         alert("COULD NOT ACCURATELY DETECT PINCODE. PLEASE ENTER IT MANUALLY.");
-                        document.getElementById('locSubtext').innerText = "Enable your current location for better services";
+                        document.getElementById('locSubtext').innerText = "ENABLE YOUR CURRENT LOCATION";
                     }
                 } catch(e) {
                     alert("LOCATION FETCH FAILED. PLEASE ENTER MANUALLY.");
-                    document.getElementById('locSubtext').innerText = "Enable your current location for better services";
+                    document.getElementById('locSubtext').innerText = "ENABLE YOUR CURRENT LOCATION";
                 }
             }, () => {
                 alert("LOCATION ACCESS DENIED OR UNAVAILABLE.");
-                document.getElementById('locSubtext').innerText = "Enable your current location for better services";
+                document.getElementById('locSubtext').innerText = "ENABLE YOUR CURRENT LOCATION";
             });
         } else {
             alert("GEOLOCATION IS NOT SUPPORTED BY YOUR BROWSER.");
-            document.getElementById('locSubtext').innerText = "Enable your current location for better services";
+            document.getElementById('locSubtext').innerText = "ENABLE YOUR CURRENT LOCATION";
         }
     }
 
