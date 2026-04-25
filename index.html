@@ -4202,26 +4202,40 @@ input[type="email"],
     </div>
 </div>
             
-            <div class="promo-cards-side">
-               <div class="promo-card" style="background: linear-gradient(135deg, var(--ocean), var(--mint)); border: none;">
-    <div class="promo-content">
-        <div class="promo-title" id="promoTitle1"></div>
-        <div class="promo-subtitle" id="promoSubtitle1"></div>
-        <div class="promo-btn" id="promoBtn1" style="display: none;"></div>
-    </div>
-    <div class="promo-img-wrap ig-frame-1">
-    <div class="ig-frame">
-        <img src="./oraco_transparent.png" alt="" id="promoImg1" style="padding: 15px; object-fit: contain;">
-        
-        <div class="ig-icons">
-            <i class="fa-solid fa-heart" style="color:var(--coral);"></i> 
-            <i class="fa-regular fa-comment"></i> 
-            <i class="fa-regular fa-paper-plane"></i>
+           <div class="promo-cards-side">
+    <div class="promo-card" style="background: linear-gradient(135deg, var(--ocean), var(--mint)); border: none;">
+        <div class="promo-content">
+            
+            <div id="promoTextSkel">
+                <div class="skeleton" style="height: 22px; width: 80%; border-radius: 5px; margin-bottom: 10px;"></div>
+                <div class="skeleton" style="height: 12px; width: 60%; border-radius: 5px; margin-bottom: 20px;"></div>
+                <div class="skeleton" style="height: 28px; width: 90px; border-radius: 50px;"></div>
+            </div>
+            
+            <div id="promoActualText" style="display: none;">
+                <div class="promo-title" id="promoTitle1"></div>
+                <div class="promo-subtitle" id="promoSubtitle1"></div>
+                <div class="promo-btn" id="promoBtn1" style="display: none;"></div>
+            </div>
+
+        </div>
+        <div class="promo-img-wrap ig-frame-1">
+            <div class="ig-frame">
+                
+                <div id="promoImgSkel" class="skeleton" style="width: 100%; aspect-ratio: 1; border-radius: 6px; margin-bottom: 6px;"></div>
+                
+                <img src="./oraco_transparent.png" alt="" id="promoImg1" style="display: none; padding: 15px; object-fit: contain; opacity: 0; transition: opacity 0.5s ease;">
+                
+                <div class="ig-icons">
+                    <i class="fa-solid fa-heart" style="color:var(--coral);"></i> 
+                    <i class="fa-regular fa-comment"></i> 
+                    <i class="fa-regular fa-paper-plane"></i>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-</div>
-            </div>
+           
         </div>
 
         <div id="skeletonContainer" class="skel-grid"></div>
@@ -5894,38 +5908,61 @@ function renderPromoCards() {
     const promoTitle1 = document.getElementById('promoTitle1');
     const promoSubtitle1 = document.getElementById('promoSubtitle1');
     const promoBtn1 = document.getElementById('promoBtn1');
+    
+    // Skeleton and Content Wrappers
+    const promoTextSkel = document.getElementById('promoTextSkel');
+    const promoActualText = document.getElementById('promoActualText');
+    const promoImgSkel = document.getElementById('promoImgSkel');
 
     if (otherMediaData.length > 0) {
         const data = otherMediaData[0];
-        
-        if (promoImg1 && data.img) {
-            // Agar real image load ho jaye, toh padding hata do
-            promoImg1.onload = function() {
-                this.style.padding = '0px'; 
-                this.style.objectFit = 'cover'; // Ya 'contain' rakh sakte ho agar zaroorat ho
-            };
-            
-            // Agar image broken/fail ho, toh wapas hardcoded/default logo dikhao
-            promoImg1.onerror = function() {
-                this.src = './oraco_transparent.png'; // Aapki fallback image
-                this.style.padding = '15px'; 
-                this.style.objectFit = 'contain';
-            };
-            
-            // Firebase (ya server) se aayi image set karna
+
+        // 1. Background mein image load karna shuru karein
+        if (data.img) {
             promoImg1.src = data.img;
+            promoImg1.onload = function() {
+                this.setAttribute('data-loaded', 'true'); // Flag set karein jab image ready ho
+            };
+            promoImg1.onerror = function() {
+                this.src = './oraco_transparent.png';
+                this.setAttribute('data-loaded', 'true');
+            };
         }
 
-        if (promoTitle1 && data.title) promoTitle1.innerHTML = data.title;
-        if (promoSubtitle1 && data.subtitle) promoSubtitle1.innerHTML = data.subtitle;
-        
-        if (promoBtn1 && data.btnText) {
-            promoBtn1.innerHTML = data.btnText;
-            promoBtn1.style.display = 'inline-block';
-            if (data.btnLink && data.btnLink !== '#') {
-                promoBtn1.onclick = () => { window.location.href = data.btnLink; };
+        // 2. Strictly 2 seconds (2000ms) ka wait karein reveal karne se pehle
+        setTimeout(() => {
+            // Text Content Reveal
+            if (promoTextSkel) promoTextSkel.style.display = 'none';
+            if (promoActualText) promoActualText.style.display = 'block';
+
+            if (promoTitle1 && data.title) promoTitle1.innerHTML = data.title;
+            if (promoSubtitle1 && data.subtitle) promoSubtitle1.innerHTML = data.subtitle;
+            
+            if (promoBtn1 && data.btnText) {
+                promoBtn1.innerHTML = data.btnText;
+                promoBtn1.style.display = 'inline-block';
+                if (data.btnLink && data.btnLink !== '#') {
+                    promoBtn1.onclick = () => { window.location.href = data.btnLink; };
+                }
             }
-        }
+
+            // Image Reveal (Agar 2 sec ke andar load ho gayi hai toh turant, nahi toh load hone par)
+            const revealImage = () => {
+                if (promoImgSkel) promoImgSkel.style.display = 'none';
+                promoImg1.style.display = 'block';
+                promoImg1.style.padding = (promoImg1.src.includes('transparent')) ? '15px' : '0px';
+                promoImg1.style.objectFit = (promoImg1.src.includes('transparent')) ? 'contain' : 'cover';
+                setTimeout(() => { promoImg1.style.opacity = '1'; }, 50);
+            };
+
+            if (promoImg1.getAttribute('data-loaded') === 'true') {
+                revealImage();
+            } else {
+                // Agar 2 sec baad bhi image load ho rahi hai, toh onload event ka wait karein
+                promoImg1.onload = revealImage;
+            }
+
+        }, 2000); // 🚨 2 Second ka forced delay
     }
 }
     function trackUniqueVisitor() {
