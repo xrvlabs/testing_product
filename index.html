@@ -196,6 +196,95 @@
     }
 }
 /* =========================================================================
+   PROMO CARD DESKTOP TEXT UPGRADE & SYNC ANIMATION
+========================================================================= */
+
+@media (min-width: 1024px) {
+    /* 1. Text ko bada aur thoda upar shift karne ke liye */
+    .promo-card .promo-content {
+        transform: translateY(-15px); /* Card mein thoda upar */
+    }
+    .promo-card .promo-title {
+        font-size: 28px !important; /* Size badha diya */
+        line-height: 1.1;
+    }
+    .promo-card .promo-subtitle {
+        font-size: 14px !important; /* Subtitle bhi bada kar diya */
+    }
+
+    /* 2. Text Crossfade Animation (Image ke saath sync) */
+    .crossfade-text-1 { 
+        animation: cfFadeInOut 4s infinite; 
+    }
+    .crossfade-text-2 { 
+        position: absolute; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        animation: cfFadeInOut 4s infinite 2s; /* 2 second delay se sync hoga */
+        opacity: 0; 
+    }
+}
+
+/* Mobile View ke liye reset taaki wahan layout kharab na ho */
+@media (max-width: 1023px) {
+    .crossfade-text-1 { animation: none !important; opacity: 1 !important; }
+    .crossfade-text-2 { display: none !important; }
+}
+/* =========================================================================
+   PROMO CARD DUAL-VIEW FIX (DESKTOP SLIDER + MOBILE ROW)
+========================================================================= */
+
+/* Desktop Animation (Crossfade between 2 images) */
+@media (min-width: 1024px) {
+    .promo-cards-side { display: flex; flex-direction: column; width: 100%; }
+    
+    /* Hide second card entirely on Desktop */
+    .mobile-only-card { display: none !important; }
+
+    /* 4s Total Cycle: 2s Image A, 2s Image B */
+    .crossfade-img-1 { animation: cfFadeInOut 4s infinite; }
+    .crossfade-img-2 { animation: cfFadeInOut 4s infinite 2s; opacity: 0; }
+
+    @keyframes cfFadeInOut {
+        0%, 45% { opacity: 1; }
+        50%, 95% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+}
+
+/* Mobile & Tablet Row View */
+@media (max-width: 1023px) {
+    .promo-cards-side { 
+        flex-direction: row !important; 
+        gap: 10px !important; 
+        width: 100%; 
+    }
+    
+    .promo-card { 
+        flex: 1; 
+        min-height: 120px !important; 
+        padding: 12px !important; 
+    }
+    
+    .promo-title { font-size: 12px !important; margin-bottom: 4px !important; }
+    .promo-subtitle { font-size: 8.5px !important; margin-bottom: 0 !important; }
+    
+    /* Shrink the IG Frame to fit 2 cards in one row safely */
+    .promo-img-wrap { 
+        width: 65px !important; 
+        right: -5px !important; 
+        bottom: -5px !important; 
+    }
+    
+    .ig-frame { padding: 4px 4px 8px 4px !important; border-radius: 8px !important; }
+    .ig-icons { font-size: 8px !important; gap: 4px !important; justify-content: center; }
+
+    /* Stop Crossfade animation on mobile */
+    .crossfade-img-1 { animation: none !important; opacity: 1 !important; }
+    .crossfade-img-2 { display: none !important; }
+}
+/* =========================================================================
    FLOATING DESKTOP CART HIDE ANIMATION FOR POPUPS
 ========================================================================= */
 .floating-desktop-cart.hidden-by-popup {
@@ -1965,7 +2054,17 @@ window.switchView = function(targetViewId, isBack = false) {
         border-radius: 5px 5px 0 0 !important; /* Sirf upar ke corners round */
     }
 }
+@media (min-width: 1024px) {
+    /* Text ko center se hatakar upar lock karne ke liye */
+    .promo-card {
+        justify-content: flex-start !important; 
+        padding-top: 35px !important; /* Top edge se gap. Isko 20px, 40px ya 50px karke adjust kar sakte ho */
+    }
 
+    .promo-card .promo-content {
+        transform: none !important; /* Agar picchle code ka translateY laga tha, to use reset kar dega */
+    }
+}
 /* 2. MOBILE VIEW: Hide Entire Logo and Branded Title */
 @media (max-width: 1023px) {
     /* Isse image logo aur ORACO wala text dono mobile se gayab ho jayenge */
@@ -4891,6 +4990,48 @@ html, body, * {
     flex-direction: column !important;
 }
 /* =========================================================================
+   PROMO CARD EXTRA ELEMENTS (BADGE & BUTTON)
+========================================================================= */
+.promo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 5px 12px;
+    border-radius: 5px !important; /* Aapka 5px theme sync */
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    backdrop-filter: blur(4px); /* Halka glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.promo-action-btn {
+    margin-top: 16px;
+    background: white;
+    color: #7fd5e2; /* Brand Blue */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px !important; /* 5px lock */
+    font-size: 11px;
+    font-weight: 900;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-family: 'Quantico', sans-serif;
+}
+
+.promo-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    color: var(--carbon); /* Hover par dark text */
+}
+/* =========================================================================
    SINGLE CARD FULL-WIDTH (STRETCH) FIX
 ========================================================================= */
 
@@ -5081,39 +5222,8 @@ input[type="email"],
     </div>
 </div>
             
-           <div class="promo-cards-side">
-    <div class="promo-card" style="background: linear-gradient(135deg, var(--ocean), var(--mint)); border: none;">
-        <div class="promo-content">
-            
-            <div id="promoTextSkel">
-                <div class="skeleton" style="height: 22px; width: 80%; border-radius: 5px; margin-bottom: 10px;"></div>
-                <div class="skeleton" style="height: 12px; width: 60%; border-radius: 5px; margin-bottom: 20px;"></div>
-                <div class="skeleton" style="height: 28px; width: 90px; border-radius: 50px;"></div>
-            </div>
-            
-            <div id="promoActualText" style="display: none;">
-                <div class="promo-title" id="promoTitle1"></div>
-                <div class="promo-subtitle" id="promoSubtitle1"></div>
-                <div class="promo-btn" id="promoBtn1" style="display: none;"></div>
-            </div>
-
-        </div>
-        <div class="promo-img-wrap ig-frame-1">
-            <div class="ig-frame">
-                
-                <div id="promoImgSkel" class="skeleton" style="width: 100%; aspect-ratio: 1; border-radius: 6px; margin-bottom: 6px;"></div>
-                
-                <img src="./oraco_transparent.png" alt="" id="promoImg1" style="display: none; padding: 15px; object-fit: contain; opacity: 0; transition: opacity 0.5s ease;">
-                
-                <div class="ig-icons">
-                    <i class="fa-solid fa-heart" style="color:var(--coral);"></i> 
-                    <i class="fa-regular fa-comment"></i> 
-                    <i class="fa-regular fa-paper-plane"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+           <div class="promo-cards-side" id="promoCardsContainer">
+               </div>
            
         </div>
 
@@ -6939,66 +7049,102 @@ function renderBanners() {
         }, 3500);
     }
 function renderPromoCards() {
-    const promoImg1 = document.getElementById('promoImg1');
-    const promoTitle1 = document.getElementById('promoTitle1');
-    const promoSubtitle1 = document.getElementById('promoSubtitle1');
-    const promoBtn1 = document.getElementById('promoBtn1');
-    
-    // Skeleton and Content Wrappers
-    const promoTextSkel = document.getElementById('promoTextSkel');
-    const promoActualText = document.getElementById('promoActualText');
-    const promoImgSkel = document.getElementById('promoImgSkel');
+    const container = document.getElementById('promoCardsContainer');
+    if (!container || otherMediaData.length === 0) return;
 
-    if (otherMediaData.length > 0) {
-        const data = otherMediaData[0];
+    // Fetch first 2 images uploaded via Admin Panel
+    const data1 = otherMediaData[0];
+    const data2 = otherMediaData.length > 1 ? otherMediaData[1] : null;
 
-        // 1. Background mein image load karna shuru karein
-        if (data.img) {
-            promoImg1.src = data.img;
-            promoImg1.onload = function() {
-                this.setAttribute('data-loaded', 'true'); // Flag set karein jab image ready ho
-            };
-            promoImg1.onerror = function() {
-                this.src = './oraco_transparent.png';
-                this.setAttribute('data-loaded', 'true');
-            };
-        }
+    let html = `
+        <div class="promo-card" style="background: linear-gradient(135deg, var(--ocean), var(--mint)); border: none; cursor: pointer;" onclick="window.location.href='${data1.btnLink || '#'}'">
+            <div class="promo-content">
+                <div id="promoTextSkel1">
+                    <div class="skeleton" style="height: 20px; width: 80%; border-radius: 5px; margin-bottom: 8px;"></div>
+                    <div class="skeleton" style="height: 10px; width: 60%; border-radius: 5px;"></div>
+                </div>
+               <div id="promoActualText1" style="display: none; position: relative; width: 100%;">
+                    <div class="crossfade-text-1">
+                        <div class="promo-title">${data1.title || ''}</div>
+                        <div class="promo-subtitle">${data1.subtitle || ''}</div>
+                    </div>
+                    
+                    ${data2 ? `
+                    <div class="crossfade-text-2">
+                        <div class="promo-title">${data2.title || ''}</div>
+                        <div class="promo-subtitle">${data2.subtitle || ''}</div>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+            <div class="promo-img-wrap ig-frame-1">
+                <div class="ig-frame">
+                    <div id="promoImgSkel1" class="skeleton" style="width: 100%; aspect-ratio: 1; border-radius: 6px; margin-bottom: 6px;"></div>
+                    
+                    <div class="img-slider-container" style="display:none; position:relative; width:100%; aspect-ratio:1; margin-bottom:6px; background: white; border-radius: 6px; overflow:hidden;">
+                        <img src="${data1.img}" class="crossfade-img-1" style="position:absolute; top:0; left:0; width: 100%; height:100%; object-fit: contain; padding: 4px;">
+                        ${data2 ? `<img src="${data2.img}" class="crossfade-img-2" style="position:absolute; top:0; left:0; width: 100%; height:100%; object-fit: contain; padding: 4px;">` : ''}
+                    </div>
 
-        // 2. Strictly 2 seconds (2000ms) ka wait karein reveal karne se pehle
-        setTimeout(() => {
-            // Text Content Reveal
-            if (promoTextSkel) promoTextSkel.style.display = 'none';
-            if (promoActualText) promoActualText.style.display = 'block';
+                    <div class="ig-icons">
+                        <i class="fa-solid fa-heart" style="color:var(--coral);"></i> 
+                        <i class="fa-regular fa-comment"></i> 
+                        <i class="fa-regular fa-paper-plane"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 
-            if (promoTitle1 && data.title) promoTitle1.innerHTML = data.title;
-            if (promoSubtitle1 && data.subtitle) promoSubtitle1.innerHTML = data.subtitle;
-            
-            if (promoBtn1 && data.btnText) {
-                promoBtn1.innerHTML = data.btnText;
-                promoBtn1.style.display = 'inline-block';
-                if (data.btnLink && data.btnLink !== '#') {
-                    promoBtn1.onclick = () => { window.location.href = data.btnLink; };
-                }
-            }
-
-            // Image Reveal (Agar 2 sec ke andar load ho gayi hai toh turant, nahi toh load hone par)
-            const revealImage = () => {
-                if (promoImgSkel) promoImgSkel.style.display = 'none';
-                promoImg1.style.display = 'block';
-                promoImg1.style.padding = (promoImg1.src.includes('transparent')) ? '15px' : '0px';
-                promoImg1.style.objectFit = (promoImg1.src.includes('transparent')) ? 'contain' : 'cover';
-                setTimeout(() => { promoImg1.style.opacity = '1'; }, 50);
-            };
-
-            if (promoImg1.getAttribute('data-loaded') === 'true') {
-                revealImage();
-            } else {
-                // Agar 2 sec baad bhi image load ho rahi hai, toh onload event ka wait karein
-                promoImg1.onload = revealImage;
-            }
-
-        }, 2000); // 🚨 2 Second ka forced delay
+    // Only inject second card if 2nd media item exists in DB
+    if (data2) {
+        html += `
+        <div class="promo-card mobile-only-card" style="background: linear-gradient(135deg, #a2e1f3, var(--ocean)); border: none; cursor: pointer;" onclick="window.location.href='${data2.btnLink || '#'}'">
+            <div class="promo-content">
+                <div id="promoTextSkel2">
+                    <div class="skeleton" style="height: 20px; width: 80%; border-radius: 5px; margin-bottom: 8px;"></div>
+                    <div class="skeleton" style="height: 10px; width: 60%; border-radius: 5px;"></div>
+                </div>
+                <div id="promoActualText2" style="display: none;">
+                    <div class="promo-title">${data2.title || ''}</div>
+                    <div class="promo-subtitle">${data2.subtitle || ''}</div>
+                </div>
+            </div>
+            <div class="promo-img-wrap ig-frame-2">
+                <div class="ig-frame">
+                    <div id="promoImgSkel2" class="skeleton" style="width: 100%; aspect-ratio: 1; border-radius: 6px; margin-bottom: 6px;"></div>
+                    <img src="${data2.img}" id="promoActualImg2" style="display:none; width: 100%; aspect-ratio: 1; object-fit: contain; padding: 4px; margin-bottom: 6px; background: white; border-radius: 6px;">
+                    <div class="ig-icons">
+                        <i class="fa-solid fa-heart" style="color:var(--coral);"></i> 
+                        <i class="fa-regular fa-comment"></i> 
+                        <i class="fa-regular fa-paper-plane"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
     }
+
+    container.innerHTML = html;
+
+    // Strict 2-Second Skeletons Reveal Delay
+    setTimeout(() => {
+        // Unhide Card 1 Elements
+        if(document.getElementById('promoTextSkel1')) {
+            document.getElementById('promoTextSkel1').style.display = 'none';
+            document.getElementById('promoActualText1').style.display = 'block';
+            document.getElementById('promoImgSkel1').style.display = 'none';
+            document.querySelector('.img-slider-container').style.display = 'block';
+        }
+        
+        // Unhide Card 2 Elements
+        if (data2 && document.getElementById('promoTextSkel2')) {
+            document.getElementById('promoTextSkel2').style.display = 'none';
+            document.getElementById('promoActualText2').style.display = 'block';
+            document.getElementById('promoImgSkel2').style.display = 'none';
+            document.getElementById('promoActualImg2').style.display = 'block';
+        }
+    }, 2000);
 }
     function trackUniqueVisitor() {
         const today = new Date().toISOString().split('T')[0]; 
