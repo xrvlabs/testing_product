@@ -4692,7 +4692,7 @@ input[type="email"],
             <div class="pill" onclick="switchView('blogsView')"><i class="fa-solid fa-blog"></i> BLOGS</div>
             <div class="pill" onclick="switchView('eventsView')"><i class="fa-regular fa-calendar-check"></i> EVENTS</div>
             <div class="pill" onclick="switchView('contactView')"><i class="fa-solid fa-headset"></i> CONTACT US</div>
-            <div class="pill" onclick="openCareersPopup()"><i class="fa-solid fa-briefcase"></i> CAREERS</div>
+            <div class="pill" onclick="openCareersPopup(event)"><i class="fa-solid fa-briefcase"></i> CAREERS</div>
         </div>
 
         <div class="megamenu-overlay" id="megamenuOverlay" onclick="closeMegamenu()"></div>
@@ -7064,7 +7064,9 @@ function renderBlogData() {
         if(mmTimeout) clearTimeout(mmTimeout);
         mmTimeout = setTimeout(() => { renderCategories(); }, 800);
     }
-window.openCareersPopup = function() {
+window.openCareersPopup = function(e) {
+    if(e) e.stopPropagation(); // Click ko body tak jane se rokega
+    
     // Agar koi aur menu/cart khula ho toh band kar do
     closeMegamenu();
     const cart = document.getElementById('cartComponent');
@@ -8440,11 +8442,21 @@ window.removeProfileWishlist = async function(productId) {
     }
 
     document.addEventListener('click', (event) => {
+        // 1. Megamenu Hide Logic (Purana)
         const megamenu = document.getElementById('megamenu');
         const catBtn = document.getElementById('catDropdownBtn');
         if (window.innerWidth < 1024 && megamenu && megamenu.classList.contains('active')) {
             if (!megamenu.contains(event.target) && (!catBtn || !catBtn.contains(event.target))) {
                 closeMegamenu();
+            }
+        }
+
+        // 2. Careers Popup Hide Logic (Naya)
+        const careersPopup = document.getElementById('careersPopup');
+        if (careersPopup && careersPopup.classList.contains('active')) {
+            // Agar click popup ke bahar hua hai, toh usko band kar do
+            if (!careersPopup.contains(event.target)) {
+                closeCareersPopup();
             }
         }
     });
