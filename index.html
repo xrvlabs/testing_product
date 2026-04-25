@@ -73,6 +73,129 @@
     flex-direction: column;
 }
 /* =========================================================================
+   CAREERS BOTTOM-RIGHT POPUP (10PX SYNC)
+========================================================================= */
+.careers-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    max-width: calc(100vw - 20px);
+    background: white;
+    border: 1.5px solid var(--smoke);
+    border-radius: 5px !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    z-index: 2500;
+    transform: translateY(150%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, visibility 0.4s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.careers-popup.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.cp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px !important; /* Strict 10px padding */
+    border-bottom: 1.5px solid var(--smoke);
+    background: var(--snow);
+    border-radius: 5px 5px 0 0 !important;
+}
+
+.cp-header h3 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--carbon);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cp-close {
+    cursor: pointer;
+    color: var(--silver);
+    font-size: 18px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.cp-close:hover {
+    color: var(--coral);
+}
+
+.cp-content {
+    padding: 10px !important; /* Strict 10px padding */
+    display: flex;
+    flex-direction: column;
+    gap: 10px !important; /* Strict 10px gap between cards */
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.cp-content::-webkit-scrollbar {
+    display: none;
+}
+
+.cp-job-card {
+    border: 1.5px solid var(--cloud);
+    border-radius: 5px !important;
+    padding: 10px !important; /* Strict 10px inside card */
+    background: white;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: var(--transition);
+}
+
+.cp-job-card:hover {
+    border-color: #7fd5e2;
+    background: rgba(127, 213, 226, 0.03);
+}
+
+.cp-job-title {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--carbon);
+}
+
+.cp-job-details {
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #7fd5e2; /* Brand Blue */
+}
+
+.cp-job-desc {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--slate);
+    line-height: 1.4;
+}
+
+/* Mobile Alignment Safety */
+@media (max-width: 767px) {
+    .careers-popup {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+    }
+}
+/* =========================================================================
    FINAL FIX: HIDE DELIVERY BANNER ON MOBILE STRICTLY
 ========================================================================= */
 @media (max-width: 1023px) {
@@ -4566,11 +4689,11 @@ input[type="email"],
         <div class="nav-pills no-scrollbar">
             <div class="pill active" onclick="switchView('homeView')"><i class="fa-solid fa-house"></i> HOME</div>
             <div class="pill" onclick="toggleMegamenu(event)" id="catDropdownBtn"><i class="fa-solid fa-border-all"></i> CATEGORY</div>
-<div class="pill" onclick="switchView('blogsView')"><i class="fa-solid fa-blog"></i> BLOGS</div>
+            <div class="pill" onclick="switchView('blogsView')"><i class="fa-solid fa-blog"></i> BLOGS</div>
             <div class="pill" onclick="switchView('eventsView')"><i class="fa-regular fa-calendar-check"></i> EVENTS</div>
             <div class="pill" onclick="switchView('contactView')"><i class="fa-solid fa-headset"></i> CONTACT US</div>
-       
- </div>
+            <div class="pill" onclick="openCareersPopup()"><i class="fa-solid fa-briefcase"></i> CAREERS</div>
+        </div>
 
         <div class="megamenu-overlay" id="megamenuOverlay" onclick="closeMegamenu()"></div>
         <div class="megamenu" id="megamenu">
@@ -5863,7 +5986,34 @@ input[type="email"],
         </div>
     </div>
 </div>
-
+<div class="careers-popup" id="careersPopup">
+    <div class="cp-header">
+        <h3><i class="fa-solid fa-rocket" style="color: #7fd5e2;"></i> OPEN POSITIONS</h3>
+        <div class="cp-close" onclick="closeCareersPopup()"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+    
+    <div class="cp-content">
+        <div class="cp-job-card">
+            <div class="cp-job-title">Sales & Marketing Executive</div>
+            <div class="cp-job-details">
+                <span><i class="fa-solid fa-location-dot"></i> Ahmedabad</span>
+                <span><i class="fa-solid fa-clock"></i> Full Time (Fresher)</span>
+            </div>
+            <div class="cp-job-desc">Looking for energetic individuals to drive B2B sales and manage dental clinic partnerships.</div>
+            <button class="pm-shop-btn" style="width: 100%; margin-top: 10px; background: var(--carbon); box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onclick="window.location.href='mailto:dentaloraco@gmail.com?subject=Application for Sales Executive'">APPLY NOW</button>
+        </div>
+        
+        <div class="cp-job-card">
+            <div class="cp-job-title">Business Dev. Manager</div>
+            <div class="cp-job-details">
+                <span><i class="fa-solid fa-location-dot"></i> Remote / Pan India</span>
+                <span><i class="fa-solid fa-briefcase"></i> 2+ Yrs Exp</span>
+            </div>
+            <div class="cp-job-desc">Join our growth team to expand Oraco's network across regional dental distributors.</div>
+            <button class="pm-shop-btn" style="width: 100%; margin-top: 10px; background: var(--carbon); box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onclick="window.location.href='mailto:dentaloraco@gmail.com?subject=Application for Business Dev Manager'">APPLY NOW</button>
+        </div>
+    </div>
+</div>
 <div class="modal-overlay" id="profileOverlay" onclick="closeProfile()"></div>
 <div class="side-modal" id="profileComponent">
     <div class="drag-handle"></div>
@@ -6914,6 +7064,18 @@ function renderBlogData() {
         if(mmTimeout) clearTimeout(mmTimeout);
         mmTimeout = setTimeout(() => { renderCategories(); }, 800);
     }
+window.openCareersPopup = function() {
+    // Agar koi aur menu/cart khula ho toh band kar do
+    closeMegamenu();
+    const cart = document.getElementById('cartComponent');
+    if (cart && cart.classList.contains('active')) { closeCartModal(); }
+    
+    document.getElementById('careersPopup').classList.add('active');
+};
+
+window.closeCareersPopup = function() {
+    document.getElementById('careersPopup').classList.remove('active');
+};
 window.switchProfileTab = async function(tabId, element) {
     const sidebarItems = document.querySelectorAll('.profile-sidebar .ps-item');
     sidebarItems.forEach(item => item.classList.remove('active'));
