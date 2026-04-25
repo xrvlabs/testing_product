@@ -196,6 +196,35 @@
     }
 }
 /* =========================================================================
+   POPUP OVERLAY & SCROLL FIX (CHAT & CAREERS)
+========================================================================= */
+/* Blur overlay behind the popups */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px); /* Light blur effect */
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 2498; /* Below popup (2500) but above everything else */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.popup-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Ensure inner scrolling and prevent scroll chaining to the body */
+.cp-content,
+.chat-body {
+    overscroll-behavior: contain; 
+}
+/* =========================================================================
    LIVE CHAT WINDOW (Careers Popup Exact Match)
 ========================================================================= */
 .live-chat-trigger {
@@ -6292,6 +6321,7 @@ input[type="email"],
         </div>
     </div>
 </div>
+<div class="popup-overlay" id="popupOverlay"></div>
 <div class="careers-popup" id="careersPopup">
     <div class="cp-header">
         <h3><i class="fa-solid fa-rocket" style="color: #7fd5e2;"></i> OPEN POSITIONS</h3>
@@ -6603,17 +6633,22 @@ window.openFullBlog = function(blogTitle) {
             icon.style.color = 'var(--silver)';
         }
     };
-   // ===================== PRELOADER =====================
-    const loaderStartTime = Date.now();
-    window.addEventListener('load', function() {
-        const loader = document.getElementById('pageLoader');
-        if (loader) {
-            const elapsedTime = Date.now() - loaderStartTime;
-            const minLoadingTime = 2000; // 2 Seconds set kar diya gaya hai
-            const delay = Math.max(0, minLoadingTime - elapsedTime);
-            setTimeout(() => { loader.classList.add('hidden'); }, delay); 
-        }
-    });
+   const loaderStartTime = Date.now();
+function hideLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (loader) {
+        const elapsedTime = Date.now() - loaderStartTime;
+        const minLoadingTime = 2000; // 2 Seconds set kar diya gaya hai
+        const delay = Math.max(0, minLoadingTime - elapsedTime);
+        setTimeout(() => { loader.classList.add('hidden'); }, delay); 
+    }
+}
+// Run immediately if already loaded, otherwise wait for load event
+if (document.readyState === 'complete') {
+    hideLoader();
+} else {
+    window.addEventListener('load', hideLoader);
+}
 window.formatEmail = function(input) {
         // Ye line chote letters ko bada karegi aur symbols ko type hi nahi hone degi
         input.value = input.value.toUpperCase().replace(/[^A-Z0-9@.]/g, '');
@@ -7371,18 +7406,21 @@ function renderBlogData() {
         mmTimeout = setTimeout(() => { renderCategories(); }, 800);
     }
 window.openCareersPopup = function(e) {
-    if(e) e.stopPropagation(); // Click ko body tak jane se rokega
+    if(e) e.stopPropagation(); 
     
-    // Agar koi aur menu/cart khula ho toh band kar do
     closeMegamenu();
     const cart = document.getElementById('cartComponent');
     if (cart && cart.classList.contains('active')) { closeCartModal(); }
     
     document.getElementById('careersPopup').classList.add('active');
+    document.getElementById('popupOverlay').classList.add('active'); // Show Blur
+    document.body.classList.add('no-scroll'); // Disable background scrolling
 };
 
 window.closeCareersPopup = function() {
     document.getElementById('careersPopup').classList.remove('active');
+    document.getElementById('popupOverlay').classList.remove('active'); // Hide Blur
+    document.body.classList.remove('no-scroll'); // Enable background scrolling
 };
 window.switchProfileTab = async function(tabId, element) {
     const sidebarItems = document.querySelectorAll('.profile-sidebar .ps-item');
@@ -7633,20 +7671,23 @@ window.switchProfileTab = async function(tabId, element) {
 window.toggleLiveChat = function(e) {
     if(e) e.stopPropagation();
     
-    // Close other popups if open
     closeMegamenu();
     if (typeof closeCareersPopup === 'function') closeCareersPopup();
     
     const chatPopup = document.getElementById('liveChatPopup');
     const chatTrigger = document.getElementById('liveChatTrigger');
+    const overlay = document.getElementById('popupOverlay');
     
-    chatPopup.classList.toggle('active');
+    const isActive = chatPopup.classList.toggle('active');
     
-    // Hide trigger icon when chat opens, show when it closes
-    if (chatPopup.classList.contains('active')) {
+    if (isActive) {
         chatTrigger.classList.add('hidden');
+        overlay.classList.add('active'); // Show Blur
+        document.body.classList.add('no-scroll'); // Disable background scrolling
     } else {
         chatTrigger.classList.remove('hidden');
+        overlay.classList.remove('active'); // Hide Blur
+        document.body.classList.remove('no-scroll'); // Enable background scrolling
     }
 };
 
@@ -7688,11 +7729,23 @@ window.handleChatEnter = function(e) {
 document.addEventListener('click', (event) => {
     const chatPopup = document.getElementById('liveChatPopup');
     const chatTrigger = document.getElementById('liveChatTrigger');
+    const careersPopup = document.getElementById('careersPopup');
+    const overlay = document.getElementById('popupOverlay');
     
+    // Check Chat Popup outside click
     if (chatPopup && chatPopup.classList.contains('active')) {
         if (!chatPopup.contains(event.target) && !chatTrigger.contains(event.target)) {
             chatPopup.classList.remove('active');
             chatTrigger.classList.remove('hidden');
+            overlay.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        }
+    }
+
+    // Check Careers Popup outside click
+    if (careersPopup && careersPopup.classList.contains('active')) {
+        if (!careersPopup.contains(event.target)) {
+            closeCareersPopup();
         }
     }
 });
@@ -8897,16 +8950,29 @@ window.removeProfileWishlist = async function(productId) {
         openCartModal();
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('skeletonContainer').style.display = 'grid';
-        document.getElementById('productGrid').style.display = 'none';
-        trackUniqueVisitor();
-        renderSkeletons();
-        renderEventSkeletons();
-        typeWriterEffect(); 
-        setupZoom();
-        initFirebaseAndData();
-    });
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Initialize App Data (This got deleted accidentally!)
+    document.getElementById('skeletonContainer').style.display = 'grid';
+    document.getElementById('productGrid').style.display = 'none';
+    trackUniqueVisitor();
+    renderSkeletons();
+    renderEventSkeletons();
+    typeWriterEffect(); 
+    setupZoom();
+    initFirebaseAndData();
+
+    // 2. Overlay Click Listener (For Chat & Careers)
+    const overlay = document.getElementById('popupOverlay');
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            const chatPopup = document.getElementById('liveChatPopup');
+            const careersPopup = document.getElementById('careersPopup');
+            
+            if (chatPopup && chatPopup.classList.contains('active')) toggleLiveChat();
+            if (careersPopup && careersPopup.classList.contains('active')) closeCareersPopup();
+        });
+    }
+});
 
     window.switchView = switchView;
     window.openLocationModal = openLocationModal;
