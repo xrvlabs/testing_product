@@ -72,7 +72,29 @@
     display: flex;
     flex-direction: column;
 }
+/* =========================================================================
+   FINAL OVERRIDE: HIDE BANNER ON MOBILE, SHOW ON DESKTOP
+========================================================================= */
 
+/* Mobile & Tablet: Banner HIDE, Button text SHOW */
+@media (max-width: 1023px) {
+    #cartPageView .cart-delivery-banner {
+        display: none !important;
+    }
+    #cartPageView .btn-del-date-mobile {
+        display: block !important;
+    }
+}
+
+/* Desktop: Banner SHOW, Button text HIDE */
+@media (min-width: 1024px) {
+    #cartPageView .cart-delivery-banner {
+        display: flex !important;
+    }
+    #cartPageView .btn-del-date-mobile {
+        display: none !important;
+    }
+}
 /* DESKTOP SPLIT VIEW (Matches Profile Layout) */
 @media (min-width: 1024px) {
     .cart-page-layout {
@@ -5669,7 +5691,12 @@ input[type="email"],
                         <input type="tel" id="cartPageWaInput" placeholder="10-DIGIT MOBILE NUMBER" maxlength="10" class="form-input" style="height: 46px;">
                     </div>
 
-                    <button class="checkout-btn" style="margin-top: 20px;" onclick="placeOrder()">MAKE PAYMENT</button>
+                    <button class="checkout-btn" style="margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; padding: 14px;" onclick="placeOrder()">
+    <span style="font-size: 14px;">MAKE PAYMENT</span>
+    <span class="btn-del-date-mobile" style="font-size: 10px; font-weight: 700; opacity: 0.8; margin-top: 4px;">
+        EST. DELIVERY BY: <span id="cartBtnDateText"></span>
+    </span>
+</button>
                 </div>
 
                 <div class="cart-trust-box" style="margin-top: 0;">
@@ -7474,10 +7501,17 @@ if (thumbListContainer) {
     cart.forEach(i => totalItems += (i.qty || 1));
     if (itemCountSpan) itemCountSpan.innerText = `${totalItems} ITEMS`;
 
-    // Delivery Date
+    // Delivery Date Calculation (Aapke paas ye pehle se hai)
     let delDate = new Date();
     delDate.setDate(delDate.getDate() + 4);
-    document.getElementById('cartPageDelDate').innerText = delDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    let formattedDate = delDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    
+    // Purana code jo banner mein date dalta tha
+    document.getElementById('cartPageDelDate').innerText = formattedDate;
+
+    // 👇 YEH NAYI LINE ADD KAREIN (Button ke andar date dalne ke liye)
+    const btnDateEl = document.getElementById('cartBtnDateText');
+    if(btnDateEl) btnDateEl.innerText = formattedDate;
 
     let html = '';
     let subtotal = 0;
