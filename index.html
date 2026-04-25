@@ -196,6 +196,30 @@
     }
 }
 /* =========================================================================
+   FLOATING DESKTOP CART HIDE ANIMATION FOR POPUPS
+========================================================================= */
+.floating-desktop-cart.hidden-by-popup {
+    transform: translate(150%, -50%) !important; /* Slide it to the right */
+    opacity: 0 !important; /* Fade it out */
+    pointer-events: none; /* Prevent accidental clicks while hidden */
+}
+/* =========================================================================
+   DESKTOP OVERRIDE: HIDE BLUR & ENABLE SCROLL FOR CHAT/CAREERS
+========================================================================= */
+@media (min-width: 1024px) {
+    /* Hide the blur overlay entirely on desktop */
+    #popupOverlay {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1023px) {
+    /* Mobile-only scroll lock for these specific popups */
+    body.popup-no-scroll {
+        overflow: hidden !important;
+    }
+}
+/* =========================================================================
    POPUP OVERLAY & SCROLL FIX (CHAT & CAREERS)
 ========================================================================= */
 /* Blur overlay behind the popups */
@@ -4775,15 +4799,16 @@ html, body, * {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 /* =========================================================================
-   FLOATING DESKTOP CART (RIGHT MIDDLE)
+   FLOATING DESKTOP CART (RIGHT MIDDLE) - ALWAYS SHOW ON DESKTOP
 ========================================================================= */
 .floating-desktop-cart {
     display: none; /* Mobile/Tablet par default hidden */
 }
 
 @media (min-width: 1024px) {
+    /* ALWAYS VISIBLE ON DESKTOP */
     .floating-desktop-cart {
-        display: flex;
+        display: flex; /* Changed from 'none' to 'flex' */
         flex-direction: column;
         align-items: center;
         justify-content: center;
@@ -4793,18 +4818,18 @@ html, body, * {
         transform: translateY(-50%);
         background: white;
         border: 1.5px solid var(--smoke);
-        border-right: none; /* Right edge se merge karne ke liye */
-        border-radius: 5px 0 0 5px !important; /* Sirf left corners 5px */
+        border-right: none; 
+        border-radius: 5px 0 0 5px !important; 
         width: 55px;
         height: 65px;
-        z-index: 999; /* Content ke upar, modals ke niche */
+        z-index: 999; 
         cursor: pointer;
         box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
         transition: var(--transition);
     }
 
     .floating-desktop-cart:hover {
-        border-color: #7fd5e2; /* Brand Blue sync */
+        border-color: #7fd5e2; 
         box-shadow: -4px 0 15px rgba(127, 213, 226, 0.2);
     }
 
@@ -7409,18 +7434,26 @@ window.openCareersPopup = function(e) {
     if(e) e.stopPropagation(); 
     
     closeMegamenu();
-    const cart = document.getElementById('cartComponent');
-    if (cart && cart.classList.contains('active')) { closeCartModal(); }
+    const cartModal = document.getElementById('cartComponent');
+    if (cartModal && cartModal.classList.contains('active')) { closeCartModal(); }
     
     document.getElementById('careersPopup').classList.add('active');
-    document.getElementById('popupOverlay').classList.add('active'); // Show Blur
-    document.body.classList.add('no-scroll'); // Disable background scrolling
+    document.getElementById('popupOverlay').classList.add('active');
+    document.body.classList.add('popup-no-scroll');
+    
+    // Slide out floating cart
+    const floatingCart = document.getElementById('floatingDesktopCart');
+    if(floatingCart) floatingCart.classList.add('hidden-by-popup');
 };
 
 window.closeCareersPopup = function() {
     document.getElementById('careersPopup').classList.remove('active');
-    document.getElementById('popupOverlay').classList.remove('active'); // Hide Blur
-    document.body.classList.remove('no-scroll'); // Enable background scrolling
+    document.getElementById('popupOverlay').classList.remove('active');
+    document.body.classList.remove('popup-no-scroll');
+    
+    // Slide in floating cart
+    const floatingCart = document.getElementById('floatingDesktopCart');
+    if(floatingCart) floatingCart.classList.remove('hidden-by-popup');
 };
 window.switchProfileTab = async function(tabId, element) {
     const sidebarItems = document.querySelectorAll('.profile-sidebar .ps-item');
@@ -7677,17 +7710,20 @@ window.toggleLiveChat = function(e) {
     const chatPopup = document.getElementById('liveChatPopup');
     const chatTrigger = document.getElementById('liveChatTrigger');
     const overlay = document.getElementById('popupOverlay');
+    const floatingCart = document.getElementById('floatingDesktopCart');
     
     const isActive = chatPopup.classList.toggle('active');
     
     if (isActive) {
         chatTrigger.classList.add('hidden');
-        overlay.classList.add('active'); // Show Blur
-        document.body.classList.add('no-scroll'); // Disable background scrolling
+        if(overlay) overlay.classList.add('active');
+        document.body.classList.add('popup-no-scroll');
+        if(floatingCart) floatingCart.classList.add('hidden-by-popup'); // Slide out
     } else {
         chatTrigger.classList.remove('hidden');
-        overlay.classList.remove('active'); // Hide Blur
-        document.body.classList.remove('no-scroll'); // Enable background scrolling
+        if(overlay) overlay.classList.remove('active');
+        document.body.classList.remove('popup-no-scroll');
+        if(floatingCart) floatingCart.classList.remove('hidden-by-popup'); // Slide in
     }
 };
 
@@ -7731,21 +7767,23 @@ document.addEventListener('click', (event) => {
     const chatTrigger = document.getElementById('liveChatTrigger');
     const careersPopup = document.getElementById('careersPopup');
     const overlay = document.getElementById('popupOverlay');
+    const floatingCart = document.getElementById('floatingDesktopCart');
     
     // Check Chat Popup outside click
     if (chatPopup && chatPopup.classList.contains('active')) {
         if (!chatPopup.contains(event.target) && !chatTrigger.contains(event.target)) {
             chatPopup.classList.remove('active');
             chatTrigger.classList.remove('hidden');
-            overlay.classList.remove('active');
-            document.body.classList.remove('no-scroll');
+            if(overlay) overlay.classList.remove('active');
+            document.body.classList.remove('popup-no-scroll');
+            if(floatingCart) floatingCart.classList.remove('hidden-by-popup'); // Slide in
         }
     }
 
     // Check Careers Popup outside click
     if (careersPopup && careersPopup.classList.contains('active')) {
         if (!careersPopup.contains(event.target)) {
-            closeCareersPopup();
+            closeCareersPopup(); // This function already handles sliding the cart back in
         }
     }
 });
@@ -8071,29 +8109,29 @@ if (thumbListContainer) {
     }
 
     window.updateCartItemQty = async function(index, change) {
-        let currentQty = cart[index].qty || 1;
-        let newQty = currentQty + change;
+    let currentQty = cart[index].qty || 1;
+    let newQty = currentQty + change;
 
-        if (newQty < 1) {
-            if(confirm("REMOVE THIS ITEM FROM CART?")) {
-                removeFromCart(index);
-            }
-            return;
-        }
-        if (newQty > 10) {
-            alert("MAXIMUM QUANTITY LIMIT IS 10 PER ITEM.");
-            return;
-        }
+    // Directly remove the item if quantity drops below 1 (No pop-up)
+    if (newQty < 1) {
+        removeFromCart(index);
+        return;
+    }
+    
+    if (newQty > 10) {
+        alert("MAXIMUM QUANTITY LIMIT IS 10 PER ITEM.");
+        return;
+    }
 
-        cart[index].qty = newQty;
-        updateCartBadges();
-        renderCart(false);
-        await syncCartToFirebase();
+    cart[index].qty = newQty;
+    updateCartBadges();
+    renderCart(false);
+    await syncCartToFirebase();
 
-        if (views.productView.classList.contains('active')) {
-            updateProductControlUI();
-        }
-    };
+    if (views.productView.classList.contains('active')) {
+        updateProductControlUI();
+    }
+};
 
     window.toggleCoins = function() {
         isCoinsApplied = !isCoinsApplied;
