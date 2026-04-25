@@ -5040,9 +5040,13 @@ input[type="email"],
                 <h3>REGISTERED HEADQUARTERS</h3>
                 <p><strong>Oraco Dental Innovation Pvt. Ltd.</strong><br>
                 Celebration City Center, A-452, Gala Gymkhana Rd, South Bopal, Ahmedabad, Gujarat 380058</p>
-                <div style="width: 100%; height: 300px; border-radius: 5px; overflow: hidden; margin-top: 15px; border: 1.5px solid var(--smoke);">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.860161402241!2d72.46467007531393!3d23.028892116091054!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e9b81b212f4ef%3A0xcda1580bc9b3438a!2sCelebration%20City%20Centre!5e0!3m2!1sen!2sin!4v1714032155026!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
+                <div style="position: relative; width: 100%; height: 300px; border-radius: 5px; overflow: hidden; margin-top: 15px; border: 1.5px solid var(--smoke); background: var(--snow);">
+    
+    <div id="locationMapSkel" class="skeleton" style="position: absolute; inset: 0; z-index: 2; transition: opacity 0.5s ease;"></div>
+    
+    <iframe id="locationMapIframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.860161402241!2d72.46467007531393!3d23.028892116091054!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e9b81b212f4ef%3A0xcda1580bc9b3438a!2sCelebration%20City%20Centre!5e0!3m2!1sen!2sin!4v1714032155026!5m2!1sen!2sin" width="100%" height="100%" style="border:0; position: absolute; inset: 0; z-index: 1; opacity: 0; transition: opacity 0.5s ease;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    
+</div>
             </div>
 
             <div class="policy-section" style="margin-top: 20px;">
@@ -5052,19 +5056,12 @@ input[type="email"],
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
                     <div style="background: var(--snow); border: 1.5px solid var(--smoke); border-radius: 5px; padding: 20px;">
                         <i class="fa-solid fa-warehouse" style="font-size: 24px; color: var(--ocean); margin-bottom: 12px;"></i>
-                        <h4 style="font-size: 14px; font-weight: 900; color: var(--carbon); margin-bottom: 8px;">DELHI NCR (NORTH)</h4>
-                        <p style="font-size: 12px; line-height: 1.5; margin: 0;">Sector 18, Gurugram, Haryana 122015<br><strong>Hub Code:</strong> DEL-N1</p>
-                    </div>
-                    <div style="background: var(--snow); border: 1.5px solid var(--smoke); border-radius: 5px; padding: 20px;">
-                        <i class="fa-solid fa-warehouse" style="font-size: 24px; color: var(--ocean); margin-bottom: 12px;"></i>
-                        <h4 style="font-size: 14px; font-weight: 900; color: var(--carbon); margin-bottom: 8px;">CHENNAI (SOUTH)</h4>
-                        <p style="font-size: 12px; line-height: 1.5; margin: 0;">Guindy Industrial Estate, Chennai, TN 600032<br><strong>Hub Code:</strong> MAA-S1</p>
-                    </div>
-                    <div style="background: var(--snow); border: 1.5px solid var(--smoke); border-radius: 5px; padding: 20px;">
-                        <i class="fa-solid fa-warehouse" style="font-size: 24px; color: var(--ocean); margin-bottom: 12px;"></i>
-                        <h4 style="font-size: 14px; font-weight: 900; color: var(--carbon); margin-bottom: 8px;">AHMEDABAD (WEST)</h4>
-                        <p style="font-size: 12px; line-height: 1.5; margin: 0;">Changodar Ind. Area, Ahmedabad, GJ 382213<br><strong>Hub Code:</strong> AMD-W1</p>
-                    </div>
+                        <h4 style="font-size: 14px; font-weight: 900; color: var(--carbon); margin-bottom: 8px;">MANUFACTURING PLANT</h4>
+                        <p style="font-size: 12px; line-height: 1.5; margin: 0;">SHUBH INDUSTRIAL ZONE,
+NEAR MAKHAVAD CHOKDI, PLOT NO. 176, VILLAGE KHAMBHA, TALUKA LODHIKA, 
+RAJKOT, 
+GUJRAT - 360311</p></div>
+                   
                 </div>
             </div>
         </div>
@@ -6175,6 +6172,38 @@ function switchView(targetViewId, isBackMode = false) {
     if (targetViewId === 'blogsView') {
         renderBlogSkeletons();
         setTimeout(() => renderBlogData(), 800);
+    }
+// === LOCATION MAP CROSSFADE LOGIC ===
+    if (targetViewId === 'locationView') {
+        const mapIframe = document.getElementById('locationMapIframe');
+        const mapSkel = document.getElementById('locationMapSkel');
+        
+        if (mapIframe && mapIframe.getAttribute('data-loaded') !== 'true') {
+            let isLoaded = false;
+            
+            // Browser track karega ki iframe load hua ya nahi
+            mapIframe.onload = () => { isLoaded = true; };
+
+            // 🚨 Strictly 2 second ka wait lock
+            setTimeout(() => {
+                const revealMap = () => {
+                    if (mapSkel) {
+                        mapSkel.style.opacity = '0'; // Skeleton fade out
+                        setTimeout(() => mapSkel.style.display = 'none', 500); // 0.5s baad DOM se hide
+                    }
+                    mapIframe.style.opacity = '1'; // Map fade in
+                    mapIframe.setAttribute('data-loaded', 'true');
+                };
+
+                // Agar 2 sec mein load ho gaya toh turant reveal karo
+                if (isLoaded) {
+                    revealMap();
+                } else {
+                    // Agar slow internet hai aur 2 sec mein load nahi hua, toh aage load hone tak ruko
+                    mapIframe.onload = revealMap; 
+                }
+            }, 2000); 
+        }
     }
 }
 
