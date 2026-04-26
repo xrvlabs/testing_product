@@ -7905,7 +7905,6 @@ window.switchProfileTab = async function(tabId, element) {
 let currentChatSessionId = null;
 let chatLanguage = 'ENGLISH';
 
-// 1. Toggles the chat window and handles early closure
 window.toggleLiveChat = function(e) {
     if(e) e.stopPropagation();
     
@@ -7925,15 +7924,25 @@ window.toggleLiveChat = function(e) {
         document.body.classList.add('popup-no-scroll');
         if(floatingCart) floatingCart.classList.add('hidden-by-popup');
         
-        // Check if a session is already running; if not, show language screen
         if (!currentChatSessionId) {
-            document.getElementById('chatLangView').style.display = 'flex';
+            // Hide all views first
+            document.getElementById('chatLangView').style.display = 'none';
+            document.getElementById('chatOrderStatusView').style.display = 'none';
             document.getElementById('chatBody').style.display = 'none';
             document.getElementById('chatFooter').style.display = 'none';
             document.getElementById('chatRatingView').style.display = 'none';
+            
+            // Order Selection Logic
+            if (currentUser && typeof orderHistory !== 'undefined' && orderHistory.length > 0) {
+                populateChatOrders();
+                document.getElementById('chatOrderSelectView').style.display = 'flex';
+            } else {
+                // If guest or no orders, skip to language selection
+                document.getElementById('chatOrderSelectView').style.display = 'none';
+                document.getElementById('chatLangView').style.display = 'flex';
+            }
         }
     } else {
-        // If the user closes the chat window entirely, delete the session
         if (currentChatSessionId) {
             remove(ref(db, 'chats/' + currentChatSessionId));
             currentChatSessionId = null;
@@ -7946,17 +7955,52 @@ window.toggleLiveChat = function(e) {
     }
 };
 
-// 2. Starts the actual Firebase session once language is selected
+window.populateChatOrders = function() {
+    const list = document.getElementById('chatOrderList');
+    let html = '';
+    
+    // Show max 3 recent orders
+    const recentOrders = orderHistory.slice(0, 3);
+    
+    recentOrders.forEach(o => {
+        const shortId = o.orderId || ('ORD-' + o.firebaseKey.substring(1,7).toUpperCase());
+        html += `<button class="pm-shop-btn" style="width: 100%; text-align: left; padding: 12px; margin-bottom: 5px; font-size: 12px; font-weight: 800; background: var(--snow); color: var(--carbon); border: 1.5px solid var(--smoke); display: flex; justify-content: space-between; align-items: center;" onclick="showChatOrderStatus('${shortId}', '${o.status}')">
+            <span><i class="fa-solid fa-box" style="color: #7fd5e2; margin-right: 8px;"></i> ${shortId}</span>
+            <i class="fa-solid fa-chevron-right" style="color: var(--silver);"></i>
+        </button>`;
+    });
+    list.innerHTML = html;
+};
+
+window.showChatOrderStatus = function(orderId, status) {
+    document.getElementById('chatOrderSelectView').style.display = 'none';
+    document.getElementById('chatOrderStatusView').style.display = 'flex';
+    
+    let statusColor = '#7fd5e2'; // Brand Blue
+    if(status.toUpperCase() === 'DELIVERED') statusColor = 'var(--mint)';
+    if(status.toUpperCase() === 'SHIPPED') statusColor = 'var(--sun)';
+    
+    document.getElementById('chatOrderStatusText').innerHTML = `
+        <div style="font-size: 11px; color: var(--muted); margin-bottom: 4px;">${orderId}</div>
+        <div style="color: ${statusColor}; font-size: 18px;">${status.toUpperCase()}</div>
+    `;
+};
+
+window.proceedToChatLanguage = function() {
+    document.getElementById('chatOrderSelectView').style.display = 'none';
+    document.getElementById('chatOrderStatusView').style.display = 'none';
+    document.getElementById('chatLangView').style.display = 'flex';
+};
+
 window.startChatSession = async function(lang) {
     chatLanguage = lang;
     
-    // Switch UI from Language Selection to Chat Interface
+    // Hide language screen, show chat
     document.getElementById('chatLangView').style.display = 'none';
     const chatBody = document.getElementById('chatBody');
     chatBody.style.display = 'flex';
     document.getElementById('chatFooter').style.display = 'flex';
     
-    // Set a culturally appropriate bot greeting
     let greetingMsg = lang === 'HINGLISH' 
         ? "Hello! ORACO Dental Innovation mein aapka swagat hai. Hamare executive jald hi aapse judenge. 👋"
         : "Hello! Welcome to Oraco Dental Innovation. An executive will join you shortly. 👋";
@@ -7966,7 +8010,6 @@ window.startChatSession = async function(lang) {
             ${greetingMsg}
         </div>`;
         
-    // Generate session ID and write to Firebase with Language tag
     currentChatSessionId = 'chat_' + Date.now() + Math.random().toString(36).substr(2, 5);
     let userName = currentUser ? currentUser.name : "Guest User";
     
@@ -7978,7 +8021,6 @@ window.startChatSession = async function(lang) {
         timestamp: Date.now()
     });
 
-    // Listen for incoming messages
     onChildAdded(ref(db, 'chats/' + currentChatSessionId + '/messages'), (snap) => {
         const msg = snap.val();
         const msgDiv = document.createElement('div');
@@ -7988,7 +8030,6 @@ window.startChatSession = async function(lang) {
         chatBody.scrollTop = chatBody.scrollHeight;
     });
 
-    // Listen for Admin terminating the session (Triggers Rating UI)
     onValue(ref(db, 'chats/' + currentChatSessionId), (snap) => {
         if (!snap.exists() && currentChatSessionId) {
             showChatRatingUI();
@@ -7996,12 +8037,9 @@ window.startChatSession = async function(lang) {
     });
 };
 
-// 3. Handles sending standard messages
 window.sendChatMessage = async function() {
     const input = document.getElementById('chatInput');
     const msgText = input.value.trim();
-    
-    // Safety check: Cannot send if empty or if session hasn't started
     if (!msgText || !currentChatSessionId) return; 
     
     input.value = '';
@@ -8013,12 +8051,9 @@ window.sendChatMessage = async function() {
 };
 
 window.handleChatEnter = function(e) {
-    if (e.key === 'Enter') {
-        sendChatMessage();
-    }
+    if (e.key === 'Enter') sendChatMessage();
 };
 
-// 4. Transitions to the Rating UI when the admin ends the chat
 window.showChatRatingUI = function() {
     document.getElementById('chatBody').style.display = 'none';
     document.getElementById('chatFooter').style.display = 'none';
@@ -8039,7 +8074,6 @@ window.showChatRatingUI = function() {
     });
 };
 
-// 5. Submits rating, resets UI, and closes the modal
 window.submitChatRating = async function(rating) {
     const stars = document.querySelectorAll('.chat-star');
     stars.forEach(s => {
@@ -8061,10 +8095,10 @@ window.submitChatRating = async function(rating) {
 
     setTimeout(() => {
         toggleLiveChat(); 
-        
-        // Reset everything to default behind the scenes for the next time it's opened
         setTimeout(() => {
             document.getElementById('chatLangView').style.display = 'none';
+            document.getElementById('chatOrderSelectView').style.display = 'none';
+            document.getElementById('chatOrderStatusView').style.display = 'none';
             document.getElementById('chatBody').style.display = 'none';
             document.getElementById('chatFooter').style.display = 'none';
             document.getElementById('chatRatingView').style.display = 'none';
@@ -8077,12 +8111,6 @@ window.submitChatRating = async function(rating) {
             });
         }, 500);
     }, 2000);
-};
-// Replace the existing handleChatEnter function
-window.handleChatEnter = function(e) {
-    if (e.key === 'Enter') {
-        sendChatMessage();
-    }
 };
 
 document.addEventListener('click', (event) => {
@@ -9418,7 +9446,31 @@ window.showAddressForm = showAddressForm;
         <div class="chat-close" onclick="toggleLiveChat()"><i class="fa-solid fa-xmark"></i></div>
     </div>
     
-    <div id="chatLangView" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 320px; padding: 20px; text-align: center; background: white; border-radius: 0 0 5px 5px;">
+    <div id="chatOrderSelectView" style="display: none; flex-direction: column; align-items: center; justify-content: center; height: 320px; padding: 20px; text-align: center; background: white; border-radius: 0 0 5px 5px;">
+        <i class="fa-solid fa-box-open" style="font-size: 32px; color: #7fd5e2; margin-bottom: 12px;"></i>
+        <h4 style="font-size: 14px; font-weight: 900; color: var(--carbon); margin-bottom: 8px;">WHAT DO YOU NEED HELP WITH?</h4>
+        <p style="font-size: 11px; color: var(--muted); font-weight: 700; margin-bottom: 16px;">Select a recent order or choose another option.</p>
+        
+        <div id="chatOrderList" style="width: 100%; display: flex; flex-direction: column; gap: 8px; max-height: 140px; overflow-y: auto; margin-bottom: 10px; padding-right: 5px;">
+            </div>
+        
+        <button class="pm-shop-btn" style="width: 100%; background: var(--carbon); color: white; padding: 12px; font-size: 11px;" onclick="proceedToChatLanguage()">SOMETHING ELSE / OTHER QUERY</button>
+    </div>
+
+    <div id="chatOrderStatusView" style="display: none; flex-direction: column; align-items: center; justify-content: center; height: 320px; padding: 20px; text-align: center; background: white; border-radius: 0 0 5px 5px;">
+        <i class="fa-solid fa-truck-fast" style="font-size: 32px; color: #7fd5e2; margin-bottom: 16px;"></i>
+        <h4 style="font-size: 14px; font-weight: 900; color: var(--carbon); margin-bottom: 8px;">ORDER STATUS</h4>
+        
+        <div id="chatOrderStatusText" style="font-size: 16px; font-weight: 900; margin-bottom: 24px; padding: 15px; background: var(--snow); border: 1.5px solid var(--smoke); border-radius: 5px; width: 100%;">
+            </div>
+        
+        <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="pm-shop-btn" style="flex: 1; padding: 12px; font-size: 11px; background: var(--snow); color: var(--carbon); border: 1.5px solid var(--smoke);" onclick="document.getElementById('chatOrderStatusView').style.display='none'; document.getElementById('chatOrderSelectView').style.display='flex';">BACK</button>
+            <button class="pm-shop-btn" style="flex: 2; padding: 12px; font-size: 11px; background: #7fd5e2; color: white; border: none; box-shadow: 0 4px 10px rgba(127, 213, 226, 0.3);" onclick="proceedToChatLanguage()">TALK TO AGENT</button>
+        </div>
+    </div>
+
+    <div id="chatLangView" style="display: none; flex-direction: column; align-items: center; justify-content: center; height: 320px; padding: 20px; text-align: center; background: white; border-radius: 0 0 5px 5px;">
         <i class="fa-solid fa-language" style="font-size: 32px; color: #7fd5e2; margin-bottom: 16px;"></i>
         <h4 style="font-size: 14px; font-weight: 900; color: var(--carbon); margin-bottom: 8px;">CHOOSE YOUR LANGUAGE</h4>
         <p style="font-size: 11px; color: var(--muted); font-weight: 700; margin-bottom: 24px;">In which language would you like to chat with our support team?</p>
