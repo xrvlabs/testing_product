@@ -196,6 +196,24 @@
     }
 }
 /* =========================================================================
+   TYPING INDICATOR ANIMATION
+========================================================================= */
+.typing-dot {
+    width: 6px;
+    height: 6px;
+    background: currentColor;
+    border-radius: 50%;
+    animation: typingBounce 1.4s infinite ease-in-out both;
+    opacity: 0.7;
+}
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typingBounce {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+    40% { transform: scale(1); opacity: 1; }
+}
+/* =========================================================================
    CHAT RATING UI STYLES
 ========================================================================= */
 .chat-stars {
@@ -7902,8 +7920,29 @@ window.switchProfileTab = async function(tabId, element) {
         populateSizesDropdown(variant);
         updateProductControlUI();
     };
+// =========================================================================
+// LIVE CHAT CLIENT LOGIC (CRASH-PROOF & FULLY FEATURED)
+// =========================================================================
 let currentChatSessionId = null;
 let chatLanguage = 'ENGLISH';
+
+// Listeners tracking for cleanups
+let clientMessagesUnsub = null;
+let clientChatUnsub = null;
+let clientAdminTypingUnsub = null;
+
+// 👉 HELPER: Safely hides or shows elements without crashing your site
+window.setDisplaySafely = function(id, displayValue) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = displayValue;
+};
+
+// Helper function to clean up listeners
+function cleanupChatListeners() {
+    if (clientMessagesUnsub) { clientMessagesUnsub(); clientMessagesUnsub = null; }
+    if (clientChatUnsub) { clientChatUnsub(); clientChatUnsub = null; }
+    if (clientAdminTypingUnsub) { clientAdminTypingUnsub(); clientAdminTypingUnsub = null; }
+}
 
 window.toggleLiveChat = function(e) {
     if(e) e.stopPropagation();
@@ -7916,39 +7955,53 @@ window.toggleLiveChat = function(e) {
     const overlay = document.getElementById('popupOverlay');
     const floatingCart = document.getElementById('floatingDesktopCart');
     
+    if (!chatPopup) return; // Safety check
     const isActive = chatPopup.classList.toggle('active');
     
     if (isActive) {
-        chatTrigger.classList.add('hidden');
+        if(chatTrigger) chatTrigger.classList.add('hidden');
         if(overlay) overlay.classList.add('active');
         document.body.classList.add('popup-no-scroll');
         if(floatingCart) floatingCart.classList.add('hidden-by-popup');
         
         if (!currentChatSessionId) {
-            // Hide all views first
-            document.getElementById('chatLangView').style.display = 'none';
-            document.getElementById('chatOrderStatusView').style.display = 'none';
-            document.getElementById('chatBody').style.display = 'none';
-            document.getElementById('chatFooter').style.display = 'none';
-            document.getElementById('chatRatingView').style.display = 'none';
+            // 👉 PURI TARAH RESET: Safely hide old UI
+            setDisplaySafely('chatLangView', 'none');
+            setDisplaySafely('chatOrderSelectView', 'none');
+            setDisplaySafely('chatOrderStatusView', 'none');
+            setDisplaySafely('chatBody', 'none');
+            setDisplaySafely('chatFooter', 'none');
+            setDisplaySafely('chatRatingView', 'none');
+            
+            const chatBodyEl = document.getElementById('chatBody');
+            if (chatBodyEl) chatBodyEl.innerHTML = ''; // Messages clear
             
             // Order Selection Logic
-            if (currentUser && typeof orderHistory !== 'undefined' && orderHistory.length > 0) {
+            const orderView = document.getElementById('chatOrderSelectView');
+            if (orderView && currentUser && typeof orderHistory !== 'undefined' && orderHistory.length > 0) {
                 populateChatOrders();
-                document.getElementById('chatOrderSelectView').style.display = 'flex';
+                setDisplaySafely('chatOrderSelectView', 'flex');
             } else {
                 // If guest or no orders, skip to language selection
-                document.getElementById('chatOrderSelectView').style.display = 'none';
-                document.getElementById('chatLangView').style.display = 'flex';
+                setDisplaySafely('chatOrderSelectView', 'none');
+                setDisplaySafely('chatLangView', 'flex');
             }
         }
     } else {
+        // 👉 USER NE KHUD CLOSE KIYA: Cleanup Everything
         if (currentChatSessionId) {
+            cleanupChatListeners();
             remove(ref(db, 'chats/' + currentChatSessionId));
             currentChatSessionId = null;
         }
         
-        chatTrigger.classList.remove('hidden');
+        const chatBodyEl = document.getElementById('chatBody');
+        if (chatBodyEl) chatBodyEl.innerHTML = '';
+        
+        setDisplaySafely('chatBody', 'none');
+        setDisplaySafely('chatFooter', 'none');
+        
+        if(chatTrigger) chatTrigger.classList.remove('hidden');
         if(overlay) overlay.classList.remove('active');
         document.body.classList.remove('popup-no-scroll');
         if(floatingCart) floatingCart.classList.remove('hidden-by-popup');
@@ -7957,10 +8010,10 @@ window.toggleLiveChat = function(e) {
 
 window.populateChatOrders = function() {
     const list = document.getElementById('chatOrderList');
-    let html = '';
+    if(!list) return;
     
-    // Show max 3 recent orders
-    const recentOrders = orderHistory.slice(0, 3);
+    let html = '';
+    const recentOrders = orderHistory.slice(0, 3); // Show max 3
     
     recentOrders.forEach(o => {
         const shortId = o.orderId || ('ORD-' + o.firebaseKey.substring(1,7).toUpperCase());
@@ -7973,42 +8026,89 @@ window.populateChatOrders = function() {
 };
 
 window.showChatOrderStatus = function(orderId, status) {
-    document.getElementById('chatOrderSelectView').style.display = 'none';
-    document.getElementById('chatOrderStatusView').style.display = 'flex';
+    setDisplaySafely('chatOrderSelectView', 'none');
+    setDisplaySafely('chatOrderStatusView', 'flex');
     
     let statusColor = '#7fd5e2'; // Brand Blue
     if(status.toUpperCase() === 'DELIVERED') statusColor = 'var(--mint)';
     if(status.toUpperCase() === 'SHIPPED') statusColor = 'var(--sun)';
     
-    document.getElementById('chatOrderStatusText').innerHTML = `
-        <div style="font-size: 11px; color: var(--muted); margin-bottom: 4px;">${orderId}</div>
-        <div style="color: ${statusColor}; font-size: 18px;">${status.toUpperCase()}</div>
-    `;
+    const statusTextEl = document.getElementById('chatOrderStatusText');
+    if (statusTextEl) {
+        statusTextEl.innerHTML = `
+            <div style="font-size: 11px; color: var(--muted); margin-bottom: 4px;">${orderId}</div>
+            <div style="color: ${statusColor}; font-size: 18px;">${status.toUpperCase()}</div>
+        `;
+    }
 };
 
 window.proceedToChatLanguage = function() {
-    document.getElementById('chatOrderSelectView').style.display = 'none';
-    document.getElementById('chatOrderStatusView').style.display = 'none';
-    document.getElementById('chatLangView').style.display = 'flex';
+    setDisplaySafely('chatOrderSelectView', 'none');
+    setDisplaySafely('chatOrderStatusView', 'none');
+    setDisplaySafely('chatLangView', 'flex');
 };
 
+// 1. HELPER FUNCTIONS FOR TYPING INDICATOR
+window.showTypingIndicator = function(chatBodyId, isAdmin) {
+    let chatBody = document.getElementById(chatBodyId);
+    if (!chatBody || document.getElementById('typing-' + chatBodyId)) return; 
+    
+    let typingDiv = document.createElement('div');
+    typingDiv.id = 'typing-' + chatBodyId;
+    typingDiv.className = 'chat-msg ' + (isAdmin ? 'msg-bot' : 'msg-user');
+    typingDiv.style.display = 'inline-flex';
+    typingDiv.style.gap = '4px';
+    typingDiv.style.alignItems = 'center';
+    typingDiv.style.padding = '14px 18px';
+    typingDiv.style.width = 'fit-content';
+    
+    typingDiv.innerHTML = `
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+    `;
+    chatBody.appendChild(typingDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+};
+
+window.hideTypingIndicator = function(chatBodyId) {
+    let el = document.getElementById('typing-' + chatBodyId);
+    if(el) el.remove();
+};
+
+// 2. DETECT CLIENT TYPING AND SEND TO FIREBASE
+let clientTypingTimer;
+document.addEventListener('DOMContentLoaded', () => {
+    const chatInput = document.getElementById('chatInput');
+    if(chatInput) {
+        chatInput.addEventListener('input', () => {
+            if(!currentChatSessionId) return;
+            set(ref(db, 'chats/' + currentChatSessionId + '/userTyping'), true);
+            
+            clearTimeout(clientTypingTimer);
+            clientTypingTimer = setTimeout(() => {
+                set(ref(db, 'chats/' + currentChatSessionId + '/userTyping'), false);
+            }, 1500); 
+        });
+    }
+});
+
+// 3. START CHAT SESSION
 window.startChatSession = async function(lang) {
     chatLanguage = lang;
     
-    // Hide language screen, show chat
-    document.getElementById('chatLangView').style.display = 'none';
-    const chatBody = document.getElementById('chatBody');
-    chatBody.style.display = 'flex';
-    document.getElementById('chatFooter').style.display = 'flex';
+    setDisplaySafely('chatLangView', 'none');
+    setDisplaySafely('chatBody', 'flex');
+    setDisplaySafely('chatFooter', 'flex');
     
+    const chatBody = document.getElementById('chatBody');
+    if (!chatBody) return;
+
     let greetingMsg = lang === 'HINGLISH' 
         ? "Hello! ORACO Dental Innovation mein aapka swagat hai. Hamare executive jald hi aapse judenge. 👋"
         : "Hello! Welcome to Oraco Dental Innovation. An executive will join you shortly. 👋";
 
-    chatBody.innerHTML = `
-        <div class="chat-msg msg-bot">
-            ${greetingMsg}
-        </div>`;
+    chatBody.innerHTML = `<div class="chat-msg msg-bot">${greetingMsg}</div>`;
         
     currentChatSessionId = 'chat_' + Date.now() + Math.random().toString(36).substr(2, 5);
     let userName = currentUser ? currentUser.name : "Guest User";
@@ -8018,19 +8118,35 @@ window.startChatSession = async function(lang) {
         userName: userName,
         language: chatLanguage, 
         status: "active",
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        userTyping: false,
+        adminTyping: false
     });
 
-    onChildAdded(ref(db, 'chats/' + currentChatSessionId + '/messages'), (snap) => {
+    cleanupChatListeners(); // Clean old listeners just in case
+
+    clientMessagesUnsub = onChildAdded(ref(db, 'chats/' + currentChatSessionId + '/messages'), (snap) => {
         const msg = snap.val();
         const msgDiv = document.createElement('div');
         msgDiv.className = msg.sender === 'admin' ? 'chat-msg msg-bot' : 'chat-msg msg-user';
         msgDiv.innerText = msg.text;
         chatBody.appendChild(msgDiv);
+        
+        let typingEl = document.getElementById('typing-chatBody');
+        if (typingEl) chatBody.appendChild(typingEl); 
+        
         chatBody.scrollTop = chatBody.scrollHeight;
     });
 
-    onValue(ref(db, 'chats/' + currentChatSessionId), (snap) => {
+    clientAdminTypingUnsub = onValue(ref(db, 'chats/' + currentChatSessionId + '/adminTyping'), (snap) => {
+        if (snap.val() === true) {
+            showTypingIndicator('chatBody', true); // Bot style
+        } else {
+            hideTypingIndicator('chatBody');
+        }
+    });
+
+    clientChatUnsub = onValue(ref(db, 'chats/' + currentChatSessionId), (snap) => {
         if (!snap.exists() && currentChatSessionId) {
             showChatRatingUI();
         }
@@ -8039,6 +8155,8 @@ window.startChatSession = async function(lang) {
 
 window.sendChatMessage = async function() {
     const input = document.getElementById('chatInput');
+    if (!input) return;
+    
     const msgText = input.value.trim();
     if (!msgText || !currentChatSessionId) return; 
     
@@ -8055,9 +8173,11 @@ window.handleChatEnter = function(e) {
 };
 
 window.showChatRatingUI = function() {
-    document.getElementById('chatBody').style.display = 'none';
-    document.getElementById('chatFooter').style.display = 'none';
-    document.getElementById('chatRatingView').style.display = 'flex';
+    cleanupChatListeners(); // Stop listening so UI doesn't bug out
+
+    setDisplaySafely('chatBody', 'none');
+    setDisplaySafely('chatFooter', 'none');
+    setDisplaySafely('chatRatingView', 'flex');
     
     const stars = document.querySelectorAll('.chat-star');
     stars.forEach(star => {
@@ -8081,7 +8201,7 @@ window.submitChatRating = async function(rating) {
         s.style.pointerEvents = 'none';
     });
     
-    document.getElementById('ratingThanksMsg').style.display = 'block';
+    setDisplaySafely('ratingThanksMsg', 'block');
     
     try {
         await push(ref(db, 'analytics/chat_ratings'), {
@@ -8094,16 +8214,33 @@ window.submitChatRating = async function(rating) {
     currentChatSessionId = null;
 
     setTimeout(() => {
-        toggleLiveChat(); 
+        // Safe Close
+        const chatPopup = document.getElementById('liveChatPopup');
+        if(chatPopup) chatPopup.classList.remove('active');
+        
+        const chatTrigger = document.getElementById('liveChatTrigger');
+        if(chatTrigger) chatTrigger.classList.remove('hidden');
+        
+        const overlay = document.getElementById('popupOverlay');
+        if(overlay) overlay.classList.remove('active');
+        
+        document.body.classList.remove('popup-no-scroll');
+        
+        const floatingCart = document.getElementById('floatingDesktopCart');
+        if(floatingCart) floatingCart.classList.remove('hidden-by-popup');
+        
+        // Final Background Cleanup
         setTimeout(() => {
-            document.getElementById('chatLangView').style.display = 'none';
-            document.getElementById('chatOrderSelectView').style.display = 'none';
-            document.getElementById('chatOrderStatusView').style.display = 'none';
-            document.getElementById('chatBody').style.display = 'none';
-            document.getElementById('chatFooter').style.display = 'none';
-            document.getElementById('chatRatingView').style.display = 'none';
-            document.getElementById('ratingThanksMsg').style.display = 'none';
-            document.getElementById('chatBody').innerHTML = '';
+            setDisplaySafely('chatLangView', 'none');
+            setDisplaySafely('chatOrderSelectView', 'none');
+            setDisplaySafely('chatOrderStatusView', 'none');
+            setDisplaySafely('chatBody', 'none');
+            setDisplaySafely('chatFooter', 'none');
+            setDisplaySafely('chatRatingView', 'none');
+            setDisplaySafely('ratingThanksMsg', 'none');
+            
+            const chatBodyEl = document.getElementById('chatBody');
+            if (chatBodyEl) chatBodyEl.innerHTML = ''; // 👉 COMPLETELY CLEAR
             
             stars.forEach(s => {
                 s.classList.remove('selected', 'hovered');
