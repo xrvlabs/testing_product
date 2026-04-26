@@ -8802,7 +8802,7 @@ if (thumbListContainer) {
     let usableCoins = isCoinsApplied ? Math.min(userCoins, subtotal * 10) : 0;
     let discount = usableCoins * 0.1;
     let finalTotal = subtotal - discount;
-    let earnedCoins = Math.floor(finalTotal / 1000) * 100;
+    let earnedCoins = Math.floor(finalTotal / 10);
 
     const cleanOrderId = "ORD" + Date.now().toString().slice(-5) + Math.floor(Math.random() * 1000);
 
