@@ -7129,6 +7129,10 @@ function renderPromoCards() {
     const data1 = otherMediaData[0];
     const data2 = otherMediaData.length > 1 ? otherMediaData[1] : null;
 
+    // Agar dusra data nahi hai, toh animation classes empty rakho (Static rahega)
+    const textClass1 = data2 ? 'crossfade-text-1' : '';
+    const imgClass1 = data2 ? 'crossfade-img-1' : '';
+
     let html = `
         <div class="promo-card" style="background: linear-gradient(135deg, var(--ocean), var(--mint)); border: none; cursor: pointer;" onclick="window.location.href='${data1.btnLink || '#'}'">
             <div class="promo-content">
@@ -7137,7 +7141,7 @@ function renderPromoCards() {
                     <div class="skeleton" style="height: 10px; width: 60%; border-radius: 5px;"></div>
                 </div>
                <div id="promoActualText1" style="display: none; position: relative; width: 100%;">
-                    <div class="crossfade-text-1">
+                    <div class="${textClass1}">
                         <div class="promo-title">${data1.title || ''}</div>
                         <div class="promo-subtitle">${data1.subtitle || ''}</div>
                     </div>
@@ -7155,7 +7159,7 @@ function renderPromoCards() {
                     <div id="promoImgSkel1" class="skeleton" style="width: 100%; aspect-ratio: 1; border-radius: 6px; margin-bottom: 6px;"></div>
                     
                     <div class="img-slider-container" style="display:none; position:relative; width:100%; aspect-ratio:1; margin-bottom:6px; background: white; border-radius: 6px; overflow:hidden;">
-                        <img src="${data1.img}" class="crossfade-img-1" style="position:absolute; top:0; left:0; width: 100%; height:100%; object-fit: contain; padding: 4px;">
+                        <img src="${data1.img}" class="${imgClass1}" style="position:absolute; top:0; left:0; width: 100%; height:100%; object-fit: contain; padding: 4px;">
                         ${data2 ? `<img src="${data2.img}" class="crossfade-img-2" style="position:absolute; top:0; left:0; width: 100%; height:100%; object-fit: contain; padding: 4px;">` : ''}
                     </div>
 
