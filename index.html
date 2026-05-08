@@ -326,6 +326,7 @@
                 margin: 16px 0 !important;
             }
         }
+
 /* =========================================================================
            PROMO BANNER HOVER EFFECT: SHOW TEXT & BLUR IMAGE
         ========================================================================= */
@@ -362,7 +363,55 @@
                 filter: blur(8px) !important;
             }
         }
+/* =========================================================================
+           FIX: FORCE 2 PRODUCT CARDS PER ROW ON MOBILE (WITHOUT BREAKING SKELETONS)
+        ========================================================================= */
+        @media (max-width: 767px) {
+            .product-grid,
+            .skel-grid {
+                /* display: grid !important; <--- YAHAN SE YEH LINE HATA DI GAYI HAI */
+                grid-template-columns: repeat(2, 1fr) !important; /* Strictly 2 columns */
+                gap: 10px !important;
+                padding: 10px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
 
+            .product-card, 
+            .skel-card {
+                width: 100% !important;
+                min-width: 0 !important; 
+                margin: 0 !important;
+            }
+
+            .product-image-container {
+                height: 130px !important; 
+                padding: 10px !important;
+            }
+
+            .product-image-container img {
+                max-width: 100% !important;
+                max-height: 100% !important;
+                object-fit: contain !important;
+            }
+            
+            .product-details {
+                padding: 10px 8px !important;
+            }
+
+            .product-title {
+                font-size: 10.5px !important;
+                margin-bottom: 4px !important;
+            }
+
+            .current-price {
+                font-size: 14px !important;
+            }
+            
+            .mrp-price {
+                font-size: 10px !important;
+            }
+        }
 /* =========================================================================
            FINAL OVERRIDE: FULL WIDTH PROMO BANNER IMAGES ON DESKTOP
         ========================================================================= */
