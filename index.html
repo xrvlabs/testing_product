@@ -204,7 +204,128 @@
                 width: auto;
             }
         }
+/* =========================================================================
+           DYNAMIC FLUID RESIZE FOR AUTH VIEW (CARD & WALLPAPER TEXT)
+        ========================================================================= */
+        @media (min-width: 1024px) {
+            /* 1. Fluid Layout Padding (Scales with window size) */
+            .auth-view-layout {
+                padding: clamp(20px, 5vh, 60px) clamp(5%, 10vw, 15%) !important;
+            }
 
+            /* 2. Scale the Left Promo Text & Icons */
+            .auth-desktop-promo h1 {
+                font-size: clamp(28px, 3.5vw, 48px) !important;
+                margin-bottom: clamp(16px, 3vh, 32px) !important;
+            }
+
+            .auth-perks {
+                font-size: clamp(12px, 1.1vw, 15px) !important;
+                gap: clamp(12px, 2vh, 20px) !important;
+            }
+
+            .auth-perks i {
+                font-size: clamp(16px, 1.5vw, 22px) !important;
+                padding: clamp(8px, 1vw, 12px) !important;
+            }
+
+            /* 3. Scale the Auth Card Width & Padding (Replaces fixed 480px width) */
+            .auth-card {
+                width: clamp(350px, 30vw, 500px) !important;
+                padding: clamp(30px, 3.5vw, 48px) !important;
+            }
+
+            /* 4. Scale Card Inner Elements (Logo, Titles, Inputs) */
+            .auth-logo-img {
+                height: clamp(50px, 6vh, 70px) !important;
+                margin-bottom: clamp(10px, 2vh, 16px) !important;
+            }
+
+            .auth-title {
+                font-size: clamp(18px, 1.8vw, 24px) !important;
+            }
+
+            .auth-subtitle {
+                font-size: clamp(10px, 1vw, 13px) !important;
+                margin-bottom: clamp(20px, 3vh, 32px) !important;
+            }
+
+            .auth-tabs {
+                margin-bottom: clamp(20px, 3vh, 32px) !important;
+            }
+
+            .form-group {
+                margin-bottom: clamp(12px, 2vh, 20px) !important;
+            }
+
+            .form-input {
+                height: clamp(40px, 5vh, 50px) !important;
+                font-size: clamp(12px, 1.1vw, 14px) !important;
+                padding: 0 clamp(12px, 1.5vw, 20px) !important;
+            }
+
+            .auth-submit-btn,
+            .auth-google-btn {
+                padding: clamp(12px, 1.5vh, 16px) !important;
+                font-size: clamp(11px, 1.1vw, 14px) !important;
+                margin-top: clamp(8px, 1vh, 12px) !important;
+            }
+            
+            .auth-divider {
+                margin: clamp(20px, 3vh, 32px) 0 !important;
+            }
+        }
+/* =========================================================================
+           COMPACT HEIGHT & EXTENDED WIDTH FOR SMALLER DESKTOPS
+        ========================================================================= */
+        @media (max-width: 1366px) and (min-width: 1024px) {
+            /* 1. Card ki width badhayi aur padding kam kardi (Compact look) */
+            .auth-card {
+                width: clamp(420px, 45vw, 500px) !important; /* Extended Width */
+                padding: 24px 32px !important; /* Reduced vertical padding */
+            }
+
+            /* 2. Logo aur Title ki spacing kam kardi */
+            .auth-logo-img {
+                height: 45px !important; 
+                margin-bottom: 8px !important;
+            }
+            .auth-title {
+                font-size: 20px !important;
+                margin-bottom: 4px !important;
+            }
+            .auth-subtitle {
+                margin-bottom: 16px !important;
+            }
+
+            /* 3. Tabs aur Form inputs ko compact banaya */
+            .auth-tabs {
+                margin-bottom: 16px !important;
+                padding: 3px !important;
+            }
+            .auth-tab {
+                padding: 8px !important;
+            }
+            .form-group {
+                margin-bottom: 12px !important;
+            }
+            .form-group label {
+                margin-bottom: 6px !important;
+            }
+            .form-input {
+                height: 40px !important; /* Inputs ki height kam ki */
+            }
+
+            /* 4. Buttons aur Divider ki height/margins kam kardi */
+            .auth-submit-btn,
+            .auth-google-btn {
+                padding: 12px !important;
+                margin-top: 8px !important;
+            }
+            .auth-divider {
+                margin: 16px 0 !important;
+            }
+        }
 /* =========================================================================
            PROMO BANNER HOVER EFFECT: SHOW TEXT & BLUR IMAGE
         ========================================================================= */
